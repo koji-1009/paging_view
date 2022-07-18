@@ -52,7 +52,6 @@ abstract class DataSource<Value, Key> {
     final key = _manager.prependKey;
     if (key == null) {
       /// no more prepend data
-      _manager.prepend(null);
       return;
     }
 
@@ -78,7 +77,6 @@ abstract class DataSource<Value, Key> {
     final key = _manager.appendKey;
     if (key == null) {
       /// no more append data
-      _manager.append(null);
       return;
     }
 
