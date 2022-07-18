@@ -42,11 +42,16 @@ class Paging<Value, Key> extends StatelessWidget {
               });
             }
 
+            final showPrependLoading = prependWidget != null &&
+                state == NotifierLoadingState.prependLoading;
+            final showAppendLoading = appendWidget != null &&
+                state == NotifierLoadingState.appendLoading;
+
             final items = value.items;
             final length = items.length;
             return CustomScrollView(
               slivers: [
-                if (prependWidget != null)
+                if (showPrependLoading)
                   SliverToBoxAdapter(
                     child: prependWidget,
                   ),
@@ -71,7 +76,7 @@ class Paging<Value, Key> extends StatelessWidget {
                     childCount: length,
                   ),
                 ),
-                if (appendWidget != null)
+                if (showAppendLoading)
                   SliverToBoxAdapter(
                     child: appendWidget,
                   ),
