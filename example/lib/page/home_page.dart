@@ -28,6 +28,9 @@ class HomePage extends ConsumerWidget {
             ),
           );
         },
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
       ),
     );
   }

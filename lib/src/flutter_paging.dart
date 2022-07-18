@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_paging/src/data_source.dart';
 import 'package:flutter_paging/src/private/entity.dart';
@@ -22,13 +23,48 @@ class Paging<Value, Key> extends StatelessWidget {
     this.errorWidgetBuilder,
     this.prependWidget,
     this.appendWidget,
+    this.padding = EdgeInsets.zero,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.controller,
+    this.primary,
+    this.physics,
+    this.scrollBehavior,
+    this.shrinkWrap = false,
+    this.cacheExtent,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.clipBehavior = Clip.hardEdge,
   });
 
+  /// region Paging
   final DataSource<Value, Key> dataSource;
   final TypedWidgetBuilder<Value> typedBuilder;
   final ErrorWidgetBuilder? errorWidgetBuilder;
   final Widget? prependWidget;
   final Widget? appendWidget;
+
+  /// endregion
+
+  /// region customize
+  final EdgeInsets padding;
+
+  /// endregion
+
+  /// region CustomScrollView
+  final Axis scrollDirection;
+  final bool reverse;
+  final ScrollController? controller;
+  final bool? primary;
+  final ScrollPhysics? physics;
+  final ScrollBehavior? scrollBehavior;
+  final bool shrinkWrap;
+  final double? cacheExtent;
+  final DragStartBehavior dragStartBehavior;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final Clip clipBehavior;
+
+  /// endregion
 
   @override
   Widget build(BuildContext context) =>
@@ -50,35 +86,55 @@ class Paging<Value, Key> extends StatelessWidget {
             final items = value.items;
             final length = items.length;
             return CustomScrollView(
+              scrollDirection: scrollDirection,
+              reverse: reverse,
+              controller: controller,
+              primary: primary,
+              physics: physics,
+              scrollBehavior: scrollBehavior,
+              shrinkWrap: shrinkWrap,
+              cacheExtent: cacheExtent,
+              dragStartBehavior: dragStartBehavior,
+              keyboardDismissBehavior: keyboardDismissBehavior,
+              clipBehavior: clipBehavior,
               slivers: [
                 if (showPrependLoading)
-                  SliverToBoxAdapter(
-                    child: prependWidget,
+                  SliverPadding(
+                    padding: padding,
+                    sliver: SliverToBoxAdapter(
+                      child: prependWidget,
+                    ),
                   ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index == 0) {
-                        // prepend
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          dataSource.update(LoadType.prepend);
-                        });
-                      } else if (index == length - 1) {
-                        // append
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          dataSource.update(LoadType.append);
-                        });
-                      }
+                SliverPadding(
+                  padding: padding,
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == 0) {
+                          // prepend
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            dataSource.update(LoadType.prepend);
+                          });
+                        } else if (index == length - 1) {
+                          // append
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            dataSource.update(LoadType.append);
+                          });
+                        }
 
-                      final element = items[index];
-                      return typedBuilder(context, element, index);
-                    },
-                    childCount: length,
+                        final element = items[index];
+                        return typedBuilder(context, element, index);
+                      },
+                      childCount: length,
+                    ),
                   ),
                 ),
                 if (showAppendLoading)
-                  SliverToBoxAdapter(
-                    child: appendWidget,
+                  SliverPadding(
+                    padding: padding,
+                    sliver: SliverToBoxAdapter(
+                      child: appendWidget,
+                    ),
                   ),
               ],
             );
