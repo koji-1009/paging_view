@@ -1,28 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_paging/src/data_source.dart';
+import 'package:flutter_paging/src/function.dart';
 import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-
-typedef TypedWidgetBuilder<Value> = Widget Function(
-  BuildContext context,
-  Value element,
-  int index,
-);
-
-typedef ErrorWidgetBuilder = Widget Function(
-  BuildContext context,
-  Exception? e,
-);
 
 class Paging<Value, Key> extends StatelessWidget {
   const Paging({
     super.key,
     required this.dataSource,
-    required this.typedBuilder,
-    this.errorWidgetBuilder,
-    this.prependWidget,
-    this.appendWidget,
+    required this.builder,
+    this.errorBuilder,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
     this.padding = EdgeInsets.zero,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
@@ -39,10 +29,10 @@ class Paging<Value, Key> extends StatelessWidget {
 
   /// region Paging
   final DataSource<Value, Key> dataSource;
-  final TypedWidgetBuilder<Value> typedBuilder;
-  final ErrorWidgetBuilder? errorWidgetBuilder;
-  final Widget? prependWidget;
-  final Widget? appendWidget;
+  final TypedWidgetBuilder<Value> builder;
+  final ExceptionWidgetBuilder? errorBuilder;
+  final Widget? prependLoadingWidget;
+  final Widget? appendLoadingWidget;
 
   /// endregion
 
@@ -78,9 +68,9 @@ class Paging<Value, Key> extends StatelessWidget {
               });
             }
 
-            final showPrependLoading = prependWidget != null &&
+            final showPrependLoading = prependLoadingWidget != null &&
                 state == NotifierLoadingState.prependLoading;
-            final showAppendLoading = appendWidget != null &&
+            final showAppendLoading = appendLoadingWidget != null &&
                 state == NotifierLoadingState.appendLoading;
 
             final items = value.items;
@@ -102,7 +92,7 @@ class Paging<Value, Key> extends StatelessWidget {
                   SliverPadding(
                     padding: padding,
                     sliver: SliverToBoxAdapter(
-                      child: prependWidget,
+                      child: prependLoadingWidget,
                     ),
                   ),
                 SliverPadding(
@@ -123,7 +113,7 @@ class Paging<Value, Key> extends StatelessWidget {
                         }
 
                         final element = items[index];
-                        return typedBuilder(context, element, index);
+                        return builder(context, element, index);
                       },
                       childCount: length,
                     ),
@@ -133,14 +123,14 @@ class Paging<Value, Key> extends StatelessWidget {
                   SliverPadding(
                     padding: padding,
                     sliver: SliverToBoxAdapter(
-                      child: appendWidget,
+                      child: appendLoadingWidget,
                     ),
                   ),
               ],
             );
           },
           error: (e) =>
-              errorWidgetBuilder?.call(context, e) ?? const SizedBox.shrink(),
+              errorBuilder?.call(context, e) ?? const SizedBox.shrink(),
         ),
       );
 }

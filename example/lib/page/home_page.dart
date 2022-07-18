@@ -17,10 +17,10 @@ class HomePage extends ConsumerWidget {
       ),
       body: Paging<Repository, int>(
         dataSource: datasource,
-        appendWidget: const Center(
+        appendLoadingWidget: const Center(
           child: CircularProgressIndicator.adaptive(),
         ),
-        typedBuilder: (context, repository, index) {
+        builder: (context, repository, index) {
           return Card(
             child: ListTile(
               title: Text(repository.fullName),

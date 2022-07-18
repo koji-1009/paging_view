@@ -32,7 +32,7 @@ class LoadResult<Value, Key> with _$LoadResult<Value, Key> {
   }) = _LoadResultSuccess;
 
   const factory LoadResult.failure({
-    required Exception? exception,
+    required Exception? e,
   }) = _LoadResultFailure;
 
   const factory LoadResult.none() = _LoadResultNone;

@@ -686,21 +686,21 @@ mixin _$LoadResult<Value, Key> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(PageData<Value, Key> page) success,
-    required TResult Function(Exception? exception) failure,
+    required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
   }) =>
@@ -833,7 +833,7 @@ class _$_LoadResultSuccess<Value, Key>
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(PageData<Value, Key> page) success,
-    required TResult Function(Exception? exception) failure,
+    required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
     return success(page);
@@ -843,7 +843,7 @@ class _$_LoadResultSuccess<Value, Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
     return success?.call(page);
@@ -853,7 +853,7 @@ class _$_LoadResultSuccess<Value, Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
   }) {
@@ -914,7 +914,7 @@ abstract class _$$_LoadResultFailureCopyWith<Value, Key, $Res> {
   factory _$$_LoadResultFailureCopyWith(_$_LoadResultFailure<Value, Key> value,
           $Res Function(_$_LoadResultFailure<Value, Key>) then) =
       __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>;
-  $Res call({Exception? exception});
+  $Res call({Exception? e});
 }
 
 /// @nodoc
@@ -931,12 +931,12 @@ class __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>
 
   @override
   $Res call({
-    Object? exception = freezed,
+    Object? e = freezed,
   }) {
     return _then(_$_LoadResultFailure<Value, Key>(
-      exception: exception == freezed
-          ? _value.exception
-          : exception // ignore: cast_nullable_to_non_nullable
+      e: e == freezed
+          ? _value.e
+          : e // ignore: cast_nullable_to_non_nullable
               as Exception?,
     ));
   }
@@ -947,14 +947,14 @@ class __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>
 class _$_LoadResultFailure<Value, Key>
     with DiagnosticableTreeMixin
     implements _LoadResultFailure<Value, Key> {
-  const _$_LoadResultFailure({required this.exception});
+  const _$_LoadResultFailure({required this.e});
 
   @override
-  final Exception? exception;
+  final Exception? e;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadResult<$Value, $Key>.failure(exception: $exception)';
+    return 'LoadResult<$Value, $Key>.failure(e: $e)';
   }
 
   @override
@@ -962,7 +962,7 @@ class _$_LoadResultFailure<Value, Key>
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'LoadResult<$Value, $Key>.failure'))
-      ..add(DiagnosticsProperty('exception', exception));
+      ..add(DiagnosticsProperty('e', e));
   }
 
   @override
@@ -970,12 +970,12 @@ class _$_LoadResultFailure<Value, Key>
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_LoadResultFailure<Value, Key> &&
-            const DeepCollectionEquality().equals(other.exception, exception));
+            const DeepCollectionEquality().equals(other.e, e));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(exception));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(e));
 
   @JsonKey(ignore: true)
   @override
@@ -987,32 +987,32 @@ class _$_LoadResultFailure<Value, Key>
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(PageData<Value, Key> page) success,
-    required TResult Function(Exception? exception) failure,
+    required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
-    return failure(exception);
+    return failure(e);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
-    return failure?.call(exception);
+    return failure?.call(e);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
   }) {
     if (failure != null) {
-      return failure(exception);
+      return failure(e);
     }
     return orElse();
   }
@@ -1054,10 +1054,10 @@ class _$_LoadResultFailure<Value, Key>
 
 abstract class _LoadResultFailure<Value, Key>
     implements LoadResult<Value, Key> {
-  const factory _LoadResultFailure({required final Exception? exception}) =
+  const factory _LoadResultFailure({required final Exception? e}) =
       _$_LoadResultFailure<Value, Key>;
 
-  Exception? get exception;
+  Exception? get e;
   @JsonKey(ignore: true)
   _$$_LoadResultFailureCopyWith<Value, Key, _$_LoadResultFailure<Value, Key>>
       get copyWith => throw _privateConstructorUsedError;
@@ -1116,7 +1116,7 @@ class _$_LoadResultNone<Value, Key>
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(PageData<Value, Key> page) success,
-    required TResult Function(Exception? exception) failure,
+    required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
     return none();
@@ -1126,7 +1126,7 @@ class _$_LoadResultNone<Value, Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
     return none?.call();
@@ -1136,7 +1136,7 @@ class _$_LoadResultNone<Value, Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PageData<Value, Key> page)? success,
-    TResult Function(Exception? exception)? failure,
+    TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
   }) {
