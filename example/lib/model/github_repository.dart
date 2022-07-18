@@ -21,7 +21,9 @@ class GitHubRepository {
 
   final http.Client client;
 
-  Future<PageData<Repository, int>> repositories(int? since) async {
+  Future<PageData<Repository, int>> repositories({
+    int? since,
+  }) async {
     final response = await client.get(
       '$_endpoint/repositories${since != null ? '?since=$since' : ''}'.uri,
       headers: {

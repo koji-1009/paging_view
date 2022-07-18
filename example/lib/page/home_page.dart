@@ -1,4 +1,4 @@
-import 'package:example/model/data_source_top.dart';
+import 'package:example/model/data_source_public_repositories.dart';
 import 'package:example/model/entity/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paging/flutter_paging.dart';
@@ -9,14 +9,14 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final datasource = ref.watch(dataSourceTopProvider);
+    final dataSource = ref.watch(dataSourcePublicRepositoriesProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('GitHub public repositories'),
       ),
       body: Paging<Repository, int>(
-        dataSource: datasource,
+        dataSource: dataSource,
         appendLoadingWidget: const Center(
           child: CircularProgressIndicator.adaptive(),
         ),
