@@ -10,7 +10,8 @@ class Paging<Value, Key> extends StatelessWidget {
     super.key,
     required this.dataSource,
     required this.builder,
-    this.errorBuilder,
+    required this.errorBuilder,
+    required this.initialLoadingWidget,
     this.prependLoadingWidget,
     this.appendLoadingWidget,
     this.padding = EdgeInsets.zero,
@@ -30,7 +31,8 @@ class Paging<Value, Key> extends StatelessWidget {
   /// region Paging
   final DataSource<Value, Key> dataSource;
   final TypedWidgetBuilder<Value> builder;
-  final ExceptionWidgetBuilder? errorBuilder;
+  final ExceptionWidgetBuilder errorBuilder;
+  final Widget initialLoadingWidget;
   final Widget? prependLoadingWidget;
   final Widget? appendLoadingWidget;
 
@@ -66,6 +68,10 @@ class Paging<Value, Key> extends StatelessWidget {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 dataSource.update(LoadType.refresh);
               });
+
+              return initialLoadingWidget;
+            } else if (state == NotifierLoadingState.initLoading) {
+              return initialLoadingWidget;
             }
 
             final showPrependLoading = prependLoadingWidget != null &&
@@ -129,8 +135,7 @@ class Paging<Value, Key> extends StatelessWidget {
               ],
             );
           },
-          error: (e) =>
-              errorBuilder?.call(context, e) ?? const SizedBox.shrink(),
+          error: (e) => errorBuilder(context, e),
         ),
       );
 }

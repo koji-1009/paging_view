@@ -17,9 +17,6 @@ class HomePage extends ConsumerWidget {
       ),
       body: Paging<Repository, int>(
         dataSource: dataSource,
-        appendLoadingWidget: const Center(
-          child: CircularProgressIndicator.adaptive(),
-        ),
         builder: (context, repository, index) {
           return Card(
             child: ListTile(
@@ -28,6 +25,21 @@ class HomePage extends ConsumerWidget {
             ),
           );
         },
+        errorBuilder: (context, e) => Center(
+          child: Text('$e'),
+        ),
+        initialLoadingWidget: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        appendLoadingWidget: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: 16,
         ),
