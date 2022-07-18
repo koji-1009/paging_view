@@ -1,7 +1,5 @@
 library flutter_paging;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/data_source.dart';
+export 'src/entity.dart';
+export 'src/flutter_paging.dart';
