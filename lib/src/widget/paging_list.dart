@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_paging/src/data_source.dart';
 import 'package:flutter_paging/src/function.dart';
-import 'package:flutter_paging/src/sliver_paging.dart';
+import 'package:flutter_paging/src/widget/sliver_paging_list.dart';
 
-class Paging<Value, PageKey> extends StatelessWidget {
-  const Paging({
+class PagingList<Value, PageKey> extends StatelessWidget {
+  const PagingList({
     super.key,
     required this.dataSource,
     required this.builder,
@@ -78,7 +78,7 @@ class Paging<Value, PageKey> extends StatelessWidget {
         keyboardDismissBehavior: keyboardDismissBehavior,
         clipBehavior: clipBehavior,
         slivers: [
-          SliverPaging<Value, PageKey>(
+          SliverPagingList<Value, PageKey>(
             key: key,
             dataSource: dataSource,
             builder: builder,

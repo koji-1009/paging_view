@@ -5,9 +5,10 @@ import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverPaging<Value, PageKey> extends StatelessWidget {
-  const SliverPaging({
+class SliverPagingGrid<Value, PageKey> extends StatelessWidget {
+  const SliverPagingGrid({
     super.key,
+    required this.gridDelegate,
     required this.dataSource,
     required this.builder,
     required this.errorBuilder,
@@ -29,6 +30,7 @@ class SliverPaging<Value, PageKey> extends StatelessWidget {
 
   /// region customize
   final EdgeInsets padding;
+  final SliverGridDelegate gridDelegate;
 
   /// endregion
 
@@ -72,7 +74,7 @@ class SliverPaging<Value, PageKey> extends StatelessWidget {
                   ),
                 SliverPadding(
                   padding: padding,
-                  sliver: SliverList(
+                  sliver: SliverGrid(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         if (index == 0) {
@@ -92,6 +94,7 @@ class SliverPaging<Value, PageKey> extends StatelessWidget {
                       },
                       childCount: length,
                     ),
+                    gridDelegate: gridDelegate,
                   ),
                 ),
                 if (showAppendLoading)
