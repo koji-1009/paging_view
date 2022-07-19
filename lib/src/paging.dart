@@ -20,6 +20,8 @@ class Paging<Value, PageKey> extends StatelessWidget {
     this.primary,
     this.physics,
     this.scrollBehavior,
+    this.center,
+    this.anchor = 0.0,
     this.shrinkWrap = false,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -50,6 +52,8 @@ class Paging<Value, PageKey> extends StatelessWidget {
   final ScrollPhysics? physics;
   final ScrollBehavior? scrollBehavior;
   final bool shrinkWrap;
+  final Key? center;
+  final double anchor;
   final double? cacheExtent;
   final DragStartBehavior dragStartBehavior;
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
@@ -66,6 +70,8 @@ class Paging<Value, PageKey> extends StatelessWidget {
         primary: primary,
         physics: physics,
         scrollBehavior: scrollBehavior,
+        center: center,
+        anchor: anchor,
         shrinkWrap: shrinkWrap,
         cacheExtent: cacheExtent,
         dragStartBehavior: dragStartBehavior,
