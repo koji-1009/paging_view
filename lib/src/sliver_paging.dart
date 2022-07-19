@@ -1,12 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_paging/src/data_source.dart';
 import 'package:flutter_paging/src/function.dart';
 import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
-class Paging<Value, Key> extends StatelessWidget {
-  const Paging({
+class SliverPaging<Value, Key> extends StatelessWidget {
+  const SliverPaging({
     super.key,
     required this.dataSource,
     required this.builder,
@@ -15,17 +15,6 @@ class Paging<Value, Key> extends StatelessWidget {
     this.prependLoadingWidget,
     this.appendLoadingWidget,
     this.padding = EdgeInsets.zero,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.controller,
-    this.primary,
-    this.physics,
-    this.scrollBehavior,
-    this.shrinkWrap = false,
-    this.cacheExtent,
-    this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
-    this.clipBehavior = Clip.hardEdge,
   });
 
   /// region Paging
@@ -43,24 +32,10 @@ class Paging<Value, Key> extends StatelessWidget {
 
   /// endregion
 
-  /// region CustomScrollView
-  final Axis scrollDirection;
-  final bool reverse;
-  final ScrollController? controller;
-  final bool? primary;
-  final ScrollPhysics? physics;
-  final ScrollBehavior? scrollBehavior;
-  final bool shrinkWrap;
-  final double? cacheExtent;
-  final DragStartBehavior dragStartBehavior;
-  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
-  final Clip clipBehavior;
-
-  /// endregion
-
   @override
   Widget build(BuildContext context) =>
       StateNotifierBuilder<NotifierState<Value, Key>>(
+        key: key,
         stateNotifier: dataSource.notifier,
         builder: (context, value, child) => value.when(
           (state, pages) {
@@ -69,9 +44,13 @@ class Paging<Value, Key> extends StatelessWidget {
                 dataSource.update(LoadType.refresh);
               });
 
-              return initialLoadingWidget;
+              return SliverToBoxAdapter(
+                child: initialLoadingWidget,
+              );
             } else if (state == NotifierLoadingState.initLoading) {
-              return initialLoadingWidget;
+              return SliverToBoxAdapter(
+                child: initialLoadingWidget,
+              );
             }
 
             final showPrependLoading = prependLoadingWidget != null &&
@@ -81,19 +60,9 @@ class Paging<Value, Key> extends StatelessWidget {
 
             final items = value.items;
             final length = items.length;
-            return CustomScrollView(
-              scrollDirection: scrollDirection,
-              reverse: reverse,
-              controller: controller,
-              primary: primary,
-              physics: physics,
-              scrollBehavior: scrollBehavior,
-              shrinkWrap: shrinkWrap,
-              cacheExtent: cacheExtent,
-              dragStartBehavior: dragStartBehavior,
-              keyboardDismissBehavior: keyboardDismissBehavior,
-              clipBehavior: clipBehavior,
-              slivers: [
+            return MultiSliver(
+              key: key,
+              children: [
                 if (showPrependLoading)
                   SliverPadding(
                     padding: padding,
