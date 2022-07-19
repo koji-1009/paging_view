@@ -3,13 +3,13 @@ import 'package:flutter_paging/src/entity.dart';
 import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_paging/src/private/page_manager.dart';
 
-abstract class DataSource<Value, Key> {
+abstract class DataSource<Value, PageKey> {
   @protected
-  Future<LoadResult<Value, Key>> load(LoadParams<Key> params);
+  Future<LoadResult<Value, PageKey>> load(LoadParams<PageKey> params);
 
-  final PageManager<Value, Key> _manager = PageManager();
+  final PageManager<Value, PageKey> _manager = PageManager();
 
-  PageManager<Value, Key> get notifier => _manager;
+  PageManager<Value, PageKey> get notifier => _manager;
 
   Future<void> update(LoadType type) async {
     switch (type) {
@@ -49,7 +49,7 @@ abstract class DataSource<Value, Key> {
       return;
     }
 
-    final key = _manager.prependKey;
+    final key = _manager.prependPageKey;
     if (key == null) {
       /// no more prepend data
       return;
@@ -74,7 +74,7 @@ abstract class DataSource<Value, Key> {
       return;
     }
 
-    final key = _manager.appendKey;
+    final key = _manager.appendPageKey;
     if (key == null) {
       /// no more append data
       return;

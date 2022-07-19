@@ -2,14 +2,15 @@ import 'package:flutter_paging/src/entity.dart';
 import 'package:flutter_paging/src/private/entity.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-class PageManager<Value, Key> extends StateNotifier<NotifierState<Value, Key>> {
+class PageManager<Value, PageKey>
+    extends StateNotifier<NotifierState<Value, PageKey>> {
   PageManager() : super(NotifierState.init());
 
   bool get isLoading => state.isLoading;
 
-  Key? get prependKey => state.prependKey;
+  PageKey? get prependPageKey => state.prependPageKey;
 
-  Key? get appendKey => state.appendKey;
+  PageKey? get appendPageKey => state.appendPageKey;
 
   void clear() {
     state = NotifierState.init();
@@ -41,7 +42,7 @@ class PageManager<Value, Key> extends StateNotifier<NotifierState<Value, Key>> {
     );
   }
 
-  void prepend(PageData<Value, Key>? newPage) {
+  void prepend(PageData<Value, PageKey>? newPage) {
     if (newPage == null) {
       state = NotifierState(
         state: NotifierLoadingState.loaded,
@@ -56,7 +57,7 @@ class PageManager<Value, Key> extends StateNotifier<NotifierState<Value, Key>> {
     );
   }
 
-  void append(PageData<Value, Key>? newPage) {
+  void append(PageData<Value, PageKey>? newPage) {
     if (newPage == null) {
       state = NotifierState(
         state: NotifierLoadingState.loaded,

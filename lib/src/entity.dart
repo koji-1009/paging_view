@@ -4,31 +4,31 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'entity.freezed.dart';
 
 @freezed
-class LoadParams<Key> with _$LoadParams<Key> {
+class LoadParams<PageKey> with _$LoadParams<PageKey> {
   const factory LoadParams.refresh() = _LoadParamsRefresh;
 
   const factory LoadParams.prepend({
-    required Key key,
+    required PageKey key,
   }) = _LoadParamsPrepend;
 
   const factory LoadParams.append({
-    required Key key,
+    required PageKey key,
   }) = _LoadParamsAppend;
 }
 
 @freezed
-class PageData<Value, Key> with _$PageData<Value, Key> {
+class PageData<Value, PageKey> with _$PageData<Value, PageKey> {
   const factory PageData({
     @Default([]) List<Value> data,
-    Key? prependKey,
-    Key? appendKey,
+    PageKey? prependKey,
+    PageKey? appendKey,
   }) = _PageData;
 }
 
 @freezed
-class LoadResult<Value, Key> with _$LoadResult<Value, Key> {
+class LoadResult<Value, PageKey> with _$LoadResult<Value, PageKey> {
   const factory LoadResult.success({
-    required PageData<Value, Key> page,
+    required PageData<Value, PageKey> page,
   }) = _LoadResultSuccess;
 
   const factory LoadResult.failure({

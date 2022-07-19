@@ -14,10 +14,10 @@ enum NotifierLoadingState {
 }
 
 @freezed
-class NotifierState<Value, Key> with _$NotifierState<Value, Key> {
+class NotifierState<Value, PageKey> with _$NotifierState<Value, PageKey> {
   const factory NotifierState({
     required NotifierLoadingState state,
-    @Default([]) List<PageData<Value, Key>> data,
+    @Default([]) List<PageData<Value, PageKey>> data,
   }) = _NotifierState;
 
   const factory NotifierState.error({
@@ -29,7 +29,7 @@ class NotifierState<Value, Key> with _$NotifierState<Value, Key> {
       );
 }
 
-extension NotifierStateExt<Value, Key> on NotifierState<Value, Key> {
+extension NotifierStateExt<Value, PageKey> on NotifierState<Value, PageKey> {
   bool get isLoading => when(
         (state, _) =>
             state == NotifierLoadingState.initLoading ||
@@ -38,11 +38,11 @@ extension NotifierStateExt<Value, Key> on NotifierState<Value, Key> {
         error: (_) => false,
       );
 
-  Key? get prependKey => pages.firstOrNull?.prependKey;
+  PageKey? get prependPageKey => pages.firstOrNull?.prependKey;
 
-  Key? get appendKey => pages.lastOrNull?.appendKey;
+  PageKey? get appendPageKey => pages.lastOrNull?.appendKey;
 
-  List<PageData<Value, Key>> get pages => when(
+  List<PageData<Value, PageKey>> get pages => when(
         (state, data) => data,
         error: (_) => const [],
       );

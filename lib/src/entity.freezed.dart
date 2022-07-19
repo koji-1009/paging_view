@@ -15,113 +15,113 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$LoadParams<Key> {
+mixin _$LoadParams<PageKey> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() refresh,
-    required TResult Function(Key key) prepend,
-    required TResult Function(Key key) append,
+    required TResult Function(PageKey key) prepend,
+    required TResult Function(PageKey key) append,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadParamsRefresh<Key> value) refresh,
-    required TResult Function(_LoadParamsPrepend<Key> value) prepend,
-    required TResult Function(_LoadParamsAppend<Key> value) append,
+    required TResult Function(_LoadParamsRefresh<PageKey> value) refresh,
+    required TResult Function(_LoadParamsPrepend<PageKey> value) prepend,
+    required TResult Function(_LoadParamsAppend<PageKey> value) append,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LoadParamsCopyWith<Key, $Res> {
+abstract class $LoadParamsCopyWith<PageKey, $Res> {
   factory $LoadParamsCopyWith(
-          LoadParams<Key> value, $Res Function(LoadParams<Key>) then) =
-      _$LoadParamsCopyWithImpl<Key, $Res>;
+          LoadParams<PageKey> value, $Res Function(LoadParams<PageKey>) then) =
+      _$LoadParamsCopyWithImpl<PageKey, $Res>;
 }
 
 /// @nodoc
-class _$LoadParamsCopyWithImpl<Key, $Res>
-    implements $LoadParamsCopyWith<Key, $Res> {
+class _$LoadParamsCopyWithImpl<PageKey, $Res>
+    implements $LoadParamsCopyWith<PageKey, $Res> {
   _$LoadParamsCopyWithImpl(this._value, this._then);
 
-  final LoadParams<Key> _value;
+  final LoadParams<PageKey> _value;
   // ignore: unused_field
-  final $Res Function(LoadParams<Key>) _then;
+  final $Res Function(LoadParams<PageKey>) _then;
 }
 
 /// @nodoc
-abstract class _$$_LoadParamsRefreshCopyWith<Key, $Res> {
-  factory _$$_LoadParamsRefreshCopyWith(_$_LoadParamsRefresh<Key> value,
-          $Res Function(_$_LoadParamsRefresh<Key>) then) =
-      __$$_LoadParamsRefreshCopyWithImpl<Key, $Res>;
+abstract class _$$_LoadParamsRefreshCopyWith<PageKey, $Res> {
+  factory _$$_LoadParamsRefreshCopyWith(_$_LoadParamsRefresh<PageKey> value,
+          $Res Function(_$_LoadParamsRefresh<PageKey>) then) =
+      __$$_LoadParamsRefreshCopyWithImpl<PageKey, $Res>;
 }
 
 /// @nodoc
-class __$$_LoadParamsRefreshCopyWithImpl<Key, $Res>
-    extends _$LoadParamsCopyWithImpl<Key, $Res>
-    implements _$$_LoadParamsRefreshCopyWith<Key, $Res> {
-  __$$_LoadParamsRefreshCopyWithImpl(_$_LoadParamsRefresh<Key> _value,
-      $Res Function(_$_LoadParamsRefresh<Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadParamsRefresh<Key>));
+class __$$_LoadParamsRefreshCopyWithImpl<PageKey, $Res>
+    extends _$LoadParamsCopyWithImpl<PageKey, $Res>
+    implements _$$_LoadParamsRefreshCopyWith<PageKey, $Res> {
+  __$$_LoadParamsRefreshCopyWithImpl(_$_LoadParamsRefresh<PageKey> _value,
+      $Res Function(_$_LoadParamsRefresh<PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadParamsRefresh<PageKey>));
 
   @override
-  _$_LoadParamsRefresh<Key> get _value =>
-      super._value as _$_LoadParamsRefresh<Key>;
+  _$_LoadParamsRefresh<PageKey> get _value =>
+      super._value as _$_LoadParamsRefresh<PageKey>;
 }
 
 /// @nodoc
 
-class _$_LoadParamsRefresh<Key>
+class _$_LoadParamsRefresh<PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadParamsRefresh<Key> {
+    implements _LoadParamsRefresh<PageKey> {
   const _$_LoadParamsRefresh();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadParams<$Key>.refresh()';
+    return 'LoadParams<$PageKey>.refresh()';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('type', 'LoadParams<$Key>.refresh'));
+    properties.add(DiagnosticsProperty('type', 'LoadParams<$PageKey>.refresh'));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadParamsRefresh<Key>);
+            other is _$_LoadParamsRefresh<PageKey>);
   }
 
   @override
@@ -131,8 +131,8 @@ class _$_LoadParamsRefresh<Key>
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() refresh,
-    required TResult Function(Key key) prepend,
-    required TResult Function(Key key) append,
+    required TResult Function(PageKey key) prepend,
+    required TResult Function(PageKey key) append,
   }) {
     return refresh();
   }
@@ -141,8 +141,8 @@ class _$_LoadParamsRefresh<Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
   }) {
     return refresh?.call();
   }
@@ -151,8 +151,8 @@ class _$_LoadParamsRefresh<Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
     required TResult orElse(),
   }) {
     if (refresh != null) {
@@ -164,9 +164,9 @@ class _$_LoadParamsRefresh<Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadParamsRefresh<Key> value) refresh,
-    required TResult Function(_LoadParamsPrepend<Key> value) prepend,
-    required TResult Function(_LoadParamsAppend<Key> value) append,
+    required TResult Function(_LoadParamsRefresh<PageKey> value) refresh,
+    required TResult Function(_LoadParamsPrepend<PageKey> value) prepend,
+    required TResult Function(_LoadParamsAppend<PageKey> value) append,
   }) {
     return refresh(this);
   }
@@ -174,9 +174,9 @@ class _$_LoadParamsRefresh<Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
   }) {
     return refresh?.call(this);
   }
@@ -184,9 +184,9 @@ class _$_LoadParamsRefresh<Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
     required TResult orElse(),
   }) {
     if (refresh != null) {
@@ -196,63 +196,63 @@ class _$_LoadParamsRefresh<Key>
   }
 }
 
-abstract class _LoadParamsRefresh<Key> implements LoadParams<Key> {
-  const factory _LoadParamsRefresh() = _$_LoadParamsRefresh<Key>;
+abstract class _LoadParamsRefresh<PageKey> implements LoadParams<PageKey> {
+  const factory _LoadParamsRefresh() = _$_LoadParamsRefresh<PageKey>;
 }
 
 /// @nodoc
-abstract class _$$_LoadParamsPrependCopyWith<Key, $Res> {
-  factory _$$_LoadParamsPrependCopyWith(_$_LoadParamsPrepend<Key> value,
-          $Res Function(_$_LoadParamsPrepend<Key>) then) =
-      __$$_LoadParamsPrependCopyWithImpl<Key, $Res>;
-  $Res call({Key key});
+abstract class _$$_LoadParamsPrependCopyWith<PageKey, $Res> {
+  factory _$$_LoadParamsPrependCopyWith(_$_LoadParamsPrepend<PageKey> value,
+          $Res Function(_$_LoadParamsPrepend<PageKey>) then) =
+      __$$_LoadParamsPrependCopyWithImpl<PageKey, $Res>;
+  $Res call({PageKey key});
 }
 
 /// @nodoc
-class __$$_LoadParamsPrependCopyWithImpl<Key, $Res>
-    extends _$LoadParamsCopyWithImpl<Key, $Res>
-    implements _$$_LoadParamsPrependCopyWith<Key, $Res> {
-  __$$_LoadParamsPrependCopyWithImpl(_$_LoadParamsPrepend<Key> _value,
-      $Res Function(_$_LoadParamsPrepend<Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadParamsPrepend<Key>));
+class __$$_LoadParamsPrependCopyWithImpl<PageKey, $Res>
+    extends _$LoadParamsCopyWithImpl<PageKey, $Res>
+    implements _$$_LoadParamsPrependCopyWith<PageKey, $Res> {
+  __$$_LoadParamsPrependCopyWithImpl(_$_LoadParamsPrepend<PageKey> _value,
+      $Res Function(_$_LoadParamsPrepend<PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadParamsPrepend<PageKey>));
 
   @override
-  _$_LoadParamsPrepend<Key> get _value =>
-      super._value as _$_LoadParamsPrepend<Key>;
+  _$_LoadParamsPrepend<PageKey> get _value =>
+      super._value as _$_LoadParamsPrepend<PageKey>;
 
   @override
   $Res call({
     Object? key = freezed,
   }) {
-    return _then(_$_LoadParamsPrepend<Key>(
+    return _then(_$_LoadParamsPrepend<PageKey>(
       key: key == freezed
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
-              as Key,
+              as PageKey,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_LoadParamsPrepend<Key>
+class _$_LoadParamsPrepend<PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadParamsPrepend<Key> {
+    implements _LoadParamsPrepend<PageKey> {
   const _$_LoadParamsPrepend({required this.key});
 
   @override
-  final Key key;
+  final PageKey key;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadParams<$Key>.prepend(key: $key)';
+    return 'LoadParams<$PageKey>.prepend(key: $key)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'LoadParams<$Key>.prepend'))
+      ..add(DiagnosticsProperty('type', 'LoadParams<$PageKey>.prepend'))
       ..add(DiagnosticsProperty('key', key));
   }
 
@@ -260,7 +260,7 @@ class _$_LoadParamsPrepend<Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadParamsPrepend<Key> &&
+            other is _$_LoadParamsPrepend<PageKey> &&
             const DeepCollectionEquality().equals(other.key, key));
   }
 
@@ -270,16 +270,16 @@ class _$_LoadParamsPrepend<Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_LoadParamsPrependCopyWith<Key, _$_LoadParamsPrepend<Key>> get copyWith =>
-      __$$_LoadParamsPrependCopyWithImpl<Key, _$_LoadParamsPrepend<Key>>(
-          this, _$identity);
+  _$$_LoadParamsPrependCopyWith<PageKey, _$_LoadParamsPrepend<PageKey>>
+      get copyWith => __$$_LoadParamsPrependCopyWithImpl<PageKey,
+          _$_LoadParamsPrepend<PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() refresh,
-    required TResult Function(Key key) prepend,
-    required TResult Function(Key key) append,
+    required TResult Function(PageKey key) prepend,
+    required TResult Function(PageKey key) append,
   }) {
     return prepend(key);
   }
@@ -288,8 +288,8 @@ class _$_LoadParamsPrepend<Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
   }) {
     return prepend?.call(key);
   }
@@ -298,8 +298,8 @@ class _$_LoadParamsPrepend<Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
     required TResult orElse(),
   }) {
     if (prepend != null) {
@@ -311,9 +311,9 @@ class _$_LoadParamsPrepend<Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadParamsRefresh<Key> value) refresh,
-    required TResult Function(_LoadParamsPrepend<Key> value) prepend,
-    required TResult Function(_LoadParamsAppend<Key> value) append,
+    required TResult Function(_LoadParamsRefresh<PageKey> value) refresh,
+    required TResult Function(_LoadParamsPrepend<PageKey> value) prepend,
+    required TResult Function(_LoadParamsAppend<PageKey> value) append,
   }) {
     return prepend(this);
   }
@@ -321,9 +321,9 @@ class _$_LoadParamsPrepend<Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
   }) {
     return prepend?.call(this);
   }
@@ -331,9 +331,9 @@ class _$_LoadParamsPrepend<Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
     required TResult orElse(),
   }) {
     if (prepend != null) {
@@ -343,69 +343,69 @@ class _$_LoadParamsPrepend<Key>
   }
 }
 
-abstract class _LoadParamsPrepend<Key> implements LoadParams<Key> {
-  const factory _LoadParamsPrepend({required final Key key}) =
-      _$_LoadParamsPrepend<Key>;
+abstract class _LoadParamsPrepend<PageKey> implements LoadParams<PageKey> {
+  const factory _LoadParamsPrepend({required final PageKey key}) =
+      _$_LoadParamsPrepend<PageKey>;
 
-  Key get key;
+  PageKey get key;
   @JsonKey(ignore: true)
-  _$$_LoadParamsPrependCopyWith<Key, _$_LoadParamsPrepend<Key>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_LoadParamsPrependCopyWith<PageKey, _$_LoadParamsPrepend<PageKey>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$_LoadParamsAppendCopyWith<Key, $Res> {
-  factory _$$_LoadParamsAppendCopyWith(_$_LoadParamsAppend<Key> value,
-          $Res Function(_$_LoadParamsAppend<Key>) then) =
-      __$$_LoadParamsAppendCopyWithImpl<Key, $Res>;
-  $Res call({Key key});
+abstract class _$$_LoadParamsAppendCopyWith<PageKey, $Res> {
+  factory _$$_LoadParamsAppendCopyWith(_$_LoadParamsAppend<PageKey> value,
+          $Res Function(_$_LoadParamsAppend<PageKey>) then) =
+      __$$_LoadParamsAppendCopyWithImpl<PageKey, $Res>;
+  $Res call({PageKey key});
 }
 
 /// @nodoc
-class __$$_LoadParamsAppendCopyWithImpl<Key, $Res>
-    extends _$LoadParamsCopyWithImpl<Key, $Res>
-    implements _$$_LoadParamsAppendCopyWith<Key, $Res> {
-  __$$_LoadParamsAppendCopyWithImpl(_$_LoadParamsAppend<Key> _value,
-      $Res Function(_$_LoadParamsAppend<Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadParamsAppend<Key>));
+class __$$_LoadParamsAppendCopyWithImpl<PageKey, $Res>
+    extends _$LoadParamsCopyWithImpl<PageKey, $Res>
+    implements _$$_LoadParamsAppendCopyWith<PageKey, $Res> {
+  __$$_LoadParamsAppendCopyWithImpl(_$_LoadParamsAppend<PageKey> _value,
+      $Res Function(_$_LoadParamsAppend<PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadParamsAppend<PageKey>));
 
   @override
-  _$_LoadParamsAppend<Key> get _value =>
-      super._value as _$_LoadParamsAppend<Key>;
+  _$_LoadParamsAppend<PageKey> get _value =>
+      super._value as _$_LoadParamsAppend<PageKey>;
 
   @override
   $Res call({
     Object? key = freezed,
   }) {
-    return _then(_$_LoadParamsAppend<Key>(
+    return _then(_$_LoadParamsAppend<PageKey>(
       key: key == freezed
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
-              as Key,
+              as PageKey,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_LoadParamsAppend<Key>
+class _$_LoadParamsAppend<PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadParamsAppend<Key> {
+    implements _LoadParamsAppend<PageKey> {
   const _$_LoadParamsAppend({required this.key});
 
   @override
-  final Key key;
+  final PageKey key;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadParams<$Key>.append(key: $key)';
+    return 'LoadParams<$PageKey>.append(key: $key)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'LoadParams<$Key>.append'))
+      ..add(DiagnosticsProperty('type', 'LoadParams<$PageKey>.append'))
       ..add(DiagnosticsProperty('key', key));
   }
 
@@ -413,7 +413,7 @@ class _$_LoadParamsAppend<Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadParamsAppend<Key> &&
+            other is _$_LoadParamsAppend<PageKey> &&
             const DeepCollectionEquality().equals(other.key, key));
   }
 
@@ -423,16 +423,16 @@ class _$_LoadParamsAppend<Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_LoadParamsAppendCopyWith<Key, _$_LoadParamsAppend<Key>> get copyWith =>
-      __$$_LoadParamsAppendCopyWithImpl<Key, _$_LoadParamsAppend<Key>>(
-          this, _$identity);
+  _$$_LoadParamsAppendCopyWith<PageKey, _$_LoadParamsAppend<PageKey>>
+      get copyWith => __$$_LoadParamsAppendCopyWithImpl<PageKey,
+          _$_LoadParamsAppend<PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() refresh,
-    required TResult Function(Key key) prepend,
-    required TResult Function(Key key) append,
+    required TResult Function(PageKey key) prepend,
+    required TResult Function(PageKey key) append,
   }) {
     return append(key);
   }
@@ -441,8 +441,8 @@ class _$_LoadParamsAppend<Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
   }) {
     return append?.call(key);
   }
@@ -451,8 +451,8 @@ class _$_LoadParamsAppend<Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? refresh,
-    TResult Function(Key key)? prepend,
-    TResult Function(Key key)? append,
+    TResult Function(PageKey key)? prepend,
+    TResult Function(PageKey key)? append,
     required TResult orElse(),
   }) {
     if (append != null) {
@@ -464,9 +464,9 @@ class _$_LoadParamsAppend<Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadParamsRefresh<Key> value) refresh,
-    required TResult Function(_LoadParamsPrepend<Key> value) prepend,
-    required TResult Function(_LoadParamsAppend<Key> value) append,
+    required TResult Function(_LoadParamsRefresh<PageKey> value) refresh,
+    required TResult Function(_LoadParamsPrepend<PageKey> value) prepend,
+    required TResult Function(_LoadParamsAppend<PageKey> value) append,
   }) {
     return append(this);
   }
@@ -474,9 +474,9 @@ class _$_LoadParamsAppend<Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
   }) {
     return append?.call(this);
   }
@@ -484,9 +484,9 @@ class _$_LoadParamsAppend<Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadParamsRefresh<Key> value)? refresh,
-    TResult Function(_LoadParamsPrepend<Key> value)? prepend,
-    TResult Function(_LoadParamsAppend<Key> value)? append,
+    TResult Function(_LoadParamsRefresh<PageKey> value)? refresh,
+    TResult Function(_LoadParamsPrepend<PageKey> value)? prepend,
+    TResult Function(_LoadParamsAppend<PageKey> value)? append,
     required TResult orElse(),
   }) {
     if (append != null) {
@@ -496,43 +496,43 @@ class _$_LoadParamsAppend<Key>
   }
 }
 
-abstract class _LoadParamsAppend<Key> implements LoadParams<Key> {
-  const factory _LoadParamsAppend({required final Key key}) =
-      _$_LoadParamsAppend<Key>;
+abstract class _LoadParamsAppend<PageKey> implements LoadParams<PageKey> {
+  const factory _LoadParamsAppend({required final PageKey key}) =
+      _$_LoadParamsAppend<PageKey>;
 
-  Key get key;
+  PageKey get key;
   @JsonKey(ignore: true)
-  _$$_LoadParamsAppendCopyWith<Key, _$_LoadParamsAppend<Key>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_LoadParamsAppendCopyWith<PageKey, _$_LoadParamsAppend<PageKey>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$PageData<Value, Key> {
+mixin _$PageData<Value, PageKey> {
   List<Value> get data => throw _privateConstructorUsedError;
-  Key? get prependKey => throw _privateConstructorUsedError;
-  Key? get appendKey => throw _privateConstructorUsedError;
+  PageKey? get prependKey => throw _privateConstructorUsedError;
+  PageKey? get appendKey => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $PageDataCopyWith<Value, Key, PageData<Value, Key>> get copyWith =>
+  $PageDataCopyWith<Value, PageKey, PageData<Value, PageKey>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PageDataCopyWith<Value, Key, $Res> {
-  factory $PageDataCopyWith(PageData<Value, Key> value,
-          $Res Function(PageData<Value, Key>) then) =
-      _$PageDataCopyWithImpl<Value, Key, $Res>;
-  $Res call({List<Value> data, Key? prependKey, Key? appendKey});
+abstract class $PageDataCopyWith<Value, PageKey, $Res> {
+  factory $PageDataCopyWith(PageData<Value, PageKey> value,
+          $Res Function(PageData<Value, PageKey>) then) =
+      _$PageDataCopyWithImpl<Value, PageKey, $Res>;
+  $Res call({List<Value> data, PageKey? prependKey, PageKey? appendKey});
 }
 
 /// @nodoc
-class _$PageDataCopyWithImpl<Value, Key, $Res>
-    implements $PageDataCopyWith<Value, Key, $Res> {
+class _$PageDataCopyWithImpl<Value, PageKey, $Res>
+    implements $PageDataCopyWith<Value, PageKey, $Res> {
   _$PageDataCopyWithImpl(this._value, this._then);
 
-  final PageData<Value, Key> _value;
+  final PageData<Value, PageKey> _value;
   // ignore: unused_field
-  final $Res Function(PageData<Value, Key>) _then;
+  final $Res Function(PageData<Value, PageKey>) _then;
 
   @override
   $Res call({
@@ -548,35 +548,36 @@ class _$PageDataCopyWithImpl<Value, Key, $Res>
       prependKey: prependKey == freezed
           ? _value.prependKey
           : prependKey // ignore: cast_nullable_to_non_nullable
-              as Key?,
+              as PageKey?,
       appendKey: appendKey == freezed
           ? _value.appendKey
           : appendKey // ignore: cast_nullable_to_non_nullable
-              as Key?,
+              as PageKey?,
     ));
   }
 }
 
 /// @nodoc
-abstract class _$$_PageDataCopyWith<Value, Key, $Res>
-    implements $PageDataCopyWith<Value, Key, $Res> {
-  factory _$$_PageDataCopyWith(_$_PageData<Value, Key> value,
-          $Res Function(_$_PageData<Value, Key>) then) =
-      __$$_PageDataCopyWithImpl<Value, Key, $Res>;
+abstract class _$$_PageDataCopyWith<Value, PageKey, $Res>
+    implements $PageDataCopyWith<Value, PageKey, $Res> {
+  factory _$$_PageDataCopyWith(_$_PageData<Value, PageKey> value,
+          $Res Function(_$_PageData<Value, PageKey>) then) =
+      __$$_PageDataCopyWithImpl<Value, PageKey, $Res>;
   @override
-  $Res call({List<Value> data, Key? prependKey, Key? appendKey});
+  $Res call({List<Value> data, PageKey? prependKey, PageKey? appendKey});
 }
 
 /// @nodoc
-class __$$_PageDataCopyWithImpl<Value, Key, $Res>
-    extends _$PageDataCopyWithImpl<Value, Key, $Res>
-    implements _$$_PageDataCopyWith<Value, Key, $Res> {
-  __$$_PageDataCopyWithImpl(_$_PageData<Value, Key> _value,
-      $Res Function(_$_PageData<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_PageData<Value, Key>));
+class __$$_PageDataCopyWithImpl<Value, PageKey, $Res>
+    extends _$PageDataCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_PageDataCopyWith<Value, PageKey, $Res> {
+  __$$_PageDataCopyWithImpl(_$_PageData<Value, PageKey> _value,
+      $Res Function(_$_PageData<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_PageData<Value, PageKey>));
 
   @override
-  _$_PageData<Value, Key> get _value => super._value as _$_PageData<Value, Key>;
+  _$_PageData<Value, PageKey> get _value =>
+      super._value as _$_PageData<Value, PageKey>;
 
   @override
   $Res call({
@@ -584,7 +585,7 @@ class __$$_PageDataCopyWithImpl<Value, Key, $Res>
     Object? prependKey = freezed,
     Object? appendKey = freezed,
   }) {
-    return _then(_$_PageData<Value, Key>(
+    return _then(_$_PageData<Value, PageKey>(
       data: data == freezed
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
@@ -592,20 +593,20 @@ class __$$_PageDataCopyWithImpl<Value, Key, $Res>
       prependKey: prependKey == freezed
           ? _value.prependKey
           : prependKey // ignore: cast_nullable_to_non_nullable
-              as Key?,
+              as PageKey?,
       appendKey: appendKey == freezed
           ? _value.appendKey
           : appendKey // ignore: cast_nullable_to_non_nullable
-              as Key?,
+              as PageKey?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_PageData<Value, Key>
+class _$_PageData<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _PageData<Value, Key> {
+    implements _PageData<Value, PageKey> {
   const _$_PageData(
       {final List<Value> data = const [], this.prependKey, this.appendKey})
       : _data = data;
@@ -619,20 +620,20 @@ class _$_PageData<Value, Key>
   }
 
   @override
-  final Key? prependKey;
+  final PageKey? prependKey;
   @override
-  final Key? appendKey;
+  final PageKey? appendKey;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PageData<$Value, $Key>(data: $data, prependKey: $prependKey, appendKey: $appendKey)';
+    return 'PageData<$Value, $PageKey>(data: $data, prependKey: $prependKey, appendKey: $appendKey)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'PageData<$Value, $Key>'))
+      ..add(DiagnosticsProperty('type', 'PageData<$Value, $PageKey>'))
       ..add(DiagnosticsProperty('data', data))
       ..add(DiagnosticsProperty('prependKey', prependKey))
       ..add(DiagnosticsProperty('appendKey', appendKey));
@@ -642,7 +643,7 @@ class _$_PageData<Value, Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PageData<Value, Key> &&
+            other is _$_PageData<Value, PageKey> &&
             const DeepCollectionEquality().equals(other._data, _data) &&
             const DeepCollectionEquality()
                 .equals(other.prependKey, prependKey) &&
@@ -658,48 +659,48 @@ class _$_PageData<Value, Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_PageDataCopyWith<Value, Key, _$_PageData<Value, Key>> get copyWith =>
-      __$$_PageDataCopyWithImpl<Value, Key, _$_PageData<Value, Key>>(
-          this, _$identity);
+  _$$_PageDataCopyWith<Value, PageKey, _$_PageData<Value, PageKey>>
+      get copyWith => __$$_PageDataCopyWithImpl<Value, PageKey,
+          _$_PageData<Value, PageKey>>(this, _$identity);
 }
 
-abstract class _PageData<Value, Key> implements PageData<Value, Key> {
+abstract class _PageData<Value, PageKey> implements PageData<Value, PageKey> {
   const factory _PageData(
       {final List<Value> data,
-      final Key? prependKey,
-      final Key? appendKey}) = _$_PageData<Value, Key>;
+      final PageKey? prependKey,
+      final PageKey? appendKey}) = _$_PageData<Value, PageKey>;
 
   @override
   List<Value> get data;
   @override
-  Key? get prependKey;
+  PageKey? get prependKey;
   @override
-  Key? get appendKey;
+  PageKey? get appendKey;
   @override
   @JsonKey(ignore: true)
-  _$$_PageDataCopyWith<Value, Key, _$_PageData<Value, Key>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_PageDataCopyWith<Value, PageKey, _$_PageData<Value, PageKey>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$LoadResult<Value, Key> {
+mixin _$LoadResult<Value, PageKey> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageData<Value, Key> page) success,
+    required TResult Function(PageData<Value, PageKey> page) success,
     required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
@@ -707,82 +708,84 @@ mixin _$LoadResult<Value, Key> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadResultSuccess<Value, Key> value) success,
-    required TResult Function(_LoadResultFailure<Value, Key> value) failure,
-    required TResult Function(_LoadResultNone<Value, Key> value) none,
+    required TResult Function(_LoadResultSuccess<Value, PageKey> value) success,
+    required TResult Function(_LoadResultFailure<Value, PageKey> value) failure,
+    required TResult Function(_LoadResultNone<Value, PageKey> value) none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LoadResultCopyWith<Value, Key, $Res> {
-  factory $LoadResultCopyWith(LoadResult<Value, Key> value,
-          $Res Function(LoadResult<Value, Key>) then) =
-      _$LoadResultCopyWithImpl<Value, Key, $Res>;
+abstract class $LoadResultCopyWith<Value, PageKey, $Res> {
+  factory $LoadResultCopyWith(LoadResult<Value, PageKey> value,
+          $Res Function(LoadResult<Value, PageKey>) then) =
+      _$LoadResultCopyWithImpl<Value, PageKey, $Res>;
 }
 
 /// @nodoc
-class _$LoadResultCopyWithImpl<Value, Key, $Res>
-    implements $LoadResultCopyWith<Value, Key, $Res> {
+class _$LoadResultCopyWithImpl<Value, PageKey, $Res>
+    implements $LoadResultCopyWith<Value, PageKey, $Res> {
   _$LoadResultCopyWithImpl(this._value, this._then);
 
-  final LoadResult<Value, Key> _value;
+  final LoadResult<Value, PageKey> _value;
   // ignore: unused_field
-  final $Res Function(LoadResult<Value, Key>) _then;
+  final $Res Function(LoadResult<Value, PageKey>) _then;
 }
 
 /// @nodoc
-abstract class _$$_LoadResultSuccessCopyWith<Value, Key, $Res> {
-  factory _$$_LoadResultSuccessCopyWith(_$_LoadResultSuccess<Value, Key> value,
-          $Res Function(_$_LoadResultSuccess<Value, Key>) then) =
-      __$$_LoadResultSuccessCopyWithImpl<Value, Key, $Res>;
-  $Res call({PageData<Value, Key> page});
+abstract class _$$_LoadResultSuccessCopyWith<Value, PageKey, $Res> {
+  factory _$$_LoadResultSuccessCopyWith(
+          _$_LoadResultSuccess<Value, PageKey> value,
+          $Res Function(_$_LoadResultSuccess<Value, PageKey>) then) =
+      __$$_LoadResultSuccessCopyWithImpl<Value, PageKey, $Res>;
+  $Res call({PageData<Value, PageKey> page});
 
-  $PageDataCopyWith<Value, Key, $Res> get page;
+  $PageDataCopyWith<Value, PageKey, $Res> get page;
 }
 
 /// @nodoc
-class __$$_LoadResultSuccessCopyWithImpl<Value, Key, $Res>
-    extends _$LoadResultCopyWithImpl<Value, Key, $Res>
-    implements _$$_LoadResultSuccessCopyWith<Value, Key, $Res> {
-  __$$_LoadResultSuccessCopyWithImpl(_$_LoadResultSuccess<Value, Key> _value,
-      $Res Function(_$_LoadResultSuccess<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadResultSuccess<Value, Key>));
+class __$$_LoadResultSuccessCopyWithImpl<Value, PageKey, $Res>
+    extends _$LoadResultCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_LoadResultSuccessCopyWith<Value, PageKey, $Res> {
+  __$$_LoadResultSuccessCopyWithImpl(
+      _$_LoadResultSuccess<Value, PageKey> _value,
+      $Res Function(_$_LoadResultSuccess<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadResultSuccess<Value, PageKey>));
 
   @override
-  _$_LoadResultSuccess<Value, Key> get _value =>
-      super._value as _$_LoadResultSuccess<Value, Key>;
+  _$_LoadResultSuccess<Value, PageKey> get _value =>
+      super._value as _$_LoadResultSuccess<Value, PageKey>;
 
   @override
   $Res call({
     Object? page = freezed,
   }) {
-    return _then(_$_LoadResultSuccess<Value, Key>(
+    return _then(_$_LoadResultSuccess<Value, PageKey>(
       page: page == freezed
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
-              as PageData<Value, Key>,
+              as PageData<Value, PageKey>,
     ));
   }
 
   @override
-  $PageDataCopyWith<Value, Key, $Res> get page {
-    return $PageDataCopyWith<Value, Key, $Res>(_value.page, (value) {
+  $PageDataCopyWith<Value, PageKey, $Res> get page {
+    return $PageDataCopyWith<Value, PageKey, $Res>(_value.page, (value) {
       return _then(_value.copyWith(page: value));
     });
   }
@@ -790,24 +793,24 @@ class __$$_LoadResultSuccessCopyWithImpl<Value, Key, $Res>
 
 /// @nodoc
 
-class _$_LoadResultSuccess<Value, Key>
+class _$_LoadResultSuccess<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadResultSuccess<Value, Key> {
+    implements _LoadResultSuccess<Value, PageKey> {
   const _$_LoadResultSuccess({required this.page});
 
   @override
-  final PageData<Value, Key> page;
+  final PageData<Value, PageKey> page;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadResult<$Value, $Key>.success(page: $page)';
+    return 'LoadResult<$Value, $PageKey>.success(page: $page)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'LoadResult<$Value, $Key>.success'))
+      ..add(DiagnosticsProperty('type', 'LoadResult<$Value, $PageKey>.success'))
       ..add(DiagnosticsProperty('page', page));
   }
 
@@ -815,7 +818,7 @@ class _$_LoadResultSuccess<Value, Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadResultSuccess<Value, Key> &&
+            other is _$_LoadResultSuccess<Value, PageKey> &&
             const DeepCollectionEquality().equals(other.page, page));
   }
 
@@ -825,14 +828,15 @@ class _$_LoadResultSuccess<Value, Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_LoadResultSuccessCopyWith<Value, Key, _$_LoadResultSuccess<Value, Key>>
-      get copyWith => __$$_LoadResultSuccessCopyWithImpl<Value, Key,
-          _$_LoadResultSuccess<Value, Key>>(this, _$identity);
+  _$$_LoadResultSuccessCopyWith<Value, PageKey,
+          _$_LoadResultSuccess<Value, PageKey>>
+      get copyWith => __$$_LoadResultSuccessCopyWithImpl<Value, PageKey,
+          _$_LoadResultSuccess<Value, PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageData<Value, Key> page) success,
+    required TResult Function(PageData<Value, PageKey> page) success,
     required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
@@ -842,7 +846,7 @@ class _$_LoadResultSuccess<Value, Key>
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
@@ -852,7 +856,7 @@ class _$_LoadResultSuccess<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
@@ -866,9 +870,9 @@ class _$_LoadResultSuccess<Value, Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadResultSuccess<Value, Key> value) success,
-    required TResult Function(_LoadResultFailure<Value, Key> value) failure,
-    required TResult Function(_LoadResultNone<Value, Key> value) none,
+    required TResult Function(_LoadResultSuccess<Value, PageKey> value) success,
+    required TResult Function(_LoadResultFailure<Value, PageKey> value) failure,
+    required TResult Function(_LoadResultNone<Value, PageKey> value) none,
   }) {
     return success(this);
   }
@@ -876,9 +880,9 @@ class _$_LoadResultSuccess<Value, Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
   }) {
     return success?.call(this);
   }
@@ -886,9 +890,9 @@ class _$_LoadResultSuccess<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -898,42 +902,46 @@ class _$_LoadResultSuccess<Value, Key>
   }
 }
 
-abstract class _LoadResultSuccess<Value, Key>
-    implements LoadResult<Value, Key> {
-  const factory _LoadResultSuccess({required final PageData<Value, Key> page}) =
-      _$_LoadResultSuccess<Value, Key>;
+abstract class _LoadResultSuccess<Value, PageKey>
+    implements LoadResult<Value, PageKey> {
+  const factory _LoadResultSuccess(
+          {required final PageData<Value, PageKey> page}) =
+      _$_LoadResultSuccess<Value, PageKey>;
 
-  PageData<Value, Key> get page;
+  PageData<Value, PageKey> get page;
   @JsonKey(ignore: true)
-  _$$_LoadResultSuccessCopyWith<Value, Key, _$_LoadResultSuccess<Value, Key>>
+  _$$_LoadResultSuccessCopyWith<Value, PageKey,
+          _$_LoadResultSuccess<Value, PageKey>>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$_LoadResultFailureCopyWith<Value, Key, $Res> {
-  factory _$$_LoadResultFailureCopyWith(_$_LoadResultFailure<Value, Key> value,
-          $Res Function(_$_LoadResultFailure<Value, Key>) then) =
-      __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>;
+abstract class _$$_LoadResultFailureCopyWith<Value, PageKey, $Res> {
+  factory _$$_LoadResultFailureCopyWith(
+          _$_LoadResultFailure<Value, PageKey> value,
+          $Res Function(_$_LoadResultFailure<Value, PageKey>) then) =
+      __$$_LoadResultFailureCopyWithImpl<Value, PageKey, $Res>;
   $Res call({Exception? e});
 }
 
 /// @nodoc
-class __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>
-    extends _$LoadResultCopyWithImpl<Value, Key, $Res>
-    implements _$$_LoadResultFailureCopyWith<Value, Key, $Res> {
-  __$$_LoadResultFailureCopyWithImpl(_$_LoadResultFailure<Value, Key> _value,
-      $Res Function(_$_LoadResultFailure<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadResultFailure<Value, Key>));
+class __$$_LoadResultFailureCopyWithImpl<Value, PageKey, $Res>
+    extends _$LoadResultCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_LoadResultFailureCopyWith<Value, PageKey, $Res> {
+  __$$_LoadResultFailureCopyWithImpl(
+      _$_LoadResultFailure<Value, PageKey> _value,
+      $Res Function(_$_LoadResultFailure<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadResultFailure<Value, PageKey>));
 
   @override
-  _$_LoadResultFailure<Value, Key> get _value =>
-      super._value as _$_LoadResultFailure<Value, Key>;
+  _$_LoadResultFailure<Value, PageKey> get _value =>
+      super._value as _$_LoadResultFailure<Value, PageKey>;
 
   @override
   $Res call({
     Object? e = freezed,
   }) {
-    return _then(_$_LoadResultFailure<Value, Key>(
+    return _then(_$_LoadResultFailure<Value, PageKey>(
       e: e == freezed
           ? _value.e
           : e // ignore: cast_nullable_to_non_nullable
@@ -944,9 +952,9 @@ class __$$_LoadResultFailureCopyWithImpl<Value, Key, $Res>
 
 /// @nodoc
 
-class _$_LoadResultFailure<Value, Key>
+class _$_LoadResultFailure<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadResultFailure<Value, Key> {
+    implements _LoadResultFailure<Value, PageKey> {
   const _$_LoadResultFailure({required this.e});
 
   @override
@@ -954,14 +962,14 @@ class _$_LoadResultFailure<Value, Key>
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadResult<$Value, $Key>.failure(e: $e)';
+    return 'LoadResult<$Value, $PageKey>.failure(e: $e)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'LoadResult<$Value, $Key>.failure'))
+      ..add(DiagnosticsProperty('type', 'LoadResult<$Value, $PageKey>.failure'))
       ..add(DiagnosticsProperty('e', e));
   }
 
@@ -969,7 +977,7 @@ class _$_LoadResultFailure<Value, Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadResultFailure<Value, Key> &&
+            other is _$_LoadResultFailure<Value, PageKey> &&
             const DeepCollectionEquality().equals(other.e, e));
   }
 
@@ -979,14 +987,15 @@ class _$_LoadResultFailure<Value, Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_LoadResultFailureCopyWith<Value, Key, _$_LoadResultFailure<Value, Key>>
-      get copyWith => __$$_LoadResultFailureCopyWithImpl<Value, Key,
-          _$_LoadResultFailure<Value, Key>>(this, _$identity);
+  _$$_LoadResultFailureCopyWith<Value, PageKey,
+          _$_LoadResultFailure<Value, PageKey>>
+      get copyWith => __$$_LoadResultFailureCopyWithImpl<Value, PageKey,
+          _$_LoadResultFailure<Value, PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageData<Value, Key> page) success,
+    required TResult Function(PageData<Value, PageKey> page) success,
     required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
@@ -996,7 +1005,7 @@ class _$_LoadResultFailure<Value, Key>
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
@@ -1006,7 +1015,7 @@ class _$_LoadResultFailure<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
@@ -1020,9 +1029,9 @@ class _$_LoadResultFailure<Value, Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadResultSuccess<Value, Key> value) success,
-    required TResult Function(_LoadResultFailure<Value, Key> value) failure,
-    required TResult Function(_LoadResultNone<Value, Key> value) none,
+    required TResult Function(_LoadResultSuccess<Value, PageKey> value) success,
+    required TResult Function(_LoadResultFailure<Value, PageKey> value) failure,
+    required TResult Function(_LoadResultNone<Value, PageKey> value) none,
   }) {
     return failure(this);
   }
@@ -1030,9 +1039,9 @@ class _$_LoadResultFailure<Value, Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
   }) {
     return failure?.call(this);
   }
@@ -1040,9 +1049,9 @@ class _$_LoadResultFailure<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
     required TResult orElse(),
   }) {
     if (failure != null) {
@@ -1052,61 +1061,62 @@ class _$_LoadResultFailure<Value, Key>
   }
 }
 
-abstract class _LoadResultFailure<Value, Key>
-    implements LoadResult<Value, Key> {
+abstract class _LoadResultFailure<Value, PageKey>
+    implements LoadResult<Value, PageKey> {
   const factory _LoadResultFailure({required final Exception? e}) =
-      _$_LoadResultFailure<Value, Key>;
+      _$_LoadResultFailure<Value, PageKey>;
 
   Exception? get e;
   @JsonKey(ignore: true)
-  _$$_LoadResultFailureCopyWith<Value, Key, _$_LoadResultFailure<Value, Key>>
+  _$$_LoadResultFailureCopyWith<Value, PageKey,
+          _$_LoadResultFailure<Value, PageKey>>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$_LoadResultNoneCopyWith<Value, Key, $Res> {
-  factory _$$_LoadResultNoneCopyWith(_$_LoadResultNone<Value, Key> value,
-          $Res Function(_$_LoadResultNone<Value, Key>) then) =
-      __$$_LoadResultNoneCopyWithImpl<Value, Key, $Res>;
+abstract class _$$_LoadResultNoneCopyWith<Value, PageKey, $Res> {
+  factory _$$_LoadResultNoneCopyWith(_$_LoadResultNone<Value, PageKey> value,
+          $Res Function(_$_LoadResultNone<Value, PageKey>) then) =
+      __$$_LoadResultNoneCopyWithImpl<Value, PageKey, $Res>;
 }
 
 /// @nodoc
-class __$$_LoadResultNoneCopyWithImpl<Value, Key, $Res>
-    extends _$LoadResultCopyWithImpl<Value, Key, $Res>
-    implements _$$_LoadResultNoneCopyWith<Value, Key, $Res> {
-  __$$_LoadResultNoneCopyWithImpl(_$_LoadResultNone<Value, Key> _value,
-      $Res Function(_$_LoadResultNone<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_LoadResultNone<Value, Key>));
+class __$$_LoadResultNoneCopyWithImpl<Value, PageKey, $Res>
+    extends _$LoadResultCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_LoadResultNoneCopyWith<Value, PageKey, $Res> {
+  __$$_LoadResultNoneCopyWithImpl(_$_LoadResultNone<Value, PageKey> _value,
+      $Res Function(_$_LoadResultNone<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_LoadResultNone<Value, PageKey>));
 
   @override
-  _$_LoadResultNone<Value, Key> get _value =>
-      super._value as _$_LoadResultNone<Value, Key>;
+  _$_LoadResultNone<Value, PageKey> get _value =>
+      super._value as _$_LoadResultNone<Value, PageKey>;
 }
 
 /// @nodoc
 
-class _$_LoadResultNone<Value, Key>
+class _$_LoadResultNone<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _LoadResultNone<Value, Key> {
+    implements _LoadResultNone<Value, PageKey> {
   const _$_LoadResultNone();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LoadResult<$Value, $Key>.none()';
+    return 'LoadResult<$Value, $PageKey>.none()';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-        .add(DiagnosticsProperty('type', 'LoadResult<$Value, $Key>.none'));
+        .add(DiagnosticsProperty('type', 'LoadResult<$Value, $PageKey>.none'));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LoadResultNone<Value, Key>);
+            other is _$_LoadResultNone<Value, PageKey>);
   }
 
   @override
@@ -1115,7 +1125,7 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageData<Value, Key> page) success,
+    required TResult Function(PageData<Value, PageKey> page) success,
     required TResult Function(Exception? e) failure,
     required TResult Function() none,
   }) {
@@ -1125,7 +1135,7 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
   }) {
@@ -1135,7 +1145,7 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageData<Value, Key> page)? success,
+    TResult Function(PageData<Value, PageKey> page)? success,
     TResult Function(Exception? e)? failure,
     TResult Function()? none,
     required TResult orElse(),
@@ -1149,9 +1159,9 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadResultSuccess<Value, Key> value) success,
-    required TResult Function(_LoadResultFailure<Value, Key> value) failure,
-    required TResult Function(_LoadResultNone<Value, Key> value) none,
+    required TResult Function(_LoadResultSuccess<Value, PageKey> value) success,
+    required TResult Function(_LoadResultFailure<Value, PageKey> value) failure,
+    required TResult Function(_LoadResultNone<Value, PageKey> value) none,
   }) {
     return none(this);
   }
@@ -1159,9 +1169,9 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
   }) {
     return none?.call(this);
   }
@@ -1169,9 +1179,9 @@ class _$_LoadResultNone<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadResultSuccess<Value, Key> value)? success,
-    TResult Function(_LoadResultFailure<Value, Key> value)? failure,
-    TResult Function(_LoadResultNone<Value, Key> value)? none,
+    TResult Function(_LoadResultSuccess<Value, PageKey> value)? success,
+    TResult Function(_LoadResultFailure<Value, PageKey> value)? failure,
+    TResult Function(_LoadResultNone<Value, PageKey> value)? none,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -1181,6 +1191,7 @@ class _$_LoadResultNone<Value, Key>
   }
 }
 
-abstract class _LoadResultNone<Value, Key> implements LoadResult<Value, Key> {
-  const factory _LoadResultNone() = _$_LoadResultNone<Value, Key>;
+abstract class _LoadResultNone<Value, PageKey>
+    implements LoadResult<Value, PageKey> {
+  const factory _LoadResultNone() = _$_LoadResultNone<Value, PageKey>;
 }

@@ -15,11 +15,11 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$NotifierState<Value, Key> {
+mixin _$NotifierState<Value, PageKey> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)
         $default, {
     required TResult Function(Exception? e) error,
   }) =>
@@ -27,7 +27,7 @@ mixin _$NotifierState<Value, Key> {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
   }) =>
@@ -35,7 +35,7 @@ mixin _$NotifierState<Value, Key> {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
     required TResult orElse(),
@@ -43,68 +43,68 @@ mixin _$NotifierState<Value, Key> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value) $default, {
-    required TResult Function(_NotifierStateError<Value, Key> value) error,
+    TResult Function(_NotifierState<Value, PageKey> value) $default, {
+    required TResult Function(_NotifierStateError<Value, PageKey> value) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NotifierStateCopyWith<Value, Key, $Res> {
-  factory $NotifierStateCopyWith(NotifierState<Value, Key> value,
-          $Res Function(NotifierState<Value, Key>) then) =
-      _$NotifierStateCopyWithImpl<Value, Key, $Res>;
+abstract class $NotifierStateCopyWith<Value, PageKey, $Res> {
+  factory $NotifierStateCopyWith(NotifierState<Value, PageKey> value,
+          $Res Function(NotifierState<Value, PageKey>) then) =
+      _$NotifierStateCopyWithImpl<Value, PageKey, $Res>;
 }
 
 /// @nodoc
-class _$NotifierStateCopyWithImpl<Value, Key, $Res>
-    implements $NotifierStateCopyWith<Value, Key, $Res> {
+class _$NotifierStateCopyWithImpl<Value, PageKey, $Res>
+    implements $NotifierStateCopyWith<Value, PageKey, $Res> {
   _$NotifierStateCopyWithImpl(this._value, this._then);
 
-  final NotifierState<Value, Key> _value;
+  final NotifierState<Value, PageKey> _value;
   // ignore: unused_field
-  final $Res Function(NotifierState<Value, Key>) _then;
+  final $Res Function(NotifierState<Value, PageKey>) _then;
 }
 
 /// @nodoc
-abstract class _$$_NotifierStateCopyWith<Value, Key, $Res> {
-  factory _$$_NotifierStateCopyWith(_$_NotifierState<Value, Key> value,
-          $Res Function(_$_NotifierState<Value, Key>) then) =
-      __$$_NotifierStateCopyWithImpl<Value, Key, $Res>;
-  $Res call({NotifierLoadingState state, List<PageData<Value, Key>> data});
+abstract class _$$_NotifierStateCopyWith<Value, PageKey, $Res> {
+  factory _$$_NotifierStateCopyWith(_$_NotifierState<Value, PageKey> value,
+          $Res Function(_$_NotifierState<Value, PageKey>) then) =
+      __$$_NotifierStateCopyWithImpl<Value, PageKey, $Res>;
+  $Res call({NotifierLoadingState state, List<PageData<Value, PageKey>> data});
 }
 
 /// @nodoc
-class __$$_NotifierStateCopyWithImpl<Value, Key, $Res>
-    extends _$NotifierStateCopyWithImpl<Value, Key, $Res>
-    implements _$$_NotifierStateCopyWith<Value, Key, $Res> {
-  __$$_NotifierStateCopyWithImpl(_$_NotifierState<Value, Key> _value,
-      $Res Function(_$_NotifierState<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_NotifierState<Value, Key>));
+class __$$_NotifierStateCopyWithImpl<Value, PageKey, $Res>
+    extends _$NotifierStateCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_NotifierStateCopyWith<Value, PageKey, $Res> {
+  __$$_NotifierStateCopyWithImpl(_$_NotifierState<Value, PageKey> _value,
+      $Res Function(_$_NotifierState<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_NotifierState<Value, PageKey>));
 
   @override
-  _$_NotifierState<Value, Key> get _value =>
-      super._value as _$_NotifierState<Value, Key>;
+  _$_NotifierState<Value, PageKey> get _value =>
+      super._value as _$_NotifierState<Value, PageKey>;
 
   @override
   $Res call({
     Object? state = freezed,
     Object? data = freezed,
   }) {
-    return _then(_$_NotifierState<Value, Key>(
+    return _then(_$_NotifierState<Value, PageKey>(
       state: state == freezed
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
@@ -112,40 +112,41 @@ class __$$_NotifierStateCopyWithImpl<Value, Key, $Res>
       data: data == freezed
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
-              as List<PageData<Value, Key>>,
+              as List<PageData<Value, PageKey>>,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_NotifierState<Value, Key>
+class _$_NotifierState<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _NotifierState<Value, Key> {
+    implements _NotifierState<Value, PageKey> {
   const _$_NotifierState(
-      {required this.state, final List<PageData<Value, Key>> data = const []})
+      {required this.state,
+      final List<PageData<Value, PageKey>> data = const []})
       : _data = data;
 
   @override
   final NotifierLoadingState state;
-  final List<PageData<Value, Key>> _data;
+  final List<PageData<Value, PageKey>> _data;
   @override
   @JsonKey()
-  List<PageData<Value, Key>> get data {
+  List<PageData<Value, PageKey>> get data {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
   }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'NotifierState<$Value, $Key>(state: $state, data: $data)';
+    return 'NotifierState<$Value, $PageKey>(state: $state, data: $data)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'NotifierState<$Value, $Key>'))
+      ..add(DiagnosticsProperty('type', 'NotifierState<$Value, $PageKey>'))
       ..add(DiagnosticsProperty('state', state))
       ..add(DiagnosticsProperty('data', data));
   }
@@ -154,7 +155,7 @@ class _$_NotifierState<Value, Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NotifierState<Value, Key> &&
+            other is _$_NotifierState<Value, PageKey> &&
             const DeepCollectionEquality().equals(other.state, state) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
@@ -167,15 +168,15 @@ class _$_NotifierState<Value, Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_NotifierStateCopyWith<Value, Key, _$_NotifierState<Value, Key>>
-      get copyWith => __$$_NotifierStateCopyWithImpl<Value, Key,
-          _$_NotifierState<Value, Key>>(this, _$identity);
+  _$$_NotifierStateCopyWith<Value, PageKey, _$_NotifierState<Value, PageKey>>
+      get copyWith => __$$_NotifierStateCopyWithImpl<Value, PageKey,
+          _$_NotifierState<Value, PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)
         $default, {
     required TResult Function(Exception? e) error,
   }) {
@@ -186,7 +187,7 @@ class _$_NotifierState<Value, Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
   }) {
@@ -197,7 +198,7 @@ class _$_NotifierState<Value, Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
     required TResult orElse(),
@@ -211,8 +212,8 @@ class _$_NotifierState<Value, Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value) $default, {
-    required TResult Function(_NotifierStateError<Value, Key> value) error,
+    TResult Function(_NotifierState<Value, PageKey> value) $default, {
+    required TResult Function(_NotifierStateError<Value, PageKey> value) error,
   }) {
     return $default(this);
   }
@@ -220,8 +221,8 @@ class _$_NotifierState<Value, Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
   }) {
     return $default?.call(this);
   }
@@ -229,8 +230,8 @@ class _$_NotifierState<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -240,44 +241,47 @@ class _$_NotifierState<Value, Key>
   }
 }
 
-abstract class _NotifierState<Value, Key> implements NotifierState<Value, Key> {
+abstract class _NotifierState<Value, PageKey>
+    implements NotifierState<Value, PageKey> {
   const factory _NotifierState(
-      {required final NotifierLoadingState state,
-      final List<PageData<Value, Key>> data}) = _$_NotifierState<Value, Key>;
+          {required final NotifierLoadingState state,
+          final List<PageData<Value, PageKey>> data}) =
+      _$_NotifierState<Value, PageKey>;
 
   NotifierLoadingState get state;
-  List<PageData<Value, Key>> get data;
+  List<PageData<Value, PageKey>> get data;
   @JsonKey(ignore: true)
-  _$$_NotifierStateCopyWith<Value, Key, _$_NotifierState<Value, Key>>
+  _$$_NotifierStateCopyWith<Value, PageKey, _$_NotifierState<Value, PageKey>>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$_NotifierStateErrorCopyWith<Value, Key, $Res> {
+abstract class _$$_NotifierStateErrorCopyWith<Value, PageKey, $Res> {
   factory _$$_NotifierStateErrorCopyWith(
-          _$_NotifierStateError<Value, Key> value,
-          $Res Function(_$_NotifierStateError<Value, Key>) then) =
-      __$$_NotifierStateErrorCopyWithImpl<Value, Key, $Res>;
+          _$_NotifierStateError<Value, PageKey> value,
+          $Res Function(_$_NotifierStateError<Value, PageKey>) then) =
+      __$$_NotifierStateErrorCopyWithImpl<Value, PageKey, $Res>;
   $Res call({Exception? e});
 }
 
 /// @nodoc
-class __$$_NotifierStateErrorCopyWithImpl<Value, Key, $Res>
-    extends _$NotifierStateCopyWithImpl<Value, Key, $Res>
-    implements _$$_NotifierStateErrorCopyWith<Value, Key, $Res> {
-  __$$_NotifierStateErrorCopyWithImpl(_$_NotifierStateError<Value, Key> _value,
-      $Res Function(_$_NotifierStateError<Value, Key>) _then)
-      : super(_value, (v) => _then(v as _$_NotifierStateError<Value, Key>));
+class __$$_NotifierStateErrorCopyWithImpl<Value, PageKey, $Res>
+    extends _$NotifierStateCopyWithImpl<Value, PageKey, $Res>
+    implements _$$_NotifierStateErrorCopyWith<Value, PageKey, $Res> {
+  __$$_NotifierStateErrorCopyWithImpl(
+      _$_NotifierStateError<Value, PageKey> _value,
+      $Res Function(_$_NotifierStateError<Value, PageKey>) _then)
+      : super(_value, (v) => _then(v as _$_NotifierStateError<Value, PageKey>));
 
   @override
-  _$_NotifierStateError<Value, Key> get _value =>
-      super._value as _$_NotifierStateError<Value, Key>;
+  _$_NotifierStateError<Value, PageKey> get _value =>
+      super._value as _$_NotifierStateError<Value, PageKey>;
 
   @override
   $Res call({
     Object? e = freezed,
   }) {
-    return _then(_$_NotifierStateError<Value, Key>(
+    return _then(_$_NotifierStateError<Value, PageKey>(
       e: e == freezed
           ? _value.e
           : e // ignore: cast_nullable_to_non_nullable
@@ -288,9 +292,9 @@ class __$$_NotifierStateErrorCopyWithImpl<Value, Key, $Res>
 
 /// @nodoc
 
-class _$_NotifierStateError<Value, Key>
+class _$_NotifierStateError<Value, PageKey>
     with DiagnosticableTreeMixin
-    implements _NotifierStateError<Value, Key> {
+    implements _NotifierStateError<Value, PageKey> {
   const _$_NotifierStateError({required this.e});
 
   @override
@@ -298,14 +302,15 @@ class _$_NotifierStateError<Value, Key>
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'NotifierState<$Value, $Key>.error(e: $e)';
+    return 'NotifierState<$Value, $PageKey>.error(e: $e)';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('type', 'NotifierState<$Value, $Key>.error'))
+      ..add(
+          DiagnosticsProperty('type', 'NotifierState<$Value, $PageKey>.error'))
       ..add(DiagnosticsProperty('e', e));
   }
 
@@ -313,7 +318,7 @@ class _$_NotifierStateError<Value, Key>
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NotifierStateError<Value, Key> &&
+            other is _$_NotifierStateError<Value, PageKey> &&
             const DeepCollectionEquality().equals(other.e, e));
   }
 
@@ -323,15 +328,16 @@ class _$_NotifierStateError<Value, Key>
 
   @JsonKey(ignore: true)
   @override
-  _$$_NotifierStateErrorCopyWith<Value, Key, _$_NotifierStateError<Value, Key>>
-      get copyWith => __$$_NotifierStateErrorCopyWithImpl<Value, Key,
-          _$_NotifierStateError<Value, Key>>(this, _$identity);
+  _$$_NotifierStateErrorCopyWith<Value, PageKey,
+          _$_NotifierStateError<Value, PageKey>>
+      get copyWith => __$$_NotifierStateErrorCopyWithImpl<Value, PageKey,
+          _$_NotifierStateError<Value, PageKey>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)
         $default, {
     required TResult Function(Exception? e) error,
   }) {
@@ -342,7 +348,7 @@ class _$_NotifierStateError<Value, Key>
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
   }) {
@@ -353,7 +359,7 @@ class _$_NotifierStateError<Value, Key>
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            NotifierLoadingState state, List<PageData<Value, Key>> data)?
+            NotifierLoadingState state, List<PageData<Value, PageKey>> data)?
         $default, {
     TResult Function(Exception? e)? error,
     required TResult orElse(),
@@ -367,8 +373,8 @@ class _$_NotifierStateError<Value, Key>
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value) $default, {
-    required TResult Function(_NotifierStateError<Value, Key> value) error,
+    TResult Function(_NotifierState<Value, PageKey> value) $default, {
+    required TResult Function(_NotifierStateError<Value, PageKey> value) error,
   }) {
     return error(this);
   }
@@ -376,8 +382,8 @@ class _$_NotifierStateError<Value, Key>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
   }) {
     return error?.call(this);
   }
@@ -385,8 +391,8 @@ class _$_NotifierStateError<Value, Key>
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_NotifierState<Value, Key> value)? $default, {
-    TResult Function(_NotifierStateError<Value, Key> value)? error,
+    TResult Function(_NotifierState<Value, PageKey> value)? $default, {
+    TResult Function(_NotifierStateError<Value, PageKey> value)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -396,13 +402,14 @@ class _$_NotifierStateError<Value, Key>
   }
 }
 
-abstract class _NotifierStateError<Value, Key>
-    implements NotifierState<Value, Key> {
+abstract class _NotifierStateError<Value, PageKey>
+    implements NotifierState<Value, PageKey> {
   const factory _NotifierStateError({required final Exception? e}) =
-      _$_NotifierStateError<Value, Key>;
+      _$_NotifierStateError<Value, PageKey>;
 
   Exception? get e;
   @JsonKey(ignore: true)
-  _$$_NotifierStateErrorCopyWith<Value, Key, _$_NotifierStateError<Value, Key>>
+  _$$_NotifierStateErrorCopyWith<Value, PageKey,
+          _$_NotifierStateError<Value, PageKey>>
       get copyWith => throw _privateConstructorUsedError;
 }

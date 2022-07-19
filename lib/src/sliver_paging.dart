@@ -5,7 +5,7 @@ import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverPaging<Value, Key> extends StatelessWidget {
+class SliverPaging<Value, PageKey> extends StatelessWidget {
   const SliverPaging({
     super.key,
     required this.dataSource,
@@ -18,7 +18,7 @@ class SliverPaging<Value, Key> extends StatelessWidget {
   });
 
   /// region Paging
-  final DataSource<Value, Key> dataSource;
+  final DataSource<Value, PageKey> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
@@ -34,7 +34,7 @@ class SliverPaging<Value, Key> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      StateNotifierBuilder<NotifierState<Value, Key>>(
+      StateNotifierBuilder<NotifierState<Value, PageKey>>(
         key: key,
         stateNotifier: dataSource.notifier,
         builder: (context, value, child) => value.when(
