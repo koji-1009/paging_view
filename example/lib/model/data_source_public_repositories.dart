@@ -20,12 +20,6 @@ class DataSourcePublicRepositories extends DataSource<Repository, int> {
 
   @override
   Future<LoadResult<Repository, int>> load(LoadParams<int> params) async {
-    await Future.delayed(
-      const Duration(
-        seconds: 3,
-      ),
-    );
-
     return params.when(
       refresh: () async {
         final data = await repository.repositories();
