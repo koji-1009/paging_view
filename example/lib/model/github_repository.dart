@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:example/model/entity/repository.dart';
 import 'package:flutter_paging/flutter_paging.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:github/github.dart' as github;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final gitHubRepositoryProvider = Provider(
