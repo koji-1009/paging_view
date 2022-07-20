@@ -19,7 +19,10 @@ class PageManager<Value, PageKey>
   void setLoading(LoadType type) {
     switch (type) {
       case LoadType.refresh:
-        state = NotifierState.init();
+        state = const NotifierState(
+          state: NotifierLoadingState.initLoading,
+          data: [],
+        );
         break;
       case LoadType.prepend:
         state = NotifierState(

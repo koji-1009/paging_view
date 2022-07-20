@@ -82,7 +82,12 @@ class HomePage extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('GitHub public repositories'),
       ),
-      body: body,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          dataSource.refresh();
+        },
+        child: body,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(

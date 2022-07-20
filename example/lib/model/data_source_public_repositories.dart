@@ -1,7 +1,7 @@
 import 'package:example/model/entity/repository.dart';
 import 'package:example/model/github_repository.dart';
 import 'package:flutter_paging/flutter_paging.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
   (ref) => DataSourcePublicRepositories(

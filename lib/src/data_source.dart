@@ -11,6 +11,10 @@ abstract class DataSource<Value, PageKey> {
 
   PageManager<Value, PageKey> get notifier => _manager;
 
+  void refresh() {
+    _manager.clear();
+  }
+
   Future<void> update(LoadType type) async {
     switch (type) {
       case LoadType.refresh:
@@ -31,10 +35,7 @@ abstract class DataSource<Value, PageKey> {
       return;
     }
 
-    _manager
-      ..clear()
-      ..setLoading(LoadType.refresh);
-
+    _manager.setLoading(LoadType.refresh);
     final result = await load(const LoadParams.refresh());
     result.when(
       success: (page) => _manager.append(page),
