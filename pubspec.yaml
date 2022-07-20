@@ -1,5 +1,5 @@
 name: paging_view
-description: A new Flutter package project.
+description: Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 version: 0.0.1
 homepage: https://github.com/koji-1009/paging_view
 

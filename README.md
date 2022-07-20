@@ -1,39 +1,158 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# paging_view
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
+      (ref) => DataSourcePublicRepositories(
+    repository: ref.watch(
+      gitHubRepositoryProvider,
+    ),
+  ),
+);
+
+class DataSourcePublicRepositories extends DataSource<int, Repository> {
+  DataSourcePublicRepositories({
+    required this.repository,
+  });
+
+  final GitHubRepository repository;
+
+  @override
+  Future<LoadResult<int, Repository>> load(LoadParams<int> params) async {
+    return params.when(
+      refresh: () async {
+        final data = await repository.repositories();
+        return LoadResult.success(
+          page: data,
+        );
+      },
+      prepend: (_) {
+        return const LoadResult.none();
+      },
+      append: (key) async {
+        final data = await repository.repositories(
+          since: key,
+        );
+        return LoadResult.success(
+          page: data,
+        );
+      },
+    );
+  }
+}
+
+class HomePage extends HookConsumerWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataSource = ref.watch(dataSourcePublicRepositoriesProvider);
+
+    final index = useState(BottomBarType.list);
+    final Widget body;
+    switch (index.value) {
+      case BottomBarType.list:
+        body = PagingList<int, Repository>(
+          dataSource: dataSource,
+          builder: (context, repository, index) {
+            return Card(
+              child: ListTile(
+                title: Text(repository.fullName),
+                subtitle: Text(repository.description),
+              ),
+            );
+          },
+          errorBuilder: (context, e) => Center(
+            child: Text('$e'),
+          ),
+          initialLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          appendLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+        );
+        break;
+      case BottomBarType.grid:
+        body = PagingGrid<int, Repository>(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          dataSource: dataSource,
+          builder: (context, repository, index) {
+            return Card(
+              child: ListTile(
+                title: Text(repository.fullName),
+                subtitle: Text(
+                  repository.description,
+                  maxLines: 3,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, e) => Center(
+            child: Text('$e'),
+          ),
+          initialLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          appendLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+        );
+        break;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('GitHub public repositories'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          dataSource.refresh();
+        },
+        child: Scrollbar(
+          child: body,
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_3x3),
+            label: 'Grid',
+          ),
+        ],
+        onTap: (value) {
+          index.value = BottomBarType.fromIndex(value);
+        },
+        currentIndex: index.value.index,
+      ),
+    );
+  }
+}
 ```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
