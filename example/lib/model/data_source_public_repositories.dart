@@ -11,7 +11,7 @@ final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
   ),
 );
 
-class DataSourcePublicRepositories extends DataSource<Repository, int> {
+class DataSourcePublicRepositories extends DataSource<int, Repository> {
   DataSourcePublicRepositories({
     required this.repository,
   });
@@ -19,7 +19,7 @@ class DataSourcePublicRepositories extends DataSource<Repository, int> {
   final GitHubRepository repository;
 
   @override
-  Future<LoadResult<Repository, int>> load(LoadParams<int> params) async {
+  Future<LoadResult<int, Repository>> load(LoadParams<int> params) async {
     return params.when(
       refresh: () async {
         final data = await repository.repositories();

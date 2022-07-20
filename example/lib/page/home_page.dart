@@ -25,7 +25,7 @@ class HomePage extends HookConsumerWidget {
     final Widget body;
     switch (index.value) {
       case BottomBarType.list:
-        body = PagingList<Repository, int>(
+        body = PagingList<int, Repository>(
           dataSource: dataSource,
           builder: (context, repository, index) {
             return Card(
@@ -56,7 +56,7 @@ class HomePage extends HookConsumerWidget {
         );
         break;
       case BottomBarType.grid:
-        body = PagingGrid<Repository, int>(
+        body = PagingGrid<int, Repository>(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),

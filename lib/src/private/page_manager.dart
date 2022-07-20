@@ -2,8 +2,8 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-class PageManager<Value, PageKey>
-    extends StateNotifier<NotifierState<Value, PageKey>> {
+class PageManager<PageKey, Value>
+    extends StateNotifier<NotifierState<PageKey, Value>> {
   PageManager() : super(NotifierState.init());
 
   bool get isLoading => state.isLoading;
@@ -45,7 +45,7 @@ class PageManager<Value, PageKey>
     );
   }
 
-  void prepend(PageData<Value, PageKey>? newPage) {
+  void prepend(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
       state = NotifierState(
         state: NotifierLoadingState.loaded,
@@ -60,7 +60,7 @@ class PageManager<Value, PageKey>
     );
   }
 
-  void append(PageData<Value, PageKey>? newPage) {
+  void append(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
       state = NotifierState(
         state: NotifierLoadingState.loaded,

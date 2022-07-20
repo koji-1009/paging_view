@@ -17,7 +17,7 @@ class LoadParams<PageKey> with _$LoadParams<PageKey> {
 }
 
 @freezed
-class PageData<Value, PageKey> with _$PageData<Value, PageKey> {
+class PageData<PageKey, Value> with _$PageData<PageKey, Value> {
   const factory PageData({
     @Default([]) List<Value> data,
     PageKey? prependKey,
@@ -26,9 +26,9 @@ class PageData<Value, PageKey> with _$PageData<Value, PageKey> {
 }
 
 @freezed
-class LoadResult<Value, PageKey> with _$LoadResult<Value, PageKey> {
+class LoadResult<PageKey, Value> with _$LoadResult<PageKey, Value> {
   const factory LoadResult.success({
-    required PageData<Value, PageKey> page,
+    required PageData<PageKey, Value> page,
   }) = _LoadResultSuccess;
 
   const factory LoadResult.failure({

@@ -5,7 +5,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverPagingGrid<Value, PageKey> extends StatelessWidget {
+class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   const SliverPagingGrid({
     super.key,
     required this.gridDelegate,
@@ -19,7 +19,7 @@ class SliverPagingGrid<Value, PageKey> extends StatelessWidget {
   });
 
   /// region Paging
-  final DataSource<Value, PageKey> dataSource;
+  final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
@@ -36,7 +36,7 @@ class SliverPagingGrid<Value, PageKey> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      StateNotifierBuilder<NotifierState<Value, PageKey>>(
+      StateNotifierBuilder<NotifierState<PageKey, Value>>(
         key: key,
         stateNotifier: dataSource.notifier,
         builder: (context, value, child) => value.when(

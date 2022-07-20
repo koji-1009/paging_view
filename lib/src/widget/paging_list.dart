@@ -4,7 +4,7 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/widget/sliver_paging_list.dart';
 
-class PagingList<Value, PageKey> extends StatelessWidget {
+class PagingList<PageKey, Value> extends StatelessWidget {
   const PagingList({
     super.key,
     required this.dataSource,
@@ -30,7 +30,7 @@ class PagingList<Value, PageKey> extends StatelessWidget {
   });
 
   /// region Paging
-  final DataSource<Value, PageKey> dataSource;
+  final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
@@ -78,7 +78,7 @@ class PagingList<Value, PageKey> extends StatelessWidget {
         keyboardDismissBehavior: keyboardDismissBehavior,
         clipBehavior: clipBehavior,
         slivers: [
-          SliverPagingList<Value, PageKey>(
+          SliverPagingList<PageKey, Value>(
             key: key,
             dataSource: dataSource,
             builder: builder,

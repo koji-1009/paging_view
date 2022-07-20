@@ -3,13 +3,13 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/page_manager.dart';
 
-abstract class DataSource<Value, PageKey> {
+abstract class DataSource<PageKey, Value> {
   @protected
-  Future<LoadResult<Value, PageKey>> load(LoadParams<PageKey> params);
+  Future<LoadResult<PageKey, Value>> load(LoadParams<PageKey> params);
 
-  final PageManager<Value, PageKey> _manager = PageManager();
+  final PageManager<PageKey, Value> _manager = PageManager();
 
-  PageManager<Value, PageKey> get notifier => _manager;
+  PageManager<PageKey, Value> get notifier => _manager;
 
   void refresh() {
     _manager.clear();
