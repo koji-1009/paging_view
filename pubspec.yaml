@@ -1,7 +1,7 @@
-name: flutter_paging
+name: paging_view
 description: A new Flutter package project.
 version: 0.0.1
-homepage: https://github.com/koji-1009/flutter_paging
+homepage: https://github.com/koji-1009/paging_view
 
 environment:
   sdk: ">=2.17.0 <3.0.0"

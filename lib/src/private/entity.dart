@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_paging/src/entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:paging_view/src/entity.dart';
 
 part 'entity.freezed.dart';
 

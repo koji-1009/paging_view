@@ -1,4 +1,4 @@
-library flutter_paging;
+library paging_view;
 
 export 'src/data_source.dart';
 export 'src/entity.dart';

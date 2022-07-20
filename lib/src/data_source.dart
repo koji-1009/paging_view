@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_paging/src/entity.dart';
-import 'package:flutter_paging/src/private/entity.dart';
-import 'package:flutter_paging/src/private/page_manager.dart';
+import 'package:paging_view/src/entity.dart';
+import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/page_manager.dart';
 
 abstract class DataSource<Value, PageKey> {
   @protected

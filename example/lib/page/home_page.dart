@@ -2,8 +2,8 @@ import 'package:example/model/data_source_public_repositories.dart';
 import 'package:example/model/entity/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_paging/flutter_paging.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:paging_view/paging_view.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});

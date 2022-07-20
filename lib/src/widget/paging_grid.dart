@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_paging/src/data_source.dart';
-import 'package:flutter_paging/src/function.dart';
-import 'package:flutter_paging/src/widget/sliver_paging_grid.dart';
+import 'package:paging_view/src/data_source.dart';
+import 'package:paging_view/src/function.dart';
+import 'package:paging_view/src/widget/sliver_paging_grid.dart';
 
 class PagingGrid<Value, PageKey> extends StatelessWidget {
   const PagingGrid({

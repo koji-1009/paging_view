@@ -1,5 +1,5 @@
-import 'package:flutter_paging/src/entity.dart';
-import 'package:flutter_paging/src/private/entity.dart';
+import 'package:paging_view/src/entity.dart';
+import 'package:paging_view/src/private/entity.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 class PageManager<Value, PageKey>

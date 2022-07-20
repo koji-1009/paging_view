@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_paging/src/data_source.dart';
-import 'package:flutter_paging/src/function.dart';
-import 'package:flutter_paging/src/private/entity.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:paging_view/src/data_source.dart';
+import 'package:paging_view/src/function.dart';
+import 'package:paging_view/src/private/entity.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class SliverPagingList<Value, PageKey> extends StatelessWidget {
