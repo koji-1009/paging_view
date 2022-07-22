@@ -3,6 +3,7 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/page_manager.dart';
 
+/// Class that manages data loading.
 abstract class DataSource<PageKey, Value> {
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadParams<PageKey> params);
