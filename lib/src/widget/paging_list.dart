@@ -11,8 +11,9 @@ class PagingList<PageKey, Value> extends StatelessWidget {
     required this.builder,
     required this.errorBuilder,
     required this.initialLoadingWidget,
-    this.prependLoadingWidget,
-    this.appendLoadingWidget,
+    this.prependLoadingWidget = const SizedBox.shrink(),
+    this.appendLoadingWidget = const SizedBox.shrink(),
+    this.emptyWidget = const SizedBox.shrink(),
     this.padding = EdgeInsets.zero,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
@@ -34,8 +35,9 @@ class PagingList<PageKey, Value> extends StatelessWidget {
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
-  final Widget? prependLoadingWidget;
-  final Widget? appendLoadingWidget;
+  final Widget prependLoadingWidget;
+  final Widget appendLoadingWidget;
+  final Widget emptyWidget;
 
   /// endregion
 
@@ -86,6 +88,7 @@ class PagingList<PageKey, Value> extends StatelessWidget {
             initialLoadingWidget: initialLoadingWidget,
             prependLoadingWidget: prependLoadingWidget,
             appendLoadingWidget: appendLoadingWidget,
+            emptyWidget: emptyWidget,
             padding: padding,
           ),
         ],
