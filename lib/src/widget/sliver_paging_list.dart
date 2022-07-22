@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:paging_view/src/data_source.dart';
@@ -12,8 +13,9 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     required this.builder,
     required this.errorBuilder,
     required this.initialLoadingWidget,
-    this.prependLoadingWidget,
-    this.appendLoadingWidget,
+    this.prependLoadingWidget = const SizedBox.shrink(),
+    this.appendLoadingWidget = const SizedBox.shrink(),
+    this.emptyWidget = const SizedBox.shrink(),
     this.padding = EdgeInsets.zero,
   });
 
@@ -22,8 +24,9 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
-  final Widget? prependLoadingWidget;
-  final Widget? appendLoadingWidget;
+  final Widget prependLoadingWidget;
+  final Widget appendLoadingWidget;
+  final Widget emptyWidget;
 
   /// endregion
 
@@ -44,26 +47,26 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                 dataSource.update(LoadType.refresh);
               });
 
-              return SliverToBoxAdapter(
+              return SliverFillRemaining(
                 child: initialLoadingWidget,
               );
             } else if (state == NotifierLoadingState.initLoading) {
-              return SliverToBoxAdapter(
+              return SliverFillRemaining(
                 child: initialLoadingWidget,
               );
             }
 
-            final showPrependLoading = prependLoadingWidget != null &&
-                state == NotifierLoadingState.prependLoading;
-            final showAppendLoading = appendLoadingWidget != null &&
-                state == NotifierLoadingState.appendLoading;
+            final items = [...pages.map((e) => e.data).flattened];
+            if (state == NotifierLoadingState.loaded && items.isEmpty) {
+              return SliverFillRemaining(
+                child: emptyWidget,
+              );
+            }
 
-            final items = value.items;
-            final length = items.length;
             return MultiSliver(
               key: key,
               children: [
-                if (showPrependLoading)
+                if (state == NotifierLoadingState.prependLoading)
                   SliverPadding(
                     padding: padding,
                     sliver: SliverToBoxAdapter(
@@ -80,7 +83,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             dataSource.update(LoadType.prepend);
                           });
-                        } else if (index == length - 1) {
+                        } else if (index == items.length - 1) {
                           // append
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             dataSource.update(LoadType.append);
@@ -90,11 +93,11 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                         final element = items[index];
                         return builder(context, element, index);
                       },
-                      childCount: length,
+                      childCount: items.length,
                     ),
                   ),
                 ),
-                if (showAppendLoading)
+                if (state == NotifierLoadingState.appendLoading)
                   SliverPadding(
                     padding: padding,
                     sliver: SliverToBoxAdapter(

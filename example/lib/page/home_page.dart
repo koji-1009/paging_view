@@ -50,6 +50,9 @@ class HomePage extends HookConsumerWidget {
               child: CircularProgressIndicator.adaptive(),
             ),
           ),
+          emptyWidget: const Center(
+            child: Text('No Item'),
+          ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
@@ -86,6 +89,9 @@ class HomePage extends HookConsumerWidget {
               padding: EdgeInsets.all(16),
               child: CircularProgressIndicator.adaptive(),
             ),
+          ),
+          emptyWidget: const Center(
+            child: Text('No Item'),
           ),
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
