@@ -4,6 +4,8 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/widget/sliver_paging_list.dart';
 
+/// A single-column list that manages pages and scroll position
+/// to read more data.
 class PagingList<PageKey, Value> extends StatelessWidget {
   const PagingList({
     super.key,

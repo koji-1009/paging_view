@@ -6,6 +6,8 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+/// A sliver that manages pages and scroll position to read more data.
+/// Display a grid list.
 class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   const SliverPagingGrid({
     super.key,
