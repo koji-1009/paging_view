@@ -26,15 +26,14 @@ class HomePage extends HookConsumerWidget {
     switch (index.value) {
       case BottomBarType.list:
         body = PagingList<int, Repository>(
+          primary: true,
           dataSource: dataSource,
-          builder: (context, repository, index) {
-            return Card(
-              child: ListTile(
-                title: Text(repository.fullName),
-                subtitle: Text(repository.description),
-              ),
-            );
-          },
+          builder: (context, repository, index) => Card(
+            child: ListTile(
+              title: Text(repository.fullName),
+              subtitle: Text(repository.description),
+            ),
+          ),
           errorBuilder: (context, e) => Center(
             child: Text('$e'),
           ),
@@ -60,21 +59,20 @@ class HomePage extends HookConsumerWidget {
         break;
       case BottomBarType.grid:
         body = PagingGrid<int, Repository>(
+          primary: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
           dataSource: dataSource,
-          builder: (context, repository, index) {
-            return Card(
-              child: ListTile(
-                title: Text(repository.fullName),
-                subtitle: Text(
-                  repository.description,
-                  maxLines: 3,
-                ),
+          builder: (context, repository, index) => Card(
+            child: ListTile(
+              title: Text(repository.fullName),
+              subtitle: Text(
+                repository.description,
+                maxLines: 3,
               ),
-            );
-          },
+            ),
+          ),
           errorBuilder: (context, e) => Center(
             child: Text('$e'),
           ),
