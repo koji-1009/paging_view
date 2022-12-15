@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'repository.dart';
 
@@ -35,43 +35,47 @@ mixin _$Repository {
 abstract class $RepositoryCopyWith<$Res> {
   factory $RepositoryCopyWith(
           Repository value, $Res Function(Repository) then) =
-      _$RepositoryCopyWithImpl<$Res>;
+      _$RepositoryCopyWithImpl<$Res, Repository>;
+  @useResult
   $Res call({String name, int id, String fullName, String description});
 }
 
 /// @nodoc
-class _$RepositoryCopyWithImpl<$Res> implements $RepositoryCopyWith<$Res> {
+class _$RepositoryCopyWithImpl<$Res, $Val extends Repository>
+    implements $RepositoryCopyWith<$Res> {
   _$RepositoryCopyWithImpl(this._value, this._then);
 
-  final Repository _value;
   // ignore: unused_field
-  final $Res Function(Repository) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = freezed,
-    Object? id = freezed,
-    Object? fullName = freezed,
-    Object? description = freezed,
+    Object? name = null,
+    Object? id = null,
+    Object? fullName = null,
+    Object? description = null,
   }) {
     return _then(_value.copyWith(
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      fullName: fullName == freezed
+      fullName: null == fullName
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-    ));
+    ) as $Val);
   }
 }
 
@@ -82,40 +86,40 @@ abstract class _$$_RepositoryCopyWith<$Res>
           _$_Repository value, $Res Function(_$_Repository) then) =
       __$$_RepositoryCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({String name, int id, String fullName, String description});
 }
 
 /// @nodoc
-class __$$_RepositoryCopyWithImpl<$Res> extends _$RepositoryCopyWithImpl<$Res>
+class __$$_RepositoryCopyWithImpl<$Res>
+    extends _$RepositoryCopyWithImpl<$Res, _$_Repository>
     implements _$$_RepositoryCopyWith<$Res> {
   __$$_RepositoryCopyWithImpl(
       _$_Repository _value, $Res Function(_$_Repository) _then)
-      : super(_value, (v) => _then(v as _$_Repository));
+      : super(_value, _then);
 
-  @override
-  _$_Repository get _value => super._value as _$_Repository;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = freezed,
-    Object? id = freezed,
-    Object? fullName = freezed,
-    Object? description = freezed,
+    Object? name = null,
+    Object? id = null,
+    Object? fullName = null,
+    Object? description = null,
   }) {
     return _then(_$_Repository(
-      name: name == freezed
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      fullName: fullName == freezed
+      fullName: null == fullName
           ? _value.fullName
           : fullName // ignore: cast_nullable_to_non_nullable
               as String,
-      description: description == freezed
+      description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
@@ -166,24 +170,21 @@ class _$_Repository with DiagnosticableTreeMixin implements _Repository {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Repository &&
-            const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.fullName, fullName) &&
-            const DeepCollectionEquality()
-                .equals(other.description, description));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.fullName, fullName) ||
+                other.fullName == fullName) &&
+            (identical(other.description, description) ||
+                other.description == description));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(fullName),
-      const DeepCollectionEquality().hash(description));
+  int get hashCode => Object.hash(runtimeType, name, id, fullName, description);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_RepositoryCopyWith<_$_Repository> get copyWith =>
       __$$_RepositoryCopyWithImpl<_$_Repository>(this, _$identity);
 
