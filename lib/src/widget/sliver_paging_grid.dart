@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
@@ -41,9 +40,9 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      StateNotifierBuilder<NotifierState<PageKey, Value>>(
+      ValueListenableBuilder<NotifierState<PageKey, Value>>(
         key: key,
-        stateNotifier: dataSource.notifier,
+        valueListenable: dataSource.notifier,
         builder: (context, value, child) => value.when(
           (state, pages) {
             if (state == NotifierLoadingState.init) {

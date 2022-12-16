@@ -12,6 +12,11 @@ abstract class DataSource<PageKey, Value> {
 
   PageManager<PageKey, Value> get notifier => _manager;
 
+  @mustCallSuper
+  void dispose() {
+    _manager.dispose();
+  }
+
   void refresh() {
     _manager.clear();
   }
