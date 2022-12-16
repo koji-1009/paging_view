@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'entity.dart';
 
@@ -26,10 +26,10 @@ mixin _$NotifierState<PageKey, Value> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult Function(
+    TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult? Function(Exception? e)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -49,8 +49,8 @@ mixin _$NotifierState<PageKey, Value> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<PageKey, Value> value)? $default, {
-    TResult Function(_NotifierStateError<PageKey, Value> value)? error,
+    TResult? Function(_NotifierState<PageKey, Value> value)? $default, {
+    TResult? Function(_NotifierStateError<PageKey, Value> value)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -66,17 +66,20 @@ mixin _$NotifierState<PageKey, Value> {
 abstract class $NotifierStateCopyWith<PageKey, Value, $Res> {
   factory $NotifierStateCopyWith(NotifierState<PageKey, Value> value,
           $Res Function(NotifierState<PageKey, Value>) then) =
-      _$NotifierStateCopyWithImpl<PageKey, Value, $Res>;
+      _$NotifierStateCopyWithImpl<PageKey, Value, $Res,
+          NotifierState<PageKey, Value>>;
 }
 
 /// @nodoc
-class _$NotifierStateCopyWithImpl<PageKey, Value, $Res>
+class _$NotifierStateCopyWithImpl<PageKey, Value, $Res,
+        $Val extends NotifierState<PageKey, Value>>
     implements $NotifierStateCopyWith<PageKey, Value, $Res> {
   _$NotifierStateCopyWithImpl(this._value, this._then);
 
-  final NotifierState<PageKey, Value> _value;
   // ignore: unused_field
-  final $Res Function(NotifierState<PageKey, Value>) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 }
 
 /// @nodoc
@@ -84,32 +87,31 @@ abstract class _$$_NotifierStateCopyWith<PageKey, Value, $Res> {
   factory _$$_NotifierStateCopyWith(_$_NotifierState<PageKey, Value> value,
           $Res Function(_$_NotifierState<PageKey, Value>) then) =
       __$$_NotifierStateCopyWithImpl<PageKey, Value, $Res>;
+  @useResult
   $Res call({NotifierLoadingState state, List<PageData<PageKey, Value>> data});
 }
 
 /// @nodoc
 class __$$_NotifierStateCopyWithImpl<PageKey, Value, $Res>
-    extends _$NotifierStateCopyWithImpl<PageKey, Value, $Res>
+    extends _$NotifierStateCopyWithImpl<PageKey, Value, $Res,
+        _$_NotifierState<PageKey, Value>>
     implements _$$_NotifierStateCopyWith<PageKey, Value, $Res> {
   __$$_NotifierStateCopyWithImpl(_$_NotifierState<PageKey, Value> _value,
       $Res Function(_$_NotifierState<PageKey, Value>) _then)
-      : super(_value, (v) => _then(v as _$_NotifierState<PageKey, Value>));
+      : super(_value, _then);
 
-  @override
-  _$_NotifierState<PageKey, Value> get _value =>
-      super._value as _$_NotifierState<PageKey, Value>;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? state = freezed,
-    Object? data = freezed,
+    Object? state = null,
+    Object? data = null,
   }) {
     return _then(_$_NotifierState<PageKey, Value>(
-      state: state == freezed
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
               as NotifierLoadingState,
-      data: data == freezed
+      data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
               as List<PageData<PageKey, Value>>,
@@ -133,6 +135,7 @@ class _$_NotifierState<PageKey, Value>
   @override
   @JsonKey()
   List<PageData<PageKey, Value>> get data {
+    if (_data is EqualUnmodifiableListView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_data);
   }
@@ -156,18 +159,17 @@ class _$_NotifierState<PageKey, Value>
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_NotifierState<PageKey, Value> &&
-            const DeepCollectionEquality().equals(other.state, state) &&
+            (identical(other.state, state) || other.state == state) &&
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(state),
-      const DeepCollectionEquality().hash(_data));
+      runtimeType, state, const DeepCollectionEquality().hash(_data));
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_NotifierStateCopyWith<PageKey, Value, _$_NotifierState<PageKey, Value>>
       get copyWith => __$$_NotifierStateCopyWithImpl<PageKey, Value,
           _$_NotifierState<PageKey, Value>>(this, _$identity);
@@ -186,10 +188,10 @@ class _$_NotifierState<PageKey, Value>
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult Function(
+    TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult? Function(Exception? e)? error,
   }) {
     return $default?.call(state, data);
   }
@@ -221,8 +223,8 @@ class _$_NotifierState<PageKey, Value>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<PageKey, Value> value)? $default, {
-    TResult Function(_NotifierStateError<PageKey, Value> value)? error,
+    TResult? Function(_NotifierState<PageKey, Value> value)? $default, {
+    TResult? Function(_NotifierStateError<PageKey, Value> value)? error,
   }) {
     return $default?.call(this);
   }
@@ -261,28 +263,27 @@ abstract class _$$_NotifierStateErrorCopyWith<PageKey, Value, $Res> {
           _$_NotifierStateError<PageKey, Value> value,
           $Res Function(_$_NotifierStateError<PageKey, Value>) then) =
       __$$_NotifierStateErrorCopyWithImpl<PageKey, Value, $Res>;
+  @useResult
   $Res call({Exception? e});
 }
 
 /// @nodoc
 class __$$_NotifierStateErrorCopyWithImpl<PageKey, Value, $Res>
-    extends _$NotifierStateCopyWithImpl<PageKey, Value, $Res>
+    extends _$NotifierStateCopyWithImpl<PageKey, Value, $Res,
+        _$_NotifierStateError<PageKey, Value>>
     implements _$$_NotifierStateErrorCopyWith<PageKey, Value, $Res> {
   __$$_NotifierStateErrorCopyWithImpl(
       _$_NotifierStateError<PageKey, Value> _value,
       $Res Function(_$_NotifierStateError<PageKey, Value>) _then)
-      : super(_value, (v) => _then(v as _$_NotifierStateError<PageKey, Value>));
+      : super(_value, _then);
 
-  @override
-  _$_NotifierStateError<PageKey, Value> get _value =>
-      super._value as _$_NotifierStateError<PageKey, Value>;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? e = freezed,
   }) {
     return _then(_$_NotifierStateError<PageKey, Value>(
-      e: e == freezed
+      e: freezed == e
           ? _value.e
           : e // ignore: cast_nullable_to_non_nullable
               as Exception?,
@@ -319,15 +320,15 @@ class _$_NotifierStateError<PageKey, Value>
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_NotifierStateError<PageKey, Value> &&
-            const DeepCollectionEquality().equals(other.e, e));
+            (identical(other.e, e) || other.e == e));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(e));
+  int get hashCode => Object.hash(runtimeType, e);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_NotifierStateErrorCopyWith<PageKey, Value,
           _$_NotifierStateError<PageKey, Value>>
       get copyWith => __$$_NotifierStateErrorCopyWithImpl<PageKey, Value,
@@ -347,10 +348,10 @@ class _$_NotifierStateError<PageKey, Value>
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult Function(
+    TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult? Function(Exception? e)? error,
   }) {
     return error?.call(e);
   }
@@ -382,8 +383,8 @@ class _$_NotifierStateError<PageKey, Value>
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult Function(_NotifierState<PageKey, Value> value)? $default, {
-    TResult Function(_NotifierStateError<PageKey, Value> value)? error,
+    TResult? Function(_NotifierState<PageKey, Value> value)? $default, {
+    TResult? Function(_NotifierStateError<PageKey, Value> value)? error,
   }) {
     return error?.call(this);
   }
