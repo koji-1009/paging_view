@@ -8,9 +8,14 @@ abstract class DataSource<PageKey, Value> {
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadParams<PageKey> params);
 
-  final PageManager<PageKey, Value> _manager = PageManager();
+  final _manager = PageManager<PageKey, Value>();
 
   PageManager<PageKey, Value> get notifier => _manager;
+
+  @mustCallSuper
+  void dispose() {
+    _manager.dispose();
+  }
 
   void refresh() {
     _manager.clear();

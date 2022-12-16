@@ -1,77 +1,77 @@
+import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 class PageManager<PageKey, Value>
-    extends StateNotifier<NotifierState<PageKey, Value>> {
+    extends ValueNotifier<NotifierState<PageKey, Value>> {
   PageManager() : super(NotifierState.init());
 
-  bool get isLoading => state.isLoading;
+  bool get isLoading => value.isLoading;
 
-  PageKey? get prependPageKey => state.prependPageKey;
+  PageKey? get prependPageKey => value.prependPageKey;
 
-  PageKey? get appendPageKey => state.appendPageKey;
+  PageKey? get appendPageKey => value.appendPageKey;
 
   void clear() {
-    state = NotifierState.init();
+    value = NotifierState.init();
   }
 
   void setLoading(LoadType type) {
     switch (type) {
       case LoadType.refresh:
-        state = const NotifierState(
+        value = const NotifierState(
           state: NotifierLoadingState.initLoading,
           data: [],
         );
         break;
       case LoadType.prepend:
-        state = NotifierState(
+        value = NotifierState(
           state: NotifierLoadingState.prependLoading,
-          data: state.pages,
+          data: value.pages,
         );
         break;
       case LoadType.append:
-        state = NotifierState(
+        value = NotifierState(
           state: NotifierLoadingState.appendLoading,
-          data: state.pages,
+          data: value.pages,
         );
         break;
     }
   }
 
   void setError(Exception? e) {
-    state = NotifierState.error(
+    value = NotifierState.error(
       e: e,
     );
   }
 
   void prepend(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
-      state = NotifierState(
+      value = NotifierState(
         state: NotifierLoadingState.loaded,
-        data: state.pages,
+        data: value.pages,
       );
       return;
     }
 
-    state = NotifierState(
+    value = NotifierState(
       state: NotifierLoadingState.loaded,
-      data: [newPage, ...state.pages],
+      data: [newPage, ...value.pages],
     );
   }
 
   void append(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
-      state = NotifierState(
+      value = NotifierState(
         state: NotifierLoadingState.loaded,
-        data: state.pages,
+        data: value.pages,
       );
       return;
     }
 
-    state = NotifierState(
+    value = NotifierState(
       state: NotifierLoadingState.loaded,
-      data: [...state.pages, newPage],
+      data: [...value.pages, newPage],
     );
   }
 }
