@@ -129,12 +129,8 @@ class HomePage extends HookConsumerWidget {
         title: const Text('GitHub public repositories'),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          dataSource.refresh();
-        },
-        child: Scrollbar(
-          child: body,
-        ),
+        onRefresh: () async => dataSource.refresh(),
+        child: body,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -148,7 +144,7 @@ class HomePage extends HookConsumerWidget {
           ),
         ],
         onTap: (value) {
-          index.value = BottomBarType.fromIndex(value);
+          index.value = BottomBarType.values[value];
         },
         currentIndex: index.value.index,
       ),
