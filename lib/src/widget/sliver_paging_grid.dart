@@ -47,7 +47,6 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       ValueListenableBuilder<NotifierState<PageKey, Value>>(
-        key: key,
         valueListenable: dataSource.notifier,
         builder: (context, value, child) => value.when(
           (state, pages) {
@@ -82,7 +81,6 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
             }
 
             return MultiSliver(
-              key: key,
               children: [
                 SliverToBoxAdapter(
                   child: SizedBox(
