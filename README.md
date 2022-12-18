@@ -2,7 +2,11 @@
 
 Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 
-## Usage
+## How to use
+
+1. Create a class that is extended `DataSource`.
+2. Get an instance of the step 1 class in the widget.
+3. Set the step 2 instance obtained to `PagingList` or `PagingGrid`.
 
 ```dart
 final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
@@ -13,6 +17,7 @@ final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
   ),
 );
 
+/// 1
 class DataSourcePublicRepositories extends DataSource<int, Repository> {
   DataSourcePublicRepositories({
     required this.repository,
@@ -49,6 +54,7 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    /// 2
     final dataSource = ref.watch(dataSourcePublicRepositoriesProvider);
 
     final index = useState(BottomBarType.list);
@@ -56,6 +62,7 @@ class HomePage extends HookConsumerWidget {
     switch (index.value) {
       case BottomBarType.list:
         body = PagingList<int, Repository>(
+          /// 3-1
           dataSource: dataSource,
           builder: (context, repository, index) {
             return Card(
@@ -90,6 +97,7 @@ class HomePage extends HookConsumerWidget {
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
+          /// 3-2
           dataSource: dataSource,
           builder: (context, repository, index) {
             return Card(
@@ -129,12 +137,8 @@ class HomePage extends HookConsumerWidget {
         title: const Text('GitHub public repositories'),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          dataSource.refresh();
-        },
-        child: Scrollbar(
-          child: body,
-        ),
+        onRefresh: () async => dataSource.refresh(),
+        child: body,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -148,7 +152,7 @@ class HomePage extends HookConsumerWidget {
           ),
         ],
         onTap: (value) {
-          index.value = BottomBarType.fromIndex(value);
+          index.value = BottomBarType.values[value];
         },
         currentIndex: index.value.index,
       ),

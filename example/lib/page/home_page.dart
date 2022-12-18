@@ -8,10 +8,6 @@ import 'package:paging_view/paging_view.dart';
 enum BottomBarType {
   list,
   grid;
-
-  static BottomBarType fromIndex(int index) => BottomBarType.values.firstWhere(
-        (element) => element.index == index,
-      );
 }
 
 class HomePage extends HookConsumerWidget {
@@ -26,7 +22,6 @@ class HomePage extends HookConsumerWidget {
     switch (index.value) {
       case BottomBarType.list:
         body = PagingList<int, Repository>(
-          primary: true,
           dataSource: dataSource,
           builder: (context, repository, index) => Card(
             child: ListTile(
@@ -59,7 +54,6 @@ class HomePage extends HookConsumerWidget {
         break;
       case BottomBarType.grid:
         body = PagingGrid<int, Repository>(
-          primary: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
@@ -103,12 +97,8 @@ class HomePage extends HookConsumerWidget {
         title: const Text('GitHub public repositories'),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          dataSource.refresh();
-        },
-        child: Scrollbar(
-          child: body,
-        ),
+        onRefresh: () async => dataSource.refresh(),
+        child: body,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -122,7 +112,7 @@ class HomePage extends HookConsumerWidget {
           ),
         ],
         onTap: (value) {
-          index.value = BottomBarType.fromIndex(value);
+          index.value = BottomBarType.values[value];
         },
         currentIndex: index.value.index,
       ),
