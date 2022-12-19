@@ -7,7 +7,9 @@ import 'package:paging_view/paging_view.dart';
 
 enum BottomBarType {
   list,
-  grid;
+  grid,
+  listH,
+  gridH;
 }
 
 class HomePage extends HookConsumerWidget {
@@ -90,6 +92,82 @@ class HomePage extends HookConsumerWidget {
           ),
         );
         break;
+      case BottomBarType.listH:
+        body = PagingList<int, Repository>(
+          scrollDirection: Axis.horizontal,
+          dataSource: dataSource,
+          builder: (context, repository, index) => SizedBox(
+            width: 200,
+            child: Card(
+              child: ListTile(
+                title: Text(repository.fullName),
+                subtitle: Text(repository.description),
+              ),
+            ),
+          ),
+          errorBuilder: (context, e) => Center(
+            child: Text('$e'),
+          ),
+          initialLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          appendLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          emptyWidget: const Center(
+            child: Text('No Item'),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+        );
+
+        break;
+      case BottomBarType.gridH:
+        body = PagingGrid<int, Repository>(
+          scrollDirection: Axis.horizontal,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+          dataSource: dataSource,
+          builder: (context, repository, index) => Card(
+            child: ListTile(
+              title: Text(repository.fullName),
+              subtitle: Text(
+                repository.description,
+                maxLines: 3,
+              ),
+            ),
+          ),
+          errorBuilder: (context, e) => Center(
+            child: Text('$e'),
+          ),
+          initialLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          appendLoadingWidget: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          ),
+          emptyWidget: const Center(
+            child: Text('No Item'),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+        );
+        break;
     }
 
     return Scaffold(
@@ -109,6 +187,14 @@ class HomePage extends HookConsumerWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.grid_3x3),
             label: 'Grid',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt),
+            label: 'List H',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_goldenratio),
+            label: 'Grid H',
           ),
         ],
         onTap: (value) {
