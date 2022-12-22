@@ -1,3 +1,8 @@
+## 1.0.2
+
+* Add horizontal pattern example.
+* Fix error handling.
+
 ## 1.0.1
 
 * Code cleanup.
