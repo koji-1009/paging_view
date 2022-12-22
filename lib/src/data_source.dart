@@ -22,16 +22,20 @@ abstract class DataSource<PageKey, Value> {
   }
 
   Future<void> update(LoadType type) async {
-    switch (type) {
-      case LoadType.refresh:
-        await _refresh();
-        break;
-      case LoadType.prepend:
-        await _prepend();
-        break;
-      case LoadType.append:
-        await _append();
-        break;
+    try {
+      switch (type) {
+        case LoadType.refresh:
+          await _refresh();
+          break;
+        case LoadType.prepend:
+          await _prepend();
+          break;
+        case LoadType.append:
+          await _append();
+          break;
+      }
+    } on Exception catch (e) {
+      _manager.setError(e);
     }
   }
 
