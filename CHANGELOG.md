@@ -1,3 +1,7 @@
+## 1.0.4
+
+* fix error builder.
+
 ## 1.0.3
 
 * Add .separated constructor.
