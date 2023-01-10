@@ -132,7 +132,12 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
               ],
             );
           },
-          error: (e) => errorBuilder(context, e),
+          error: (e) => SliverPadding(
+            padding: padding,
+            sliver: SliverFillRemaining(
+              child: errorBuilder(context, e),
+            ),
+          ),
         ),
       );
 
