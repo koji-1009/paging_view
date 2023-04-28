@@ -178,29 +178,29 @@ class HomePage extends HookConsumerWidget {
         onRefresh: () async => dataSource.refresh(),
         child: body,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(
             icon: Icon(Icons.list),
             label: 'List',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.grid_3x3),
             label: 'Grid',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.list_alt),
             label: 'List H',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.grid_goldenratio),
             label: 'Grid H',
           ),
         ],
-        onTap: (value) {
+        onDestinationSelected: (value) {
           index.value = BottomBarType.values[value];
         },
-        currentIndex: index.value.index,
+        selectedIndex: index.value.index,
       ),
     );
   }
