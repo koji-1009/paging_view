@@ -38,7 +38,7 @@ class LoadResult<PageKey, Value> with _$LoadResult<PageKey, Value> {
   }) = _LoadResultSuccess;
 
   const factory LoadResult.failure({
-    required Exception? e,
+    required Exception e,
   }) = _LoadResultFailure;
 
   const factory LoadResult.none() = _LoadResultNone;

@@ -21,7 +21,7 @@ mixin _$NotifierState<PageKey, Value> {
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)
         $default, {
-    required TResult Function(Exception? e) error,
+    required TResult Function(Exception e) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,7 +29,7 @@ mixin _$NotifierState<PageKey, Value> {
     TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult? Function(Exception? e)? error,
+    TResult? Function(Exception e)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -37,7 +37,7 @@ mixin _$NotifierState<PageKey, Value> {
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult Function(Exception e)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -180,7 +180,7 @@ class _$_NotifierState<PageKey, Value>
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)
         $default, {
-    required TResult Function(Exception? e) error,
+    required TResult Function(Exception e) error,
   }) {
     return $default(state, data);
   }
@@ -191,7 +191,7 @@ class _$_NotifierState<PageKey, Value>
     TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult? Function(Exception? e)? error,
+    TResult? Function(Exception e)? error,
   }) {
     return $default?.call(state, data);
   }
@@ -202,7 +202,7 @@ class _$_NotifierState<PageKey, Value>
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult Function(Exception e)? error,
     required TResult orElse(),
   }) {
     if ($default != null) {
@@ -264,7 +264,7 @@ abstract class _$$_NotifierStateErrorCopyWith<PageKey, Value, $Res> {
           $Res Function(_$_NotifierStateError<PageKey, Value>) then) =
       __$$_NotifierStateErrorCopyWithImpl<PageKey, Value, $Res>;
   @useResult
-  $Res call({Exception? e});
+  $Res call({Exception e});
 }
 
 /// @nodoc
@@ -280,13 +280,13 @@ class __$$_NotifierStateErrorCopyWithImpl<PageKey, Value, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? e = freezed,
+    Object? e = null,
   }) {
     return _then(_$_NotifierStateError<PageKey, Value>(
-      e: freezed == e
+      e: null == e
           ? _value.e
           : e // ignore: cast_nullable_to_non_nullable
-              as Exception?,
+              as Exception,
     ));
   }
 }
@@ -299,7 +299,7 @@ class _$_NotifierStateError<PageKey, Value>
   const _$_NotifierStateError({required this.e});
 
   @override
-  final Exception? e;
+  final Exception e;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -340,7 +340,7 @@ class _$_NotifierStateError<PageKey, Value>
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)
         $default, {
-    required TResult Function(Exception? e) error,
+    required TResult Function(Exception e) error,
   }) {
     return error(e);
   }
@@ -351,7 +351,7 @@ class _$_NotifierStateError<PageKey, Value>
     TResult? Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult? Function(Exception? e)? error,
+    TResult? Function(Exception e)? error,
   }) {
     return error?.call(e);
   }
@@ -362,7 +362,7 @@ class _$_NotifierStateError<PageKey, Value>
     TResult Function(
             NotifierLoadingState state, List<PageData<PageKey, Value>> data)?
         $default, {
-    TResult Function(Exception? e)? error,
+    TResult Function(Exception e)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -405,10 +405,10 @@ class _$_NotifierStateError<PageKey, Value>
 
 abstract class _NotifierStateError<PageKey, Value>
     implements NotifierState<PageKey, Value> {
-  const factory _NotifierStateError({required final Exception? e}) =
+  const factory _NotifierStateError({required final Exception e}) =
       _$_NotifierStateError<PageKey, Value>;
 
-  Exception? get e;
+  Exception get e;
   @JsonKey(ignore: true)
   _$$_NotifierStateErrorCopyWith<PageKey, Value,
           _$_NotifierStateError<PageKey, Value>>

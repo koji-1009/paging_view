@@ -39,7 +39,7 @@ class PageManager<PageKey, Value>
     }
   }
 
-  void setError(Exception? e) {
+  void setError(Exception e) {
     value = NotifierState.error(
       e: e,
     );
