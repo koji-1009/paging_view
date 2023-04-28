@@ -1,3 +1,7 @@
+## 1.0.5
+
+* Fix ExceptionWidgetBuilder parameter type.
+
 ## 1.0.4
 
 * fix error builder.
