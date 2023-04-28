@@ -21,7 +21,7 @@ class NotifierState<PageKey, Value> with _$NotifierState<PageKey, Value> {
   }) = _NotifierState;
 
   const factory NotifierState.error({
-    required Exception? e,
+    required Exception e,
   }) = _NotifierStateError;
 
   factory NotifierState.init() => const NotifierState(

@@ -10,5 +10,5 @@ typedef TypedWidgetBuilder<Value> = Widget Function(
 /// Create widget with [Exception].
 typedef ExceptionWidgetBuilder = Widget Function(
   BuildContext context,
-  Exception? e,
+  Exception e,
 );
