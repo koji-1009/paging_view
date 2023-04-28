@@ -17,26 +17,20 @@ class PageManager<PageKey, Value>
   }
 
   void setLoading(LoadType type) {
-    switch (type) {
-      case LoadType.refresh:
-        value = const NotifierState(
+    value = switch (type) {
+      LoadType.refresh => const NotifierState(
           state: NotifierLoadingState.initLoading,
           data: [],
-        );
-        break;
-      case LoadType.prepend:
-        value = NotifierState(
+        ),
+      LoadType.prepend => NotifierState(
           state: NotifierLoadingState.prependLoading,
           data: value.pages,
-        );
-        break;
-      case LoadType.append:
-        value = NotifierState(
+        ),
+      LoadType.append => NotifierState(
           state: NotifierLoadingState.appendLoading,
           data: value.pages,
-        );
-        break;
-    }
+        ),
+    };
   }
 
   void setError(Exception e) {
