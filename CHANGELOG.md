@@ -1,3 +1,8 @@
+## 1.1.0
+
+* Flutter 3.10.0
+* Dart 3.0.0
+
 ## 1.0.5
 
 * Fix ExceptionWidgetBuilder parameter type.
