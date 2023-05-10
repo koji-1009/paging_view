@@ -6,7 +6,7 @@ import 'package:paging_view/src/private/page_manager.dart';
 /// Class that manages data loading.
 abstract base class DataSource<PageKey, Value> {
   @protected
-  Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> params);
+  Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> action);
 
   final _manager = PageManager<PageKey, Value>();
 

@@ -19,8 +19,8 @@ final class DataSourcePublicRepositories extends DataSource<int, Repository> {
   final GitHubRepository repository;
 
   @override
-  Future<LoadResult<int, Repository>> load(LoadAction<int> params) async =>
-      switch (params) {
+  Future<LoadResult<int, Repository>> load(LoadAction<int> action) async =>
+      switch (action) {
         Refresh() => await fetch(null),
         Prepend(key: final _) => const None(),
         Append(key: final key) => await fetch(key),
