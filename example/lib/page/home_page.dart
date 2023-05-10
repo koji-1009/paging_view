@@ -20,10 +20,8 @@ class HomePage extends HookConsumerWidget {
     final dataSource = ref.watch(dataSourcePublicRepositoriesProvider);
 
     final index = useState(BottomBarType.list);
-    final Widget body;
-    switch (index.value) {
-      case BottomBarType.list:
-        body = PagingList<int, Repository>(
+    final body = switch (index.value) {
+      BottomBarType.list => PagingList<int, Repository>(
           dataSource: dataSource,
           builder: (context, repository, index) => Card(
             child: ListTile(
@@ -52,10 +50,8 @@ class HomePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-        );
-        break;
-      case BottomBarType.grid:
-        body = PagingGrid<int, Repository>(
+        ),
+      BottomBarType.grid => PagingGrid<int, Repository>(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
@@ -90,10 +86,8 @@ class HomePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-        );
-        break;
-      case BottomBarType.listH:
-        body = PagingList<int, Repository>(
+        ),
+      BottomBarType.listH => PagingList<int, Repository>(
           scrollDirection: Axis.horizontal,
           dataSource: dataSource,
           builder: (context, repository, index) => SizedBox(
@@ -126,11 +120,8 @@ class HomePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-        );
-
-        break;
-      case BottomBarType.gridH:
-        body = PagingGrid<int, Repository>(
+        ),
+      BottomBarType.gridH => PagingGrid<int, Repository>(
           scrollDirection: Axis.horizontal,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
@@ -166,9 +157,8 @@ class HomePage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ),
-        );
-        break;
-    }
+        )
+    };
 
     return Scaffold(
       appBar: AppBar(

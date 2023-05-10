@@ -11,7 +11,7 @@ final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
   ),
 );
 
-class DataSourcePublicRepositories extends DataSource<int, Repository> {
+final class DataSourcePublicRepositories extends DataSource<int, Repository> {
   DataSourcePublicRepositories({
     required this.repository,
   });
@@ -19,25 +19,24 @@ class DataSourcePublicRepositories extends DataSource<int, Repository> {
   final GitHubRepository repository;
 
   @override
-  Future<LoadResult<int, Repository>> load(LoadParams<int> params) async {
-    return params.when(
-      refresh: () async {
-        final data = await repository.repositories();
-        return LoadResult.success(
-          page: data,
-        );
-      },
-      prepend: (_) {
-        return const LoadResult.none();
-      },
-      append: (key) async {
-        final data = await repository.repositories(
-          since: key,
-        );
-        return LoadResult.success(
-          page: data,
-        );
-      },
+  Future<LoadResult<int, Repository>> load(LoadAction<int> params) async =>
+      switch (params) {
+        Refresh() => await fetch(null),
+        Prepend(key: final _) => const None(),
+        Append(key: final key) => await fetch(key),
+      };
+
+  Future<LoadResult<int, Repository>> fetch(int? key) async {
+    final PageData<int, Repository> data;
+    if (key == null) {
+      data = await repository.repositories();
+    } else {
+      data = await repository.repositories(
+        since: key,
+      );
+    }
+    return Success(
+      page: data,
     );
   }
 }

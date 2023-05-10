@@ -3,21 +3,60 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'entity.freezed.dart';
 
-/// The entity representing the type of Page to be newly loaded.
-@freezed
-class LoadParams<PageKey> with _$LoadParams<PageKey> {
-  /// Refresh data
-  const factory LoadParams.refresh() = _LoadParamsRefresh;
+/// Required action to load necessary data.
+sealed class LoadAction<PageKey> {
+  const LoadAction._();
+}
 
-  /// Data to be added to the top of the list
-  const factory LoadParams.prepend({
-    required PageKey key,
-  }) = _LoadParamsPrepend;
+/// Action to refresh data.
+class Refresh<PageKey> implements LoadAction<PageKey> {
+  const Refresh();
+}
 
-  /// Data to be added to the bottom of the list
-  const factory LoadParams.append({
-    required PageKey key,
-  }) = _LoadParamsAppend;
+/// Action to add data at top of the list.
+class Prepend<PageKey> implements LoadAction<PageKey> {
+  const Prepend({
+    required this.key,
+  });
+
+  final PageKey key;
+}
+
+/// Action to add data at bottom of the list.
+class Append<PageKey> implements LoadAction<PageKey> {
+  const Append({
+    required this.key,
+  });
+
+  final PageKey key;
+}
+
+/// Result of load action.
+sealed class LoadResult<PageKey, Value> {
+  const LoadResult._();
+}
+
+/// Action is success.
+class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
+  const Success({
+    required this.page,
+  });
+
+  final PageData<PageKey, Value> page;
+}
+
+/// Action is failure.
+class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
+  const Failure({
+    required this.e,
+  });
+
+  final Exception e;
+}
+
+/// Action is not necessary.
+class None<PageKey, Value> implements LoadResult<PageKey, Value> {
+  const None();
 }
 
 /// Data structure of page.
@@ -28,18 +67,4 @@ class PageData<PageKey, Value> with _$PageData<PageKey, Value> {
     PageKey? prependKey,
     PageKey? appendKey,
   }) = _PageData;
-}
-
-/// Result of load.
-@freezed
-class LoadResult<PageKey, Value> with _$LoadResult<PageKey, Value> {
-  const factory LoadResult.success({
-    required PageData<PageKey, Value> page,
-  }) = _LoadResultSuccess;
-
-  const factory LoadResult.failure({
-    required Exception e,
-  }) = _LoadResultFailure;
-
-  const factory LoadResult.none() = _LoadResultNone;
 }
