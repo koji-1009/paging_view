@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-part 'entity.freezed.dart';
+import 'package:equatable/equatable.dart';
 
 /// Required action to load necessary data.
 sealed class LoadAction<PageKey> {
@@ -60,11 +57,17 @@ class None<PageKey, Value> implements LoadResult<PageKey, Value> {
 }
 
 /// Data structure of page.
-@freezed
-class PageData<PageKey, Value> with _$PageData<PageKey, Value> {
-  const factory PageData({
-    @Default([]) List<Value> data,
-    PageKey? prependKey,
-    PageKey? appendKey,
-  }) = _PageData;
+class PageData<PageKey, Value> extends Equatable {
+  const PageData({
+    this.data = const [],
+    this.prependKey,
+    this.appendKey,
+  });
+
+  final List<Value> data;
+  final PageKey? prependKey;
+  final PageKey? appendKey;
+
+  @override
+  List<Object?> get props => [data, prependKey, appendKey];
 }

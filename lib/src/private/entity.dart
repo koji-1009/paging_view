@@ -1,11 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:paging_view/src/entity.dart';
 
-part 'entity.freezed.dart';
-
-enum NotifierLoadingState {
+enum LoadState {
   init,
   loaded,
   initLoading,
@@ -13,39 +10,57 @@ enum NotifierLoadingState {
   appendLoading,
 }
 
-@freezed
-class NotifierState<PageKey, Value> with _$NotifierState<PageKey, Value> {
-  const factory NotifierState({
-    required NotifierLoadingState state,
-    @Default([]) List<PageData<PageKey, Value>> data,
-  }) = _NotifierState;
-
-  const factory NotifierState.error({
-    required Exception e,
-  }) = _NotifierStateError;
-
-  factory NotifierState.init() => const NotifierState(
-        state: NotifierLoadingState.init,
-      );
+sealed class NotifierState<PageKey, Value> {
+  const NotifierState._();
 }
 
-extension NotifierStateExt<PageKey, Value> on NotifierState<PageKey, Value> {
-  bool get isLoading => when(
-        (state, _) =>
-            state == NotifierLoadingState.initLoading ||
-            state == NotifierLoadingState.prependLoading ||
-            state == NotifierLoadingState.appendLoading,
-        error: (_) => false,
+class Paging<PageKey, Value> extends Equatable
+    implements NotifierState<PageKey, Value> {
+  const Paging({
+    required this.state,
+    this.data = const [],
+  });
+
+  factory Paging.init() => const Paging(
+        state: LoadState.init,
       );
+
+  final LoadState state;
+  final List<PageData<PageKey, Value>> data;
+
+  @override
+  List<Object?> get props => [state, data];
+}
+
+class Warning<PageKey, Value> extends Equatable
+    implements NotifierState<PageKey, Value> {
+  const Warning({
+    required this.e,
+  });
+
+  final Exception e;
+
+  @override
+  List<Object?> get props => [e];
+}
+
+extension PagingStateExt<PageKey, Value> on NotifierState<PageKey, Value> {
+  bool get isLoading => switch (this) {
+        Paging(state: final state, data: _) =>
+          state == LoadState.initLoading ||
+              state == LoadState.prependLoading ||
+              state == LoadState.appendLoading,
+        Warning(e: _) => false,
+      };
 
   PageKey? get prependPageKey => pages.firstOrNull?.prependKey;
 
   PageKey? get appendPageKey => pages.lastOrNull?.appendKey;
 
-  List<PageData<PageKey, Value>> get pages => when(
-        (state, data) => data,
-        error: (_) => const [],
-      );
+  List<PageData<PageKey, Value>> get pages => switch (this) {
+        Paging(state: _, data: final data) => data,
+        Warning(e: _) => const [],
+      };
 
   List<Value> get items => [...pages.map((e) => e.data).flattened];
 }
