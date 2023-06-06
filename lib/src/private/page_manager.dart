@@ -4,7 +4,7 @@ import 'package:paging_view/src/private/entity.dart';
 
 class PageManager<PageKey, Value>
     extends ValueNotifier<NotifierState<PageKey, Value>> {
-  PageManager() : super(NotifierState.init());
+  PageManager() : super(Paging.init());
 
   bool get isLoading => value.isLoading;
 
@@ -13,58 +13,58 @@ class PageManager<PageKey, Value>
   PageKey? get appendPageKey => value.appendPageKey;
 
   void clear() {
-    value = NotifierState.init();
+    value = Paging.init();
   }
 
   void setLoading(LoadType type) {
     value = switch (type) {
-      LoadType.refresh => const NotifierState(
-          state: NotifierLoadingState.initLoading,
+      LoadType.refresh => const Paging(
+          state: LoadState.initLoading,
           data: [],
         ),
-      LoadType.prepend => NotifierState(
-          state: NotifierLoadingState.prependLoading,
+      LoadType.prepend => Paging(
+          state: LoadState.prependLoading,
           data: value.pages,
         ),
-      LoadType.append => NotifierState(
-          state: NotifierLoadingState.appendLoading,
+      LoadType.append => Paging(
+          state: LoadState.appendLoading,
           data: value.pages,
         ),
     };
   }
 
   void setError(Exception e) {
-    value = NotifierState.error(
+    value = Warning(
       e: e,
     );
   }
 
   void prepend(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
-      value = NotifierState(
-        state: NotifierLoadingState.loaded,
+      value = Paging(
+        state: LoadState.loaded,
         data: value.pages,
       );
       return;
     }
 
-    value = NotifierState(
-      state: NotifierLoadingState.loaded,
+    value = Paging(
+      state: LoadState.loaded,
       data: [newPage, ...value.pages],
     );
   }
 
   void append(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
-      value = NotifierState(
-        state: NotifierLoadingState.loaded,
+      value = Paging(
+        state: LoadState.loaded,
         data: value.pages,
       );
       return;
     }
 
-    value = NotifierState(
-      state: NotifierLoadingState.loaded,
+    value = Paging(
+      state: LoadState.loaded,
       data: [...value.pages, newPage],
     );
   }
