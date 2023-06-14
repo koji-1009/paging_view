@@ -165,7 +165,7 @@ class HomePage extends HookConsumerWidget {
         title: const Text('GitHub public repositories'),
       ),
       body: RefreshIndicator(
-        onRefresh: () async => dataSource.refresh(),
+        onRefresh: () async => dataSource.smoothRefresh(),
         child: body,
       ),
       bottomNavigationBar: NavigationBar(

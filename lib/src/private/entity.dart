@@ -46,10 +46,9 @@ class Warning<PageKey, Value> extends Equatable
 
 extension PagingStateExt<PageKey, Value> on NotifierState<PageKey, Value> {
   bool get isLoading => switch (this) {
-        Paging(state: final state, data: _) =>
-          state == LoadState.initLoading ||
-              state == LoadState.prependLoading ||
-              state == LoadState.appendLoading,
+        Paging(state: final state, data: _) => state == LoadState.initLoading ||
+            state == LoadState.prependLoading ||
+            state == LoadState.appendLoading,
         Warning(e: _) => false,
       };
 

@@ -12,10 +12,6 @@ class PageManager<PageKey, Value>
 
   PageKey? get appendPageKey => value.appendPageKey;
 
-  void clear() {
-    value = Paging.init();
-  }
-
   void setLoading(LoadType type) {
     value = switch (type) {
       LoadType.refresh => const Paging(
@@ -66,6 +62,21 @@ class PageManager<PageKey, Value>
     value = Paging(
       state: LoadState.loaded,
       data: [...value.pages, newPage],
+    );
+  }
+
+  void replace(PageData<PageKey, Value>? newPage) {
+    if (newPage == null) {
+      value = const Paging(
+        state: LoadState.loaded,
+        data: [],
+      );
+      return;
+    }
+
+    value = Paging(
+      state: LoadState.loaded,
+      data: [newPage],
     );
   }
 }
