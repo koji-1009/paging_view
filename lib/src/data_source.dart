@@ -17,6 +17,7 @@ abstract base class DataSource<PageKey, Value> {
     _manager.dispose();
   }
 
+  /// Immediately clear all data and reload.
   Future<void> refresh() async {
     try {
       await _refresh();
@@ -25,6 +26,7 @@ abstract base class DataSource<PageKey, Value> {
     }
   }
 
+  /// Reload and then replace the data.
   Future<void> smoothRefresh() async {
     try {
       await _smoothRefresh();
@@ -33,6 +35,7 @@ abstract base class DataSource<PageKey, Value> {
     }
   }
 
+  /// Run the load function according to the [LoadType].
   Future<void> update(LoadType type) async {
     try {
       switch (type) {
