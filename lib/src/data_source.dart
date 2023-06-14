@@ -17,8 +17,20 @@ abstract base class DataSource<PageKey, Value> {
     _manager.dispose();
   }
 
-  void refresh() {
-    _manager.clear();
+  Future<void> refresh() async {
+    try {
+      await _refresh();
+    } on Exception catch (e) {
+      _manager.setError(e);
+    }
+  }
+
+  Future<void> smoothRefresh() async {
+    try {
+      await _smoothRefresh();
+    } on Exception catch (e) {
+      _manager.setError(e);
+    }
   }
 
   Future<void> update(LoadType type) async {
@@ -26,13 +38,10 @@ abstract base class DataSource<PageKey, Value> {
       switch (type) {
         case LoadType.refresh:
           await _refresh();
-          break;
         case LoadType.prepend:
           await _prepend();
-          break;
         case LoadType.append:
           await _append();
-          break;
       }
     } on Exception catch (e) {
       _manager.setError(e);
@@ -50,13 +59,27 @@ abstract base class DataSource<PageKey, Value> {
     switch (result) {
       case Success(page: final page):
         _manager.append(page);
-        break;
       case Failure(e: final e):
         _manager.setError(e);
-        break;
       case None():
         _manager.append(null);
-        break;
+    }
+  }
+
+  Future<void> _smoothRefresh() async {
+    if (_manager.isLoading) {
+      /// already loading
+      return;
+    }
+
+    final result = await load(const Refresh());
+    switch (result) {
+      case Success(page: final page):
+        _manager.replace(page);
+      case Failure(e: final e):
+        _manager.setError(e);
+      case None():
+        _manager.append(null);
     }
   }
 
@@ -81,13 +104,10 @@ abstract base class DataSource<PageKey, Value> {
     switch (result) {
       case Success(page: final page):
         _manager.prepend(page);
-        break;
       case Failure(e: final e):
         _manager.setError(e);
-        break;
       case None():
         _manager.prepend(null);
-        break;
     }
   }
 
@@ -113,13 +133,10 @@ abstract base class DataSource<PageKey, Value> {
     switch (result) {
       case Success(page: final page):
         _manager.append(page);
-        break;
       case Failure(e: final e):
         _manager.setError(e);
-        break;
       case None():
         _manager.append(null);
-        break;
     }
   }
 }
