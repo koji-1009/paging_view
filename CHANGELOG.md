@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Add smoothRefresh mode
+
 ## 1.1.2
 
 * Fix README
