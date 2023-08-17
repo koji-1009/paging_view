@@ -6,7 +6,6 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 /// A sliver that manages pages and scroll position to read more data.
 /// Display a single-column list.
@@ -189,8 +188,8 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    return MultiSliver(
-      children: [
+    return SliverMainAxisGroup(
+      slivers: [
         SliverToBoxAdapter(
           child: SizedBox(
             height: padding.top,
