@@ -1,3 +1,8 @@
+## 1.3.0
+
+* Flutter 3.13.0
+* remove sliver_tools package dependency
+
 ## 1.2.0
 
 * Add smoothRefresh mode
