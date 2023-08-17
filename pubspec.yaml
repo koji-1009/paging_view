@@ -4,16 +4,14 @@ version: 1.2.0
 homepage: https://github.com/koji-1009/paging_view
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
     sdk: flutter
   collection: ^1.0.0
   equatable: ^2.0.0
-
-  sliver_tools: ^0.2.0
 
 dev_dependencies:
   flutter_test:
