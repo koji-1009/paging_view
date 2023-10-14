@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:paging_view/src/entity.dart';
 
 sealed class LoadState {
@@ -30,7 +29,7 @@ class LoadStateLoading extends LoadState {
   bool get isAppend => state == LoadType.append;
 }
 
-sealed class PageManagerState<PageKey, Value> with EquatableMixin {
+sealed class PageManagerState<PageKey, Value> {
   const PageManagerState();
 }
 
@@ -49,7 +48,19 @@ class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
   final List<PageData<PageKey, Value>> data;
 
   @override
-  List<Object?> get props => [state, data];
+  String toString() => 'Paging(state: $state, data: $data)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(other, this) ||
+      (runtimeType == other.runtimeType &&
+          other is Paging<PageKey, Value> &&
+          (identical(other.state, state) || other.state == state) &&
+          const DeepCollectionEquality().equals(other.data, data));
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, state, const DeepCollectionEquality().hash(data));
 }
 
 class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
@@ -60,7 +71,18 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
   final Exception exception;
 
   @override
-  List<Object?> get props => [exception];
+  String toString() => 'Warning(exception: $exception)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(other, this) ||
+      (runtimeType == other.runtimeType &&
+          other is Warning<PageKey, Value> &&
+          (identical(other.exception, exception) ||
+              other.exception == exception));
+
+  @override
+  int get hashCode => Object.hash(runtimeType, exception);
 }
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
