@@ -4,11 +4,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:paging_view/paging_view.dart';
 
 final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
-  (ref) => DataSourcePublicRepositories(
-    repository: ref.watch(
-      gitHubRepositoryProvider,
-    ),
-  ),
+  (ref) {
+    final dataSource = DataSourcePublicRepositories(
+      repository: ref.watch(
+        gitHubRepositoryProvider,
+      ),
+    );
+
+    ref.onDispose(() {
+      dataSource.dispose();
+    });
+
+    return dataSource;
+  },
 );
 
 final class DataSourcePublicRepositories extends DataSource<int, Repository> {

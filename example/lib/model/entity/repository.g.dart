@@ -6,12 +6,12 @@ part of 'repository.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Repository _$$_RepositoryFromJson(Map<String, dynamic> json) =>
+_$RepositoryImpl _$$RepositoryImplFromJson(Map<String, dynamic> json) =>
     $checkedCreate(
-      r'_$_Repository',
+      r'_$RepositoryImpl',
       json,
       ($checkedConvert) {
-        final val = _$_Repository(
+        final val = _$RepositoryImpl(
           name: $checkedConvert('name', (v) => v as String),
           id: $checkedConvert('id', (v) => v as int),
           fullName: $checkedConvert('full_name', (v) => v as String),
@@ -23,7 +23,7 @@ _$_Repository _$$_RepositoryFromJson(Map<String, dynamic> json) =>
       fieldKeyMap: const {'fullName': 'full_name'},
     );
 
-Map<String, dynamic> _$$_RepositoryToJson(_$_Repository instance) =>
+Map<String, dynamic> _$$RepositoryImplToJson(_$RepositoryImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
