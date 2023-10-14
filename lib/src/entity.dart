@@ -30,11 +30,11 @@ class Append<PageKey> implements LoadAction<PageKey> {
 
 /// Result of load action.
 sealed class LoadResult<PageKey, Value> {
-  const LoadResult._();
+  const LoadResult();
 }
 
 /// Action is success.
-class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
+class Success<PageKey, Value> extends LoadResult<PageKey, Value> {
   const Success({
     required this.page,
   });
@@ -43,7 +43,7 @@ class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
 }
 
 /// Action is failure.
-class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
+class Failure<PageKey, Value> extends LoadResult<PageKey, Value> {
   const Failure({
     required this.e,
   });
@@ -52,12 +52,12 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 }
 
 /// Action is not necessary.
-class None<PageKey, Value> implements LoadResult<PageKey, Value> {
+class None<PageKey, Value> extends LoadResult<PageKey, Value> {
   const None();
 }
 
 /// Data structure of page.
-class PageData<PageKey, Value> extends Equatable {
+class PageData<PageKey, Value> with EquatableMixin {
   const PageData({
     this.data = const [],
     this.prependKey,

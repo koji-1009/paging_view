@@ -3,7 +3,7 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 
 class PageManager<PageKey, Value>
-    extends ValueNotifier<NotifierState<PageKey, Value>> {
+    extends ValueNotifier<PageManagerState<PageKey, Value>> {
   PageManager() : super(Paging.init());
 
   bool get isLoading => value.isLoading;
@@ -12,40 +12,49 @@ class PageManager<PageKey, Value>
 
   PageKey? get appendPageKey => value.appendPageKey;
 
-  void setLoading(LoadType type) {
-    value = switch (type) {
-      LoadType.refresh => const Paging(
-          state: LoadState.initLoading,
-          data: [],
-        ),
-      LoadType.prepend => Paging(
-          state: LoadState.prependLoading,
-          data: value.pages,
-        ),
-      LoadType.append => Paging(
-          state: LoadState.appendLoading,
-          data: value.pages,
-        ),
-    };
+  List<Value> get values => value.items;
+
+  void changeState(LoadType type) {
+    value = Paging(
+      state: LoadStateLoading(
+        state: type,
+      ),
+      data: value.pages,
+    );
   }
 
-  void setError(Exception e) {
+  void setError(Exception exception) {
     value = Warning(
-      e: e,
+      exception: exception,
+    );
+  }
+
+  void refresh(PageData<PageKey, Value>? newPage) {
+    if (newPage == null) {
+      value = const Paging(
+        state: LoadStateLoaded(),
+        data: [],
+      );
+      return;
+    }
+
+    value = Paging(
+      state: const LoadStateLoaded(),
+      data: [newPage],
     );
   }
 
   void prepend(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
       value = Paging(
-        state: LoadState.loaded,
+        state: const LoadStateLoaded(),
         data: value.pages,
       );
       return;
     }
 
     value = Paging(
-      state: LoadState.loaded,
+      state: const LoadStateLoaded(),
       data: [newPage, ...value.pages],
     );
   }
@@ -53,30 +62,15 @@ class PageManager<PageKey, Value>
   void append(PageData<PageKey, Value>? newPage) {
     if (newPage == null) {
       value = Paging(
-        state: LoadState.loaded,
+        state: const LoadStateLoaded(),
         data: value.pages,
       );
       return;
     }
 
     value = Paging(
-      state: LoadState.loaded,
+      state: const LoadStateLoaded(),
       data: [...value.pages, newPage],
-    );
-  }
-
-  void replace(PageData<PageKey, Value>? newPage) {
-    if (newPage == null) {
-      value = const Paging(
-        state: LoadState.loaded,
-        data: [],
-      );
-      return;
-    }
-
-    value = Paging(
-      state: LoadState.loaded,
-      data: [newPage],
     );
   }
 }
