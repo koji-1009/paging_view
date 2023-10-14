@@ -58,7 +58,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<NotifierState<PageKey, Value>>(
+    return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
         Paging(state: final state, data: final pages) =>
@@ -88,10 +88,10 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   emptyWidget: emptyWidget,
                   padding: padding,
                 ),
-        Warning(e: final e) => SliverPadding(
+        Warning(exception: final exception) => SliverPadding(
             padding: padding,
             sliver: SliverFillRemaining(
-              child: errorBuilder(context, e),
+              child: errorBuilder(context, exception),
             ),
           ),
       },
@@ -158,9 +158,10 @@ class _List<PageKey, Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state == LoadState.init) {
+    final state = this.state;
+    if (state is LoadStateInit) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        dataSource.update(LoadType.refresh);
+        dataSource.update(LoadType.init);
       });
 
       return SliverPadding(
@@ -169,7 +170,7 @@ class _List<PageKey, Value> extends StatelessWidget {
           child: initialLoadingWidget,
         ),
       );
-    } else if (state == LoadState.initLoading) {
+    } else if (state is LoadStateLoading && state.isInit) {
       return SliverPadding(
         padding: padding,
         sliver: SliverFillRemaining(
@@ -179,7 +180,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     }
 
     final List<Value> items = [...pages.map((e) => e.data).flattened];
-    if (state == LoadState.loaded && items.isEmpty) {
+    if (state is LoadStateLoaded && items.isEmpty) {
       return SliverPadding(
         padding: padding,
         sliver: SliverFillRemaining(
@@ -195,7 +196,7 @@ class _List<PageKey, Value> extends StatelessWidget {
             height: padding.top,
           ),
         ),
-        if (state == LoadState.prependLoading)
+        if (state is LoadStateLoading && state.isPrepend)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(
@@ -208,7 +209,7 @@ class _List<PageKey, Value> extends StatelessWidget {
             delegate: _createDelegate(items),
           ),
         ),
-        if (state == LoadState.appendLoading)
+        if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(

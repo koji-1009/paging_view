@@ -80,22 +80,22 @@ class _$RepositoryCopyWithImpl<$Res, $Val extends Repository>
 }
 
 /// @nodoc
-abstract class _$$_RepositoryCopyWith<$Res>
+abstract class _$$RepositoryImplCopyWith<$Res>
     implements $RepositoryCopyWith<$Res> {
-  factory _$$_RepositoryCopyWith(
-          _$_Repository value, $Res Function(_$_Repository) then) =
-      __$$_RepositoryCopyWithImpl<$Res>;
+  factory _$$RepositoryImplCopyWith(
+          _$RepositoryImpl value, $Res Function(_$RepositoryImpl) then) =
+      __$$RepositoryImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, int id, String fullName, String description});
 }
 
 /// @nodoc
-class __$$_RepositoryCopyWithImpl<$Res>
-    extends _$RepositoryCopyWithImpl<$Res, _$_Repository>
-    implements _$$_RepositoryCopyWith<$Res> {
-  __$$_RepositoryCopyWithImpl(
-      _$_Repository _value, $Res Function(_$_Repository) _then)
+class __$$RepositoryImplCopyWithImpl<$Res>
+    extends _$RepositoryCopyWithImpl<$Res, _$RepositoryImpl>
+    implements _$$RepositoryImplCopyWith<$Res> {
+  __$$RepositoryImplCopyWithImpl(
+      _$RepositoryImpl _value, $Res Function(_$RepositoryImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -106,7 +106,7 @@ class __$$_RepositoryCopyWithImpl<$Res>
     Object? fullName = null,
     Object? description = null,
   }) {
-    return _then(_$_Repository(
+    return _then(_$RepositoryImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -129,15 +129,15 @@ class __$$_RepositoryCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Repository with DiagnosticableTreeMixin implements _Repository {
-  const _$_Repository(
+class _$RepositoryImpl with DiagnosticableTreeMixin implements _Repository {
+  const _$RepositoryImpl(
       {required this.name,
       required this.id,
       required this.fullName,
       this.description = ''});
 
-  factory _$_Repository.fromJson(Map<String, dynamic> json) =>
-      _$$_RepositoryFromJson(json);
+  factory _$RepositoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RepositoryImplFromJson(json);
 
   @override
   final String name;
@@ -169,7 +169,7 @@ class _$_Repository with DiagnosticableTreeMixin implements _Repository {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Repository &&
+            other is _$RepositoryImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.fullName, fullName) ||
@@ -185,12 +185,12 @@ class _$_Repository with DiagnosticableTreeMixin implements _Repository {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_RepositoryCopyWith<_$_Repository> get copyWith =>
-      __$$_RepositoryCopyWithImpl<_$_Repository>(this, _$identity);
+  _$$RepositoryImplCopyWith<_$RepositoryImpl> get copyWith =>
+      __$$RepositoryImplCopyWithImpl<_$RepositoryImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_RepositoryToJson(
+    return _$$RepositoryImplToJson(
       this,
     );
   }
@@ -201,10 +201,10 @@ abstract class _Repository implements Repository {
       {required final String name,
       required final int id,
       required final String fullName,
-      final String description}) = _$_Repository;
+      final String description}) = _$RepositoryImpl;
 
   factory _Repository.fromJson(Map<String, dynamic> json) =
-      _$_Repository.fromJson;
+      _$RepositoryImpl.fromJson;
 
   @override
   String get name;
@@ -216,6 +216,6 @@ abstract class _Repository implements Repository {
   String get description;
   @override
   @JsonKey(ignore: true)
-  _$$_RepositoryCopyWith<_$_Repository> get copyWith =>
+  _$$RepositoryImplCopyWith<_$RepositoryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -9,14 +9,20 @@ Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 3. Set the step 2 instance obtained to `PagingList` or `PagingGrid`.
 
 ```dart
-
 final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
-      (ref) =>
-      DataSourcePublicRepositories(
-        repository: ref.watch(
-          gitHubRepositoryProvider,
-        ),
+  (ref) {
+    final dataSource = DataSourcePublicRepositories(
+      repository: ref.watch(
+        gitHubRepositoryProvider,
       ),
+    );
+
+    ref.onDispose(() {
+      dataSource.dispose();
+    });
+
+    return dataSource;
+  },
 );
 
 /// 1

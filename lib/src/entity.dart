@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 /// Required action to load necessary data.
 sealed class LoadAction<PageKey> {
   const LoadAction._();
@@ -30,11 +28,11 @@ class Append<PageKey> implements LoadAction<PageKey> {
 
 /// Result of load action.
 sealed class LoadResult<PageKey, Value> {
-  const LoadResult._();
+  const LoadResult();
 }
 
 /// Action is success.
-class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
+class Success<PageKey, Value> extends LoadResult<PageKey, Value> {
   const Success({
     required this.page,
   });
@@ -43,7 +41,7 @@ class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
 }
 
 /// Action is failure.
-class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
+class Failure<PageKey, Value> extends LoadResult<PageKey, Value> {
   const Failure({
     required this.e,
   });
@@ -52,12 +50,12 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 }
 
 /// Action is not necessary.
-class None<PageKey, Value> implements LoadResult<PageKey, Value> {
+class None<PageKey, Value> extends LoadResult<PageKey, Value> {
   const None();
 }
 
 /// Data structure of page.
-class PageData<PageKey, Value> extends Equatable {
+class PageData<PageKey, Value> {
   const PageData({
     this.data = const [],
     this.prependKey,
@@ -69,5 +67,20 @@ class PageData<PageKey, Value> extends Equatable {
   final PageKey? appendKey;
 
   @override
-  List<Object?> get props => [data, prependKey, appendKey];
+  String toString() =>
+      'PageData(data: $data, prependKey: $prependKey, appendKey: $appendKey)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(other, this) ||
+      (runtimeType == other.runtimeType &&
+          other is PageData<PageKey, Value> &&
+          (identical(other.data, data) || other.data == data) &&
+          (identical(other.prependKey, prependKey) ||
+              other.prependKey == prependKey) &&
+          (identical(other.appendKey, appendKey) ||
+              other.appendKey == appendKey));
+
+  @override
+  int get hashCode => Object.hash(runtimeType, data, prependKey, appendKey);
 }

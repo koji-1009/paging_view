@@ -97,46 +97,48 @@ class PagingList<PageKey, Value> extends StatelessWidget {
   /// endregion
 
   @override
-  Widget build(BuildContext context) => CustomScrollView(
-        key: key,
-        scrollDirection: scrollDirection,
-        reverse: reverse,
-        controller: controller,
-        primary: primary,
-        physics: physics,
-        scrollBehavior: scrollBehavior,
-        center: center,
-        anchor: anchor,
-        shrinkWrap: shrinkWrap,
-        cacheExtent: cacheExtent,
-        dragStartBehavior: dragStartBehavior,
-        keyboardDismissBehavior: keyboardDismissBehavior,
-        clipBehavior: clipBehavior,
-        slivers: [
-          _separatorBuilder != null
-              ? SliverPagingList<PageKey, Value>.separated(
-                  key: key,
-                  dataSource: dataSource,
-                  builder: builder,
-                  errorBuilder: errorBuilder,
-                  initialLoadingWidget: initialLoadingWidget,
-                  prependLoadingWidget: prependLoadingWidget,
-                  appendLoadingWidget: appendLoadingWidget,
-                  emptyWidget: emptyWidget,
-                  padding: padding,
-                  separatorBuilder: _separatorBuilder!,
-                )
-              : SliverPagingList<PageKey, Value>(
-                  key: key,
-                  dataSource: dataSource,
-                  builder: builder,
-                  errorBuilder: errorBuilder,
-                  initialLoadingWidget: initialLoadingWidget,
-                  prependLoadingWidget: prependLoadingWidget,
-                  appendLoadingWidget: appendLoadingWidget,
-                  emptyWidget: emptyWidget,
-                  padding: padding,
-                ),
-        ],
-      );
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      key: key,
+      scrollDirection: scrollDirection,
+      reverse: reverse,
+      controller: controller,
+      primary: primary,
+      physics: physics,
+      scrollBehavior: scrollBehavior,
+      center: center,
+      anchor: anchor,
+      shrinkWrap: shrinkWrap,
+      cacheExtent: cacheExtent,
+      dragStartBehavior: dragStartBehavior,
+      keyboardDismissBehavior: keyboardDismissBehavior,
+      clipBehavior: clipBehavior,
+      slivers: [
+        _separatorBuilder != null
+            ? SliverPagingList<PageKey, Value>.separated(
+                key: key,
+                dataSource: dataSource,
+                builder: builder,
+                errorBuilder: errorBuilder,
+                initialLoadingWidget: initialLoadingWidget,
+                prependLoadingWidget: prependLoadingWidget,
+                appendLoadingWidget: appendLoadingWidget,
+                emptyWidget: emptyWidget,
+                padding: padding,
+                separatorBuilder: _separatorBuilder!,
+              )
+            : SliverPagingList<PageKey, Value>(
+                key: key,
+                dataSource: dataSource,
+                builder: builder,
+                errorBuilder: errorBuilder,
+                initialLoadingWidget: initialLoadingWidget,
+                prependLoadingWidget: prependLoadingWidget,
+                appendLoadingWidget: appendLoadingWidget,
+                emptyWidget: emptyWidget,
+                padding: padding,
+              ),
+      ],
+    );
+  }
 }
