@@ -1,3 +1,10 @@
+## 1.4.0
+
+* Add `addListener` and `removeListener` to `DataSource`.
+* Deprecate 'smoothRefresh()'.
+* Remove Equatable dependency.
+* Code cleanup.
+
 ## 1.3.0
 
 * Flutter 3.13.0
