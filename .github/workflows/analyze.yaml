@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  analyze:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -14,6 +14,18 @@ jobs:
         with:
           channel: 'stable'
           cache: true
-      - name: Install dependencies
-        run: flutter pub get
+      - run: flutter pub get
       - uses: invertase/github-action-dart-analyzer@v2.0.0
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
