@@ -1,3 +1,7 @@
+## 1.5.1
+
+* Improve SliverPagingList
+
 ## 1.5.0
 
 * Update flutter_lints to ^3.0.0.
