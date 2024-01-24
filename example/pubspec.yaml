@@ -36,9 +36,9 @@ dependencies:
   json_annotation: ^4.8.1
 
   hooks_riverpod: ^2.0.0
-  flutter_hooks: ^0.18.0
+  flutter_hooks: ^0.20.0
 
-  http: ^0.13.0
+  http: ^1.0.0
   github: ^9.0.0
 
   paging_view:
