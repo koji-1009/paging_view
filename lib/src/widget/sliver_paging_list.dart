@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
@@ -189,6 +187,22 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
+    Widget? itemBuilder(BuildContext context, int index) {
+      if (index == 0) {
+        // prepend
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          dataSource.update(LoadType.prepend);
+        });
+      } else if (index == items.length - 1) {
+        // append
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          dataSource.update(LoadType.append);
+        });
+      }
+
+      return builder(context, items[index], index);
+    }
+
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(
@@ -205,9 +219,16 @@ class _List<PageKey, Value> extends StatelessWidget {
           ),
         SliverPadding(
           padding: _horizontalPadding,
-          sliver: SliverList(
-            delegate: _createDelegate(items),
-          ),
+          sliver: _separatorBuilder != null
+              ? SliverList.separated(
+                  itemBuilder: itemBuilder,
+                  separatorBuilder: _separatorBuilder!,
+                  itemCount: items.length,
+                )
+              : SliverList.builder(
+                  itemBuilder: itemBuilder,
+                  itemCount: items.length,
+                ),
         ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
@@ -224,61 +245,4 @@ class _List<PageKey, Value> extends StatelessWidget {
       ],
     );
   }
-
-  SliverChildBuilderDelegate _createDelegate(List<Value> items) {
-    if (_separatorBuilder != null) {
-      final count = _computeActualChildCount(items.length);
-      return SliverChildBuilderDelegate(
-        (context, index) {
-          if (index == 0) {
-            // prepend
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              dataSource.update(LoadType.prepend);
-            });
-          } else if (index == count - 1) {
-            // append
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              dataSource.update(LoadType.append);
-            });
-          }
-
-          final int itemIndex = index ~/ 2;
-          final Widget widget;
-          if (index.isEven) {
-            final element = items[itemIndex];
-            widget = builder(context, element, itemIndex);
-          } else {
-            widget = _separatorBuilder!(context, itemIndex);
-          }
-
-          return widget;
-        },
-        childCount: count,
-      );
-    } else {
-      return SliverChildBuilderDelegate(
-        (context, index) {
-          if (index == 0) {
-            // prepend
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              dataSource.update(LoadType.prepend);
-            });
-          } else if (index == items.length - 1) {
-            // append
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              dataSource.update(LoadType.append);
-            });
-          }
-
-          final element = items[index];
-          return builder(context, element, index);
-        },
-        childCount: items.length,
-      );
-    }
-  }
-
-  /// Helper method to compute the actual child count for the separated constructor.
-  static int _computeActualChildCount(int itemCount) =>
-      max(0, itemCount * 2 - 1);
 }
