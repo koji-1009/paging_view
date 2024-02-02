@@ -18,6 +18,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget = const SizedBox.shrink(),
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
   }) : _separatorBuilder = null;
 
@@ -32,6 +34,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget = const SizedBox.shrink(),
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
@@ -44,6 +48,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   final Widget prependLoadingWidget;
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
+  final bool fillRemainErrorWidget;
+  final bool fillRemainEmptyWidget;
 
   final IndexedWidgetBuilder? _separatorBuilder;
 
@@ -72,6 +78,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   prependLoadingWidget: prependLoadingWidget,
                   appendLoadingWidget: appendLoadingWidget,
                   emptyWidget: emptyWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
                   padding: padding,
                 )
               : _List<PageKey, Value>(
@@ -84,13 +91,18 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   prependLoadingWidget: prependLoadingWidget,
                   appendLoadingWidget: appendLoadingWidget,
                   emptyWidget: emptyWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
                   padding: padding,
                 ),
         Warning(exception: final exception) => SliverPadding(
             padding: padding,
-            sliver: SliverFillRemaining(
-              child: errorBuilder(context, exception),
-            ),
+            sliver: fillRemainErrorWidget
+                ? SliverFillRemaining(
+                    child: errorBuilder(context, exception),
+                  )
+                : SliverToBoxAdapter(
+                    child: errorBuilder(context, exception),
+                  ),
           ),
       },
     );
@@ -109,6 +121,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
     required this.emptyWidget,
+    required this.fillRemainEmptyWidget,
     required this.padding,
   }) : _separatorBuilder = null;
 
@@ -124,6 +137,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
     required this.emptyWidget,
+    required this.fillRemainEmptyWidget,
     required this.padding,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
@@ -139,6 +153,7 @@ class _List<PageKey, Value> extends StatelessWidget {
   final Widget prependLoadingWidget;
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
+  final bool fillRemainEmptyWidget;
 
   final IndexedWidgetBuilder? _separatorBuilder;
 
@@ -179,9 +194,18 @@ class _List<PageKey, Value> extends StatelessWidget {
 
     final items = [...pages.map((e) => e.data).flattened];
     if (state is LoadStateLoaded && items.isEmpty) {
+      if (fillRemainEmptyWidget) {
+        return SliverPadding(
+          padding: padding,
+          sliver: SliverFillRemaining(
+            child: emptyWidget,
+          ),
+        );
+      }
+
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
+        sliver: SliverToBoxAdapter(
           child: emptyWidget,
         ),
       );

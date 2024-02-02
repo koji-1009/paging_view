@@ -18,6 +18,8 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget = const SizedBox.shrink(),
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
   });
 
@@ -29,6 +31,8 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   final Widget prependLoadingWidget;
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
+  final bool fillRemainErrorWidget;
+  final bool fillRemainEmptyWidget;
 
   /// endregion
 
@@ -55,13 +59,18 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
             prependLoadingWidget: prependLoadingWidget,
             appendLoadingWidget: appendLoadingWidget,
             emptyWidget: emptyWidget,
+            fillEmptyWidget: fillRemainEmptyWidget,
             padding: padding,
           ),
         Warning(exception: final exception) => SliverPadding(
             padding: padding,
-            sliver: SliverFillRemaining(
-              child: errorBuilder(context, exception),
-            ),
+            sliver: fillRemainErrorWidget
+                ? SliverFillRemaining(
+                    child: errorBuilder(context, exception),
+                  )
+                : SliverToBoxAdapter(
+                    child: errorBuilder(context, exception),
+                  ),
           ),
       },
     );
@@ -81,6 +90,7 @@ class _Grid<PageKey, Value> extends StatelessWidget {
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
     required this.emptyWidget,
+    required this.fillEmptyWidget,
     required this.padding,
   });
 
@@ -95,6 +105,7 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   final Widget prependLoadingWidget;
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
+  final bool fillEmptyWidget;
 
   /// endregion
 
@@ -135,9 +146,18 @@ class _Grid<PageKey, Value> extends StatelessWidget {
 
     final items = [...pages.map((e) => e.data).flattened];
     if (state is LoadStateLoaded && items.isEmpty) {
+      if (fillEmptyWidget) {
+        return SliverPadding(
+          padding: padding,
+          sliver: SliverFillRemaining(
+            child: emptyWidget,
+          ),
+        );
+      }
+
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
+        sliver: SliverToBoxAdapter(
           child: emptyWidget,
         ),
       );
