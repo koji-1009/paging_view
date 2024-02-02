@@ -177,7 +177,7 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    final List<Value> items = [...pages.map((e) => e.data).flattened];
+    final items = [...pages.map((e) => e.data).flattened];
     if (state is LoadStateLoaded && items.isEmpty) {
       return SliverPadding(
         padding: padding,
