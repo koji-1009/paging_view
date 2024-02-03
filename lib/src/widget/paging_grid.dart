@@ -7,6 +7,7 @@ import 'package:paging_view/src/widget/sliver_paging_grid.dart';
 /// A grid list that manages pages and scroll position
 /// to read more data.
 class PagingGrid<PageKey, Value> extends StatelessWidget {
+  /// Creates a scrollable, 2D array of widgets that are created on demand.
   const PagingGrid({
     super.key,
     required this.gridDelegate,
@@ -33,39 +34,71 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
     this.clipBehavior = Clip.hardEdge,
   });
 
-  /// region Paging
+  /// The data source that provides pages from loader.
   final DataSource<PageKey, Value> dataSource;
+
+  /// The builder that builds a widget for the given item and index.
   final TypedWidgetBuilder<Value> builder;
+
+  /// The builder that builds a widget for the given exception.
   final ExceptionWidgetBuilder errorBuilder;
+
+  /// The widget that is shown when the data is loading for the first time.
   final Widget initialLoadingWidget;
+
+  /// The widget that is shown when the data is loading at the beginning of the list.
   final Widget prependLoadingWidget;
+
+  /// The widget that is shown when the data is loading at the end of the list.
   final Widget appendLoadingWidget;
+
+  /// The widget that is shown when the data is empty.
   final Widget emptyWidget;
 
-  /// endregion
-
-  /// region customize
+  /// The padding around the grid.
   final EdgeInsets padding;
+
+  /// The delegate that controls the layout of the children within the grid.
   final SliverGridDelegate gridDelegate;
 
-  /// endregion
-
-  /// region CustomScrollView
+  /// see [CustomScrollView.scrollDirection]
   final Axis scrollDirection;
-  final bool reverse;
-  final ScrollController? controller;
-  final bool? primary;
-  final ScrollPhysics? physics;
-  final ScrollBehavior? scrollBehavior;
-  final bool shrinkWrap;
-  final Key? center;
-  final double anchor;
-  final double? cacheExtent;
-  final DragStartBehavior dragStartBehavior;
-  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
-  final Clip clipBehavior;
 
-  /// endregion
+  /// see [CustomScrollView.reverse]
+  final bool reverse;
+
+  /// see [CustomScrollView.controller]
+  final ScrollController? controller;
+
+  /// see [CustomScrollView.primary]
+  final bool? primary;
+
+  /// see [CustomScrollView.physics]
+  final ScrollPhysics? physics;
+
+  /// see [CustomScrollView.scrollBehavior]
+  final ScrollBehavior? scrollBehavior;
+
+  /// see [CustomScrollView.shrinkWrap]
+  final bool shrinkWrap;
+
+  /// see [CustomScrollView.center]
+  final Key? center;
+
+  /// see [CustomScrollView.anchor]
+  final double anchor;
+
+  /// see [CustomScrollView.cacheExtent]
+  final double? cacheExtent;
+
+  /// see [CustomScrollView.dragStartBehavior]
+  final DragStartBehavior dragStartBehavior;
+
+  /// see [CustomScrollView.keyboardDismissBehavior]
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+
+  /// see [CustomScrollView.clipBehavior]
+  final Clip clipBehavior;
 
   @override
   Widget build(BuildContext context) {
