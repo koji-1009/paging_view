@@ -77,9 +77,10 @@ abstract base class DataSource<PageKey, Value> {
     }
   }
 
+  /// Request a refresh via [_manager]
   Future<void> _refresh() async {
     if (_manager.isLoading) {
-      /// already loading
+      // already loading
       return;
     }
 
@@ -95,15 +96,16 @@ abstract base class DataSource<PageKey, Value> {
     }
   }
 
+  /// Request a prepend via [_manager]
   Future<void> _prepend() async {
     if (_manager.isLoading) {
-      /// already loading
+      // already loading
       return;
     }
 
     final key = _manager.prependPageKey;
     if (key == null) {
-      /// no more prepend data
+      // no more prepend data
       return;
     }
 
@@ -123,15 +125,16 @@ abstract base class DataSource<PageKey, Value> {
     }
   }
 
+  /// Request an append via [_manager]
   Future<void> _append() async {
     if (_manager.isLoading) {
-      /// already loading
+      // already loading
       return;
     }
 
     final key = _manager.appendPageKey;
     if (key == null) {
-      /// no more append data
+      // no more append data
       return;
     }
 

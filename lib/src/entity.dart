@@ -56,6 +56,7 @@ class None<PageKey, Value> extends LoadResult<PageKey, Value> {
 
 /// Data structure of page.
 class PageData<PageKey, Value> {
+  /// Creates a page data.
   const PageData({
     this.data = const [],
     this.prependKey,
