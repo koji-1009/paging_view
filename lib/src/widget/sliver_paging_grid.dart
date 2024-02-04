@@ -23,25 +23,38 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
     this.padding = EdgeInsets.zero,
   });
 
-  /// region Paging
+  /// The data source that provides pages from loader.
   final DataSource<PageKey, Value> dataSource;
+
+  /// The builder that builds a widget for the given item and index.
   final TypedWidgetBuilder<Value> builder;
+
+  /// The builder that builds a widget for the given exception.
   final ExceptionWidgetBuilder errorBuilder;
+
+  /// The widget that is shown when the data is loading for the first time.
   final Widget initialLoadingWidget;
+
+  /// The widget that is shown when the data is loading at the beginning of the list.
   final Widget prependLoadingWidget;
+
+  /// The widget that is shown when the data is loading at the end of the list.
   final Widget appendLoadingWidget;
+
+  /// The widget that is shown when the data is empty.
   final Widget emptyWidget;
+
+  /// If true, the error widget will fill the remaining space.
   final bool fillRemainErrorWidget;
+
+  /// If true, the empty widget will fill the remaining space.
   final bool fillRemainEmptyWidget;
 
-  /// endregion
-
-  /// region customize
+  /// The padding around the grid.
   final EdgeInsets padding;
 
+  /// The delegate that controls the layout of the children within the grid.
   final SliverGridDelegate gridDelegate;
-
-  /// endregion
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +109,6 @@ class _Grid<PageKey, Value> extends StatelessWidget {
 
   final LoadState state;
   final List<PageData<PageKey, Value>> pages;
-
-  /// region Paging
   final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final ExceptionWidgetBuilder errorBuilder;
@@ -106,20 +117,13 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
   final bool fillEmptyWidget;
-
-  /// endregion
-
-  /// region customize
   final EdgeInsets padding;
+  final SliverGridDelegate gridDelegate;
 
   EdgeInsets get _horizontalPadding => EdgeInsets.only(
         left: padding.left,
         right: padding.right,
       );
-
-  final SliverGridDelegate gridDelegate;
-
-  /// endregion
 
   @override
   Widget build(BuildContext context) {
