@@ -1,10 +1,14 @@
+## 1.5.3
+
+* Improve documentation.
+
 ## 1.5.2
 
-* Add fill remain option to error and empty widget
+* Add fill remain option to error and empty widget.
 
 ## 1.5.1
 
-* Improve SliverPagingList
+* Improve SliverPagingList.
 
 ## 1.5.0
 
