@@ -15,7 +15,7 @@ jobs:
           channel: 'stable'
           cache: true
       - run: flutter pub get
-      - uses: invertase/github-action-dart-analyzer@v2.0.0
+      - uses: invertase/github-action-dart-analyzer@v3
 
   check:
     runs-on: ubuntu-latest
