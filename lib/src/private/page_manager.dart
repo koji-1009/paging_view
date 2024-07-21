@@ -14,7 +14,9 @@ class PageManager<PageKey, Value>
 
   List<Value> get values => value.items;
 
-  void changeState(LoadType type) {
+  void changeState({
+    required LoadType type,
+  }) {
     value = Paging(
       state: LoadStateLoading(
         state: type,
@@ -23,13 +25,17 @@ class PageManager<PageKey, Value>
     );
   }
 
-  void setError(Exception exception) {
+  void setError({
+    required Exception exception,
+  }) {
     value = Warning(
       exception: exception,
     );
   }
 
-  void refresh(PageData<PageKey, Value>? newPage) {
+  void refresh({
+    required PageData<PageKey, Value>? newPage,
+  }) {
     if (newPage == null) {
       value = const Paging(
         state: LoadStateLoaded(),
@@ -44,7 +50,9 @@ class PageManager<PageKey, Value>
     );
   }
 
-  void prepend(PageData<PageKey, Value>? newPage) {
+  Future<void> prepend({
+    required PageData<PageKey, Value>? newPage,
+  }) async {
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
@@ -59,7 +67,9 @@ class PageManager<PageKey, Value>
     );
   }
 
-  void append(PageData<PageKey, Value>? newPage) {
+  Future<void> append({
+    required PageData<PageKey, Value>? newPage,
+  }) async {
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
