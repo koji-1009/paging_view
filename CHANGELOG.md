@@ -1,3 +1,8 @@
+## 1.5.4
+
+* Code cleanup.
+* Add delay property to append and prepend.
+
 ## 1.5.3
 
 * Improve documentation.
