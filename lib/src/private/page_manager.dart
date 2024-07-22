@@ -2,9 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 
+/// Manager class that manages [PageManagerState].
 class PageManager<PageKey, Value>
     extends ValueNotifier<PageManagerState<PageKey, Value>> {
-  PageManager() : super(Paging.init());
+  /// Creates a [PageManager].
+  PageManager({
+    this.delay = const Duration(
+      milliseconds: 100,
+    ),
+  }) : super(Paging.init());
+
+  /// The delay time for reflecting the request result in the UI.
+  final Duration delay;
 
   bool get isLoading => value.isLoading;
 
@@ -62,8 +71,18 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoaded(),
+      state: const LoadStateLoading(
+        state: LoadType.prepend,
+      ),
       data: [newPage, ...value.pages],
+    );
+
+    // Reflect the request result in the UI
+    await Future.delayed(delay);
+
+    value = Paging(
+      state: const LoadStateLoaded(),
+      data: value.pages,
     );
   }
 
@@ -79,8 +98,18 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoaded(),
+      state: const LoadStateLoading(
+        state: LoadType.append,
+      ),
       data: [...value.pages, newPage],
+    );
+
+    // Reflect the request result in the UI
+    await Future.delayed(delay);
+
+    value = Paging(
+      state: const LoadStateLoaded(),
+      data: value.pages,
     );
   }
 }
