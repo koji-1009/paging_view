@@ -2,9 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 
+/// Manager class that manages [PageManagerState].
 class PageManager<PageKey, Value>
     extends ValueNotifier<PageManagerState<PageKey, Value>> {
-  PageManager() : super(Paging.init());
+  /// Creates a [PageManager].
+  PageManager({
+    this.delay = const Duration(
+      milliseconds: 100,
+    ),
+  }) : super(Paging.init());
+
+  /// The delay time for reflecting the request result in the UI.
+  final Duration delay;
 
   bool get isLoading => value.isLoading;
 
@@ -14,7 +23,9 @@ class PageManager<PageKey, Value>
 
   List<Value> get values => value.items;
 
-  void changeState(LoadType type) {
+  void changeState({
+    required LoadType type,
+  }) {
     value = Paging(
       state: LoadStateLoading(
         state: type,
@@ -23,13 +34,17 @@ class PageManager<PageKey, Value>
     );
   }
 
-  void setError(Exception exception) {
+  void setError({
+    required Exception exception,
+  }) {
     value = Warning(
       exception: exception,
     );
   }
 
-  void refresh(PageData<PageKey, Value>? newPage) {
+  void refresh({
+    required PageData<PageKey, Value>? newPage,
+  }) {
     if (newPage == null) {
       value = const Paging(
         state: LoadStateLoaded(),
@@ -44,7 +59,9 @@ class PageManager<PageKey, Value>
     );
   }
 
-  void prepend(PageData<PageKey, Value>? newPage) {
+  Future<void> prepend({
+    required PageData<PageKey, Value>? newPage,
+  }) async {
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
@@ -54,12 +71,24 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoaded(),
+      state: const LoadStateLoading(
+        state: LoadType.prepend,
+      ),
       data: [newPage, ...value.pages],
+    );
+
+    // Reflect the request result in the UI
+    await Future.delayed(delay);
+
+    value = Paging(
+      state: const LoadStateLoaded(),
+      data: value.pages,
     );
   }
 
-  void append(PageData<PageKey, Value>? newPage) {
+  Future<void> append({
+    required PageData<PageKey, Value>? newPage,
+  }) async {
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
@@ -69,8 +98,18 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoaded(),
+      state: const LoadStateLoading(
+        state: LoadType.append,
+      ),
       data: [...value.pages, newPage],
+    );
+
+    // Reflect the request result in the UI
+    await Future.delayed(delay);
+
+    value = Paging(
+      state: const LoadStateLoaded(),
+      data: value.pages,
     );
   }
 }

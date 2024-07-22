@@ -35,14 +35,16 @@ abstract base class DataSource<PageKey, Value> {
     try {
       await _refresh();
     } on Exception catch (e) {
-      _manager.setError(e);
+      _manager.setError(
+        exception: e,
+      );
     }
   }
 
   /// Same as [refresh], but does not change the state of the [PageManager].
   @Deprecated('Use refresh() instead of smoothRefresh()')
   Future<void> smoothRefresh() async {
-    refresh();
+    await refresh();
   }
 
   /// Run the load function according to the [LoadType].
@@ -59,21 +61,31 @@ abstract base class DataSource<PageKey, Value> {
           await _append();
       }
     } on Exception catch (e) {
-      _manager.setError(e);
+      _manager.setError(
+        exception: e,
+      );
     }
   }
 
   Future<void> _init() async {
-    _manager.changeState(LoadType.init);
+    _manager.changeState(
+      type: LoadType.init,
+    );
 
     final result = await load(const Refresh());
     switch (result) {
-      case Success(page: final page):
-        _manager.append(page);
-      case Failure(e: final e):
-        _manager.setError(e);
+      case Success(:final page):
+        await _manager.append(
+          newPage: page,
+        );
+      case Failure(:final e):
+        _manager.setError(
+          exception: e,
+        );
       case None():
-        _manager.append(null);
+        await _manager.append(
+          newPage: null,
+        );
     }
   }
 
@@ -84,15 +96,23 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(LoadType.refresh);
+    _manager.changeState(
+      type: LoadType.refresh,
+    );
     final result = await load(const Refresh());
     switch (result) {
-      case Success(page: final page):
-        _manager.refresh(page);
-      case Failure(e: final e):
-        _manager.setError(e);
+      case Success(:final page):
+        _manager.refresh(
+          newPage: page,
+        );
+      case Failure(:final e):
+        _manager.setError(
+          exception: e,
+        );
       case None():
-        _manager.append(null);
+        _manager.refresh(
+          newPage: null,
+        );
     }
   }
 
@@ -109,19 +129,27 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(LoadType.prepend);
+    _manager.changeState(
+      type: LoadType.prepend,
+    );
     final result = await load(
       Prepend(
         key: key,
       ),
     );
     switch (result) {
-      case Success(page: final page):
-        _manager.prepend(page);
-      case Failure(e: final e):
-        _manager.setError(e);
+      case Success(:final page):
+        await _manager.prepend(
+          newPage: page,
+        );
+      case Failure(:final e):
+        _manager.setError(
+          exception: e,
+        );
       case None():
-        _manager.prepend(null);
+        await _manager.prepend(
+          newPage: null,
+        );
     }
   }
 
@@ -138,7 +166,9 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(LoadType.append);
+    _manager.changeState(
+      type: LoadType.append,
+    );
     final result = await load(
       Append(
         key: key,
@@ -146,12 +176,18 @@ abstract base class DataSource<PageKey, Value> {
     );
 
     switch (result) {
-      case Success(page: final page):
-        _manager.append(page);
-      case Failure(e: final e):
-        _manager.setError(e);
+      case Success(:final page):
+        await _manager.append(
+          newPage: page,
+        );
+      case Failure(:final e):
+        _manager.setError(
+          exception: e,
+        );
       case None():
-        _manager.append(null);
+        await _manager.append(
+          newPage: null,
+        );
     }
   }
 }

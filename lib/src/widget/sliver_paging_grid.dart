@@ -61,9 +61,9 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(state: final state, data: final pages) => _Grid<PageKey, Value>(
+        Paging(:final state, :final data) => _Grid<PageKey, Value>(
             state: state,
-            pages: pages,
+            pages: data,
             gridDelegate: gridDelegate,
             dataSource: dataSource,
             builder: builder,
@@ -75,7 +75,7 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
             fillEmptyWidget: fillRemainEmptyWidget,
             padding: padding,
           ),
-        Warning(exception: final exception) => SliverPadding(
+        Warning(:final exception) => SliverPadding(
             padding: padding,
             sliver: fillRemainErrorWidget
                 ? SliverFillRemaining(
@@ -129,8 +129,8 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = this.state;
     if (state is LoadStateInit) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        dataSource.update(LoadType.init);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await dataSource.update(LoadType.init);
       });
 
       return SliverPadding(
@@ -188,13 +188,13 @@ class _Grid<PageKey, Value> extends StatelessWidget {
               (context, index) {
                 if (index == 0) {
                   // prepend
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    dataSource.update(LoadType.prepend);
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    await dataSource.update(LoadType.prepend);
                   });
                 } else if (index == items.length - 1) {
                   // append
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    dataSource.update(LoadType.append);
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    await dataSource.update(LoadType.append);
                   });
                 }
 

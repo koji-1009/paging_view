@@ -78,36 +78,35 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(state: final state, data: final pages) =>
-          _separatorBuilder != null
-              ? _List<PageKey, Value>.separated(
-                  state: state,
-                  pages: pages,
-                  separatorBuilder: _separatorBuilder!,
-                  dataSource: dataSource,
-                  builder: builder,
-                  errorBuilder: errorBuilder,
-                  initialLoadingWidget: initialLoadingWidget,
-                  prependLoadingWidget: prependLoadingWidget,
-                  appendLoadingWidget: appendLoadingWidget,
-                  emptyWidget: emptyWidget,
-                  fillRemainEmptyWidget: fillRemainEmptyWidget,
-                  padding: padding,
-                )
-              : _List<PageKey, Value>(
-                  state: state,
-                  pages: pages,
-                  dataSource: dataSource,
-                  builder: builder,
-                  errorBuilder: errorBuilder,
-                  initialLoadingWidget: initialLoadingWidget,
-                  prependLoadingWidget: prependLoadingWidget,
-                  appendLoadingWidget: appendLoadingWidget,
-                  emptyWidget: emptyWidget,
-                  fillRemainEmptyWidget: fillRemainEmptyWidget,
-                  padding: padding,
-                ),
-        Warning(exception: final exception) => SliverPadding(
+        Paging(:final state, :final data) => _separatorBuilder != null
+            ? _List<PageKey, Value>.separated(
+                state: state,
+                pages: data,
+                separatorBuilder: _separatorBuilder!,
+                dataSource: dataSource,
+                builder: builder,
+                errorBuilder: errorBuilder,
+                initialLoadingWidget: initialLoadingWidget,
+                prependLoadingWidget: prependLoadingWidget,
+                appendLoadingWidget: appendLoadingWidget,
+                emptyWidget: emptyWidget,
+                fillRemainEmptyWidget: fillRemainEmptyWidget,
+                padding: padding,
+              )
+            : _List<PageKey, Value>(
+                state: state,
+                pages: data,
+                dataSource: dataSource,
+                builder: builder,
+                errorBuilder: errorBuilder,
+                initialLoadingWidget: initialLoadingWidget,
+                prependLoadingWidget: prependLoadingWidget,
+                appendLoadingWidget: appendLoadingWidget,
+                emptyWidget: emptyWidget,
+                fillRemainEmptyWidget: fillRemainEmptyWidget,
+                padding: padding,
+              ),
+        Warning(:final exception) => SliverPadding(
             padding: padding,
             sliver: fillRemainErrorWidget
                 ? SliverFillRemaining(
@@ -177,8 +176,8 @@ class _List<PageKey, Value> extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = this.state;
     if (state is LoadStateInit) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        dataSource.update(LoadType.init);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await dataSource.update(LoadType.init);
       });
 
       return SliverPadding(
@@ -218,13 +217,13 @@ class _List<PageKey, Value> extends StatelessWidget {
     Widget? itemBuilder(BuildContext context, int index) {
       if (index == 0) {
         // prepend
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          dataSource.update(LoadType.prepend);
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await dataSource.update(LoadType.prepend);
         });
       } else if (index == items.length - 1) {
         // append
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          dataSource.update(LoadType.append);
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await dataSource.update(LoadType.append);
         });
       }
 

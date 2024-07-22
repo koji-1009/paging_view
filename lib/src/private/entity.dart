@@ -60,7 +60,10 @@ class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, state, const DeepCollectionEquality().hash(data));
+        runtimeType,
+        state,
+        const DeepCollectionEquality().hash(data),
+      );
 }
 
 class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
@@ -82,7 +85,10 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
               other.exception == exception));
 
   @override
-  int get hashCode => Object.hash(runtimeType, exception);
+  int get hashCode => Object.hash(
+        runtimeType,
+        exception,
+      );
 }
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
