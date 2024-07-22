@@ -2,6 +2,10 @@
 
 Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 
+## Live preview
+
+https://koji-1009.github.io/paging_view/
+
 ## How to use
 
 1. Create a class that is extended `DataSource`.
