@@ -1,0 +1,27 @@
+name: Deploy preview
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+        working-directory: example
+      - run: flutter build web --base-href "/paging_view/" --wasm
+        working-directory: example
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./example/build/web
