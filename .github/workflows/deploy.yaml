@@ -19,7 +19,7 @@ jobs:
           cache: true
       - run: flutter pub get
         working-directory: example
-      - run: flutter build web --base-href "/paging_view/" --wasm
+      - run: flutter build web --base-href "/paging_view/" --web-renderer skwasm
         working-directory: example
       - uses: peaceiris/actions-gh-pages@v4
         with:

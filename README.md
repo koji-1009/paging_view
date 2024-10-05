@@ -13,21 +13,22 @@ https://koji-1009.github.io/paging_view/
 3. Set the step 2 instance obtained to `PagingList` or `PagingGrid`.
 
 ```dart
-final dataSourcePublicRepositoriesProvider = Provider.autoDispose(
-  (ref) {
-    final dataSource = DataSourcePublicRepositories(
-      repository: ref.watch(
-        gitHubRepositoryProvider,
-      ),
-    );
+@riverpod
+DataSourcePublicRepositories dataSourcePublicRepositories(
+    DataSourcePublicRepositoriesRef ref,
+) {
+  final dataSource = DataSourcePublicRepositories(
+    repository: ref.watch(
+      gitHubRepositoryProvider,
+    ),
+  );
 
-    ref.onDispose(() {
-      dataSource.dispose();
-    });
+  ref.onDispose(() {
+    dataSource.dispose();
+  });
 
-    return dataSource;
-  },
-);
+  return dataSource;
+}
 
 /// 1
 final class DataSourcePublicRepositories extends DataSource<int, Repository> {
@@ -60,7 +61,7 @@ final class DataSourcePublicRepositories extends DataSource<int, Repository> {
   }
 }
 
-class HomePage extends HookConsumerWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
@@ -70,18 +71,15 @@ class HomePage extends HookConsumerWidget {
     final body = PagingList<int, Repository>(
       /// 3
       dataSource: dataSource,
-      builder: (context, repository, index) {
-        return Card(
-          child: ListTile(
-            title: Text(repository.fullName),
-            subtitle: Text(repository.description),
-          ),
-        );
-      },
-      errorBuilder: (context, e) =>
-          Center(
-            child: Text('$e'),
-          ),
+      builder: (context, repository, index) => Card(
+        child: ListTile(
+          title: Text(repository.fullName),
+          subtitle: Text(repository.description),
+        ),
+      ),
+      errorBuilder: (context, e) => Center(
+        child: Text('$e'),
+      ),
       initialLoadingWidget: const Center(
         child: Padding(
           padding: EdgeInsets.all(16),
