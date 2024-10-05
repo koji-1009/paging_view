@@ -1,3 +1,8 @@
+## 1.5.5
+
+* Code cleanup.
+* Update example project.
+
 ## 1.5.4
 
 * Code cleanup.
