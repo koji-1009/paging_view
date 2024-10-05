@@ -12,7 +12,7 @@ part of 'repository.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Repository _$RepositoryFromJson(Map<String, dynamic> json) {
   return _Repository.fromJson(json);
@@ -25,8 +25,12 @@ mixin _$Repository {
   String get fullName => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
 
+  /// Serializes this Repository to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Repository
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RepositoryCopyWith<Repository> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -50,6 +54,8 @@ class _$RepositoryCopyWithImpl<$Res, $Val extends Repository>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Repository
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,6 +104,8 @@ class __$$RepositoryImplCopyWithImpl<$Res>
       _$RepositoryImpl _value, $Res Function(_$RepositoryImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Repository
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -178,11 +186,13 @@ class _$RepositoryImpl with DiagnosticableTreeMixin implements _Repository {
                 other.description == description));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, id, fullName, description);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Repository
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RepositoryImplCopyWith<_$RepositoryImpl> get copyWith =>
@@ -214,8 +224,11 @@ abstract class _Repository implements Repository {
   String get fullName;
   @override
   String get description;
+
+  /// Create a copy of Repository
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RepositoryImplCopyWith<_$RepositoryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

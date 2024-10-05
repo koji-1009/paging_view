@@ -13,7 +13,7 @@ _$RepositoryImpl _$$RepositoryImplFromJson(Map<String, dynamic> json) =>
       ($checkedConvert) {
         final val = _$RepositoryImpl(
           name: $checkedConvert('name', (v) => v as String),
-          id: $checkedConvert('id', (v) => v as int),
+          id: $checkedConvert('id', (v) => (v as num).toInt()),
           fullName: $checkedConvert('full_name', (v) => v as String),
           description:
               $checkedConvert('description', (v) => v as String? ?? ''),
