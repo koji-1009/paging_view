@@ -1,4 +1,4 @@
-library paging_view;
+library;
 
 export 'src/data_source.dart';
 export 'src/entity.dart';
