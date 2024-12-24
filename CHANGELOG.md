@@ -1,3 +1,7 @@
+## 1.5.6
+
+* Prevent operations on disposed PageManager.
+
 ## 1.5.5
 
 * Code cleanup.
