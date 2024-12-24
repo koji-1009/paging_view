@@ -23,9 +23,21 @@ class PageManager<PageKey, Value>
 
   List<Value> get values => value.items;
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   void changeState({
     required LoadType type,
   }) {
+    if (_disposed) {
+      return;
+    }
+
     value = Paging(
       state: LoadStateLoading(
         state: type,
@@ -37,6 +49,10 @@ class PageManager<PageKey, Value>
   void setError({
     required Exception exception,
   }) {
+    if (_disposed) {
+      return;
+    }
+
     value = Warning(
       exception: exception,
     );
@@ -45,6 +61,10 @@ class PageManager<PageKey, Value>
   void refresh({
     required PageData<PageKey, Value>? newPage,
   }) {
+    if (_disposed) {
+      return;
+    }
+
     if (newPage == null) {
       value = const Paging(
         state: LoadStateLoaded(),
@@ -62,6 +82,10 @@ class PageManager<PageKey, Value>
   Future<void> prepend({
     required PageData<PageKey, Value>? newPage,
   }) async {
+    if (_disposed) {
+      return;
+    }
+
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
@@ -89,6 +113,10 @@ class PageManager<PageKey, Value>
   Future<void> append({
     required PageData<PageKey, Value>? newPage,
   }) async {
+    if (_disposed) {
+      return;
+    }
+
     if (newPage == null) {
       value = Paging(
         state: const LoadStateLoaded(),
