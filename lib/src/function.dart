@@ -7,8 +7,9 @@ typedef TypedWidgetBuilder<Value> = Widget Function(
   int index,
 );
 
-/// Create widget with [Exception].
+/// Create widget with error [Object].
 typedef ExceptionWidgetBuilder = Widget Function(
   BuildContext context,
-  Exception e,
+  Object error,
+  StackTrace? stackTrace,
 );

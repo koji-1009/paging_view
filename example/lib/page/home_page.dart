@@ -42,8 +42,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   subtitle: Text(repository.description),
                 ),
               ),
-              errorBuilder: (context, e) => Center(
-                child: Text('$e'),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text('$error'),
               ),
               initialLoadingWidget: const Center(
                 child: Padding(
@@ -78,8 +78,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-              errorBuilder: (context, e) => Center(
-                child: Text('$e'),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text('$error'),
               ),
               initialLoadingWidget: const Center(
                 child: Padding(
@@ -112,8 +112,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-              errorBuilder: (context, e) => Center(
-                child: Text('$e'),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text('$error'),
               ),
               initialLoadingWidget: const Center(
                 child: Padding(
@@ -149,8 +149,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                 ),
               ),
-              errorBuilder: (context, e) => Center(
-                child: Text('$e'),
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Text('$error'),
               ),
               initialLoadingWidget: const Center(
                 child: Padding(

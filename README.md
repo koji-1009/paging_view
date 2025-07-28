@@ -77,8 +77,8 @@ class HomePage extends ConsumerWidget {
           subtitle: Text(repository.description),
         ),
       ),
-      errorBuilder: (context, e) => Center(
-        child: Text('$e'),
+      errorBuilder: (context, error, stackTrace) => Center(
+        child: Text('$error'),
       ),
       initialLoadingWidget: const Center(
         child: Padding(

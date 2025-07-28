@@ -47,14 +47,16 @@ class PageManager<PageKey, Value>
   }
 
   void setError({
-    required Exception exception,
+    required Object error,
+    required StackTrace? stackTrace,
   }) {
     if (_disposed) {
       return;
     }
 
     value = Warning(
-      exception: exception,
+      error: error,
+      stackTrace: stackTrace,
     );
   }
 

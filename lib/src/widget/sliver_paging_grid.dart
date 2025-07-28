@@ -75,14 +75,14 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
             fillEmptyWidget: fillRemainEmptyWidget,
             padding: padding,
           ),
-        Warning(:final exception) => SliverPadding(
+        Warning(:final error, :final stackTrace) => SliverPadding(
             padding: padding,
             sliver: fillRemainErrorWidget
                 ? SliverFillRemaining(
-                    child: errorBuilder(context, exception),
+                    child: errorBuilder(context, error, stackTrace),
                   )
                 : SliverToBoxAdapter(
-                    child: errorBuilder(context, exception),
+                    child: errorBuilder(context, error, stackTrace),
                   ),
           ),
       },
