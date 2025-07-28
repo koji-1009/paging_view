@@ -1,3 +1,12 @@
+## 2.0.0
+
+* Remove deprecated code.
+* Add `StackTrace` to `ExceptionWidgetBuilder`.
+* Update Dart 3.8 and Flutter 3.32.0.
+* Format code with Dart 3.8.
+* Update example project.
+* Update README.
+
 ## 1.5.6
 
 * Prevent operations on disposed PageManager.
