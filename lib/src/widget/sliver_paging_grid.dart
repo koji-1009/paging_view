@@ -62,29 +62,29 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
         Paging(:final state, :final data) => _Grid<PageKey, Value>(
-            state: state,
-            pages: data,
-            gridDelegate: gridDelegate,
-            dataSource: dataSource,
-            builder: builder,
-            errorBuilder: errorBuilder,
-            initialLoadingWidget: initialLoadingWidget,
-            prependLoadingWidget: prependLoadingWidget,
-            appendLoadingWidget: appendLoadingWidget,
-            emptyWidget: emptyWidget,
-            fillEmptyWidget: fillRemainEmptyWidget,
-            padding: padding,
-          ),
+          state: state,
+          pages: data,
+          gridDelegate: gridDelegate,
+          dataSource: dataSource,
+          builder: builder,
+          errorBuilder: errorBuilder,
+          initialLoadingWidget: initialLoadingWidget,
+          prependLoadingWidget: prependLoadingWidget,
+          appendLoadingWidget: appendLoadingWidget,
+          emptyWidget: emptyWidget,
+          fillEmptyWidget: fillRemainEmptyWidget,
+          padding: padding,
+        ),
         Warning(:final error, :final stackTrace) => SliverPadding(
-            padding: padding,
-            sliver: fillRemainErrorWidget
-                ? SliverFillRemaining(
-                    child: errorBuilder(context, error, stackTrace),
-                  )
-                : SliverToBoxAdapter(
-                    child: errorBuilder(context, error, stackTrace),
-                  ),
-          ),
+          padding: padding,
+          sliver: fillRemainErrorWidget
+              ? SliverFillRemaining(
+                  child: errorBuilder(context, error, stackTrace),
+                )
+              : SliverToBoxAdapter(
+                  child: errorBuilder(context, error, stackTrace),
+                ),
+        ),
       },
     );
   }
@@ -120,10 +120,8 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   final EdgeInsets padding;
   final SliverGridDelegate gridDelegate;
 
-  EdgeInsets get _horizontalPadding => EdgeInsets.only(
-        left: padding.left,
-        right: padding.right,
-      );
+  EdgeInsets get _horizontalPadding =>
+      EdgeInsets.only(left: padding.left, right: padding.right);
 
   @override
   Widget build(BuildContext context) {
@@ -135,16 +133,12 @@ class _Grid<PageKey, Value> extends StatelessWidget {
 
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
-          child: initialLoadingWidget,
-        ),
+        sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
     } else if (state is LoadStateLoading && state.isInit) {
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
-          child: initialLoadingWidget,
-        ),
+        sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
     }
 
@@ -153,71 +147,52 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       if (fillEmptyWidget) {
         return SliverPadding(
           padding: padding,
-          sliver: SliverFillRemaining(
-            child: emptyWidget,
-          ),
+          sliver: SliverFillRemaining(child: emptyWidget),
         );
       }
 
       return SliverPadding(
         padding: padding,
-        sliver: SliverToBoxAdapter(
-          child: emptyWidget,
-        ),
+        sliver: SliverToBoxAdapter(child: emptyWidget),
       );
     }
 
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: padding.top,
-          ),
-        ),
+        SliverToBoxAdapter(child: SizedBox(height: padding.top)),
         if (state is LoadStateLoading && state.isPrepend)
           SliverPadding(
             padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: prependLoadingWidget,
-            ),
+            sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
         SliverPadding(
           padding: _horizontalPadding,
           sliver: SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == 0) {
-                  // prepend
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    await dataSource.update(LoadType.prepend);
-                  });
-                } else if (index == items.length - 1) {
-                  // append
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    await dataSource.update(LoadType.append);
-                  });
-                }
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (index == 0) {
+                // prepend
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await dataSource.update(LoadType.prepend);
+                });
+              } else if (index == items.length - 1) {
+                // append
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await dataSource.update(LoadType.append);
+                });
+              }
 
-                final element = items[index];
-                return builder(context, element, index);
-              },
-              childCount: items.length,
-            ),
+              final element = items[index];
+              return builder(context, element, index);
+            }, childCount: items.length),
             gridDelegate: gridDelegate,
           ),
         ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: appendLoadingWidget,
-            ),
+            sliver: SliverToBoxAdapter(child: appendLoadingWidget),
           ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: padding.bottom,
-          ),
-        ),
+        SliverToBoxAdapter(child: SizedBox(height: padding.bottom)),
       ],
     );
   }
