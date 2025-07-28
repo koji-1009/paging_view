@@ -68,33 +68,32 @@ class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
 class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
   const Warning({
-    required this.exception,
+    required this.error,
+    required this.stackTrace,
   });
 
-  final Exception exception;
+  final Object error;
+  final StackTrace? stackTrace;
 
   @override
-  String toString() => 'Warning(exception: $exception)';
+  String toString() => 'Warning(error: $error, stackTrace: $stackTrace)';
 
   @override
   bool operator ==(Object other) =>
       identical(other, this) ||
       (runtimeType == other.runtimeType &&
           other is Warning<PageKey, Value> &&
-          (identical(other.exception, exception) ||
-              other.exception == exception));
+          (identical(other.error, error) || other.error == error) &&
+          (identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 
   @override
-  int get hashCode => Object.hash(
-        runtimeType,
-        exception,
-      );
+  int get hashCode => Object.hash(runtimeType, error, stackTrace);
 }
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   bool get isLoading => switch (this) {
-        Paging(state: final state, data: _) => state is LoadStateLoading,
-        Warning(exception: _) => false,
+        Paging(state: final state) => state is LoadStateLoading,
+        Warning() => false,
       };
 
   PageKey? get prependPageKey => pages.firstOrNull?.prependKey;
@@ -102,8 +101,8 @@ extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   PageKey? get appendPageKey => pages.lastOrNull?.appendKey;
 
   List<PageData<PageKey, Value>> get pages => switch (this) {
-        Paging(state: _, data: final data) => data,
-        Warning(exception: _) => const [],
+        Paging(data: final data) => data,
+        Warning() => const [],
       };
 
   List<Value> get items => [...pages.map((e) => e.data).flattened];

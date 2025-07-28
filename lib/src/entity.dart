@@ -43,10 +43,12 @@ class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
 /// Action is failure.
 class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
   const Failure({
-    required this.e,
+    required this.error,
+    this.stackTrace,
   });
 
-  final Exception e;
+  final Object error;
+  final StackTrace? stackTrace;
 }
 
 /// Action is not necessary.

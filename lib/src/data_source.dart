@@ -34,9 +34,10 @@ abstract base class DataSource<PageKey, Value> {
   Future<void> refresh() async {
     try {
       await _refresh();
-    } on Exception catch (e) {
+    } catch (error, stackTrace) {
       _manager.setError(
-        exception: e,
+        error: error,
+        stackTrace: stackTrace,
       );
     }
   }
@@ -60,9 +61,10 @@ abstract base class DataSource<PageKey, Value> {
         case LoadType.append:
           await _append();
       }
-    } on Exception catch (e) {
+    } catch (error, stackTrace) {
       _manager.setError(
-        exception: e,
+        error: error,
+        stackTrace: stackTrace,
       );
     }
   }
@@ -78,9 +80,10 @@ abstract base class DataSource<PageKey, Value> {
         await _manager.append(
           newPage: page,
         );
-      case Failure(:final e):
+      case Failure(:final error, :final stackTrace):
         _manager.setError(
-          exception: e,
+          error: error,
+          stackTrace: stackTrace,
         );
       case None():
         await _manager.append(
@@ -105,9 +108,10 @@ abstract base class DataSource<PageKey, Value> {
         _manager.refresh(
           newPage: page,
         );
-      case Failure(:final e):
+      case Failure(:final error, :final stackTrace):
         _manager.setError(
-          exception: e,
+          error: error,
+          stackTrace: stackTrace,
         );
       case None():
         _manager.refresh(
@@ -142,9 +146,10 @@ abstract base class DataSource<PageKey, Value> {
         await _manager.prepend(
           newPage: page,
         );
-      case Failure(:final e):
+      case Failure(:final error, :final stackTrace):
         _manager.setError(
-          exception: e,
+          error: error,
+          stackTrace: stackTrace,
         );
       case None():
         await _manager.prepend(
@@ -180,9 +185,10 @@ abstract base class DataSource<PageKey, Value> {
         await _manager.append(
           newPage: page,
         );
-      case Failure(:final e):
+      case Failure(:final error, :final stackTrace):
         _manager.setError(
-          exception: e,
+          error: error,
+          stackTrace: stackTrace,
         );
       case None():
         await _manager.append(
