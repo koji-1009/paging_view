@@ -9,30 +9,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'github_repository.g.dart';
 
 @riverpod
-GitHubRepository gitHubRepository(
-  GitHubRepositoryRef ref,
-) =>
-    GitHubRepository(
-      client: http.Client(),
-    );
+GitHubRepository gitHubRepository(GitHubRepositoryRef ref) =>
+    GitHubRepository(client: http.Client());
 
 const _endpoint = 'https://api.github.com';
 
 class GitHubRepository {
-  GitHubRepository({
-    required this.client,
-  });
+  GitHubRepository({required this.client});
 
   final http.Client client;
 
-  Future<PageData<int, Repository>> repositories({
-    int? since,
-  }) async {
+  Future<PageData<int, Repository>> repositories({int? since}) async {
     final response = await client.get(
       '$_endpoint/repositories${since != null ? '?since=$since' : ''}'.uri,
-      headers: {
-        'Accept': 'application/vnd.github+json',
-      },
+      headers: {'Accept': 'application/vnd.github+json'},
     );
 
     final int? appendKey;
@@ -51,10 +41,7 @@ class GitHubRepository {
         .map((e) => Repository.fromJson(e))
         .toList();
 
-    return PageData(
-      data: list,
-      appendKey: appendKey,
-    );
+    return PageData(data: list, appendKey: appendKey);
   }
 }
 

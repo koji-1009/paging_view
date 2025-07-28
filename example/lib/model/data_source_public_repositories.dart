@@ -10,9 +10,7 @@ DataSourcePublicRepositories dataSourcePublicRepositories(
   DataSourcePublicRepositoriesRef ref,
 ) {
   final dataSource = DataSourcePublicRepositories(
-    repository: ref.watch(
-      gitHubRepositoryProvider,
-    ),
+    repository: ref.watch(gitHubRepositoryProvider),
   );
 
   ref.onDispose(() {
@@ -23,9 +21,7 @@ DataSourcePublicRepositories dataSourcePublicRepositories(
 }
 
 final class DataSourcePublicRepositories extends DataSource<int, Repository> {
-  DataSourcePublicRepositories({
-    required this.repository,
-  });
+  DataSourcePublicRepositories({required this.repository});
 
   final GitHubRepository repository;
 
@@ -42,12 +38,8 @@ final class DataSourcePublicRepositories extends DataSource<int, Repository> {
     if (key == null) {
       data = await repository.repositories();
     } else {
-      data = await repository.repositories(
-        since: key,
-      );
+      data = await repository.repositories(since: key);
     }
-    return Success(
-      page: data,
-    );
+    return Success(page: data);
   }
 }
