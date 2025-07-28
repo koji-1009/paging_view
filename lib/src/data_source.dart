@@ -4,7 +4,7 @@ import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/page_manager.dart';
 
 /// Class that manages data loading.
-abstract base class DataSource<PageKey, Value> {
+abstract class DataSource<PageKey, Value> {
   /// Load data according to [LoadAction].
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> action);
@@ -37,12 +37,6 @@ abstract base class DataSource<PageKey, Value> {
     } catch (error, stackTrace) {
       _manager.setError(error: error, stackTrace: stackTrace);
     }
-  }
-
-  /// Same as [refresh], but does not change the state of the [PageManager].
-  @Deprecated('Use refresh() instead of smoothRefresh()')
-  Future<void> smoothRefresh() async {
-    await refresh();
   }
 
   /// Run the load function according to the [LoadType].
