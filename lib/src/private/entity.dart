@@ -83,7 +83,8 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
       identical(other, this) ||
       (runtimeType == other.runtimeType &&
           other is Warning<PageKey, Value> &&
-          (identical(other.error, error) || other.error == error));
+          (identical(other.error, error) || other.error == error) &&
+          (identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 
   @override
   int get hashCode => Object.hash(runtimeType, error, stackTrace);
