@@ -5,7 +5,7 @@ part 'repository.freezed.dart';
 part 'repository.g.dart';
 
 @freezed
-class Repository with _$Repository {
+abstract class Repository with _$Repository {
   const factory Repository({
     required String name,
     required int id,

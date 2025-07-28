@@ -7,7 +7,7 @@ part of 'data_source_public_repositories.dart';
 // **************************************************************************
 
 String _$dataSourcePublicRepositoriesHash() =>
-    r'62eab03180558099746ee1ab4c4d867dd6b0dae6';
+    r'58e1200804da6c39bdc4f53ec519924e9af148d9';
 
 /// See also [dataSourcePublicRepositories].
 @ProviderFor(dataSourcePublicRepositories)

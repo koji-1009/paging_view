@@ -4,12 +4,13 @@ import 'package:example/model/entity/repository.dart';
 import 'package:github/github.dart' as github;
 import 'package:http/http.dart' as http;
 import 'package:paging_view/paging_view.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'github_repository.g.dart';
 
 @riverpod
-GitHubRepository gitHubRepository(GitHubRepositoryRef ref) =>
+GitHubRepository gitHubRepository(Ref ref) =>
     GitHubRepository(client: http.Client());
 
 const _endpoint = 'https://api.github.com';

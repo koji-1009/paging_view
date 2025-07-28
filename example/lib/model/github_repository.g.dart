@@ -6,7 +6,7 @@ part of 'github_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$gitHubRepositoryHash() => r'415d770e34e8a67dd4041cd8a989bd3877411cdc';
+String _$gitHubRepositoryHash() => r'86113f19c1764724307c44308d6f469234be9aab';
 
 /// See also [gitHubRepository].
 @ProviderFor(gitHubRepository)
