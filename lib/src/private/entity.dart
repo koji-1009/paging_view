@@ -14,9 +14,7 @@ class LoadStateLoaded extends LoadState {
 }
 
 class LoadStateLoading extends LoadState {
-  const LoadStateLoading({
-    required this.state,
-  });
+  const LoadStateLoading({required this.state});
 
   final LoadType state;
 
@@ -34,15 +32,9 @@ sealed class PageManagerState<PageKey, Value> {
 }
 
 class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
-  const Paging({
-    required this.state,
-    required this.data,
-  });
+  const Paging({required this.state, required this.data});
 
-  factory Paging.init() => const Paging(
-        state: LoadStateInit(),
-        data: [],
-      );
+  factory Paging.init() => const Paging(state: LoadStateInit(), data: []);
 
   final LoadState state;
   final List<PageData<PageKey, Value>> data;
@@ -60,17 +52,14 @@ class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
   @override
   int get hashCode => Object.hash(
-        runtimeType,
-        state,
-        const DeepCollectionEquality().hash(data),
-      );
+    runtimeType,
+    state,
+    const DeepCollectionEquality().hash(data),
+  );
 }
 
 class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
-  const Warning({
-    required this.error,
-    required this.stackTrace,
-  });
+  const Warning({required this.error, required this.stackTrace});
 
   final Object error;
   final StackTrace? stackTrace;
@@ -84,7 +73,8 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
       (runtimeType == other.runtimeType &&
           other is Warning<PageKey, Value> &&
           (identical(other.error, error) || other.error == error) &&
-          (identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+          (identical(other.stackTrace, stackTrace) ||
+              other.stackTrace == stackTrace));
 
   @override
   int get hashCode => Object.hash(runtimeType, error, stackTrace);
@@ -92,25 +82,20 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   bool get isLoading => switch (this) {
-        Paging(state: final state) => state is LoadStateLoading,
-        Warning() => false,
-      };
+    Paging(state: final state) => state is LoadStateLoading,
+    Warning() => false,
+  };
 
   PageKey? get prependPageKey => pages.firstOrNull?.prependKey;
 
   PageKey? get appendPageKey => pages.lastOrNull?.appendKey;
 
   List<PageData<PageKey, Value>> get pages => switch (this) {
-        Paging(data: final data) => data,
-        Warning() => const [],
-      };
+    Paging(data: final data) => data,
+    Warning() => const [],
+  };
 
   List<Value> get items => [...pages.map((e) => e.data).flattened];
 }
 
-enum LoadType {
-  init,
-  refresh,
-  prepend,
-  append,
-}
+enum LoadType { init, refresh, prepend, append }

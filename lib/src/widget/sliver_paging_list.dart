@@ -78,44 +78,45 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(:final state, :final data) => _separatorBuilder != null
-            ? _List<PageKey, Value>.separated(
-                state: state,
-                pages: data,
-                separatorBuilder: _separatorBuilder!,
-                dataSource: dataSource,
-                builder: builder,
-                errorBuilder: errorBuilder,
-                initialLoadingWidget: initialLoadingWidget,
-                prependLoadingWidget: prependLoadingWidget,
-                appendLoadingWidget: appendLoadingWidget,
-                emptyWidget: emptyWidget,
-                fillRemainEmptyWidget: fillRemainEmptyWidget,
-                padding: padding,
-              )
-            : _List<PageKey, Value>(
-                state: state,
-                pages: data,
-                dataSource: dataSource,
-                builder: builder,
-                errorBuilder: errorBuilder,
-                initialLoadingWidget: initialLoadingWidget,
-                prependLoadingWidget: prependLoadingWidget,
-                appendLoadingWidget: appendLoadingWidget,
-                emptyWidget: emptyWidget,
-                fillRemainEmptyWidget: fillRemainEmptyWidget,
-                padding: padding,
-              ),
+        Paging(:final state, :final data) =>
+          _separatorBuilder != null
+              ? _List<PageKey, Value>.separated(
+                  state: state,
+                  pages: data,
+                  separatorBuilder: _separatorBuilder,
+                  dataSource: dataSource,
+                  builder: builder,
+                  errorBuilder: errorBuilder,
+                  initialLoadingWidget: initialLoadingWidget,
+                  prependLoadingWidget: prependLoadingWidget,
+                  appendLoadingWidget: appendLoadingWidget,
+                  emptyWidget: emptyWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
+                  padding: padding,
+                )
+              : _List<PageKey, Value>(
+                  state: state,
+                  pages: data,
+                  dataSource: dataSource,
+                  builder: builder,
+                  errorBuilder: errorBuilder,
+                  initialLoadingWidget: initialLoadingWidget,
+                  prependLoadingWidget: prependLoadingWidget,
+                  appendLoadingWidget: appendLoadingWidget,
+                  emptyWidget: emptyWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
+                  padding: padding,
+                ),
         Warning(:final error, :final stackTrace) => SliverPadding(
-            padding: padding,
-            sliver: fillRemainErrorWidget
-                ? SliverFillRemaining(
-                    child: errorBuilder(context, error, stackTrace),
-                  )
-                : SliverToBoxAdapter(
-                    child: errorBuilder(context, error, stackTrace),
-                  ),
-          ),
+          padding: padding,
+          sliver: fillRemainErrorWidget
+              ? SliverFillRemaining(
+                  child: errorBuilder(context, error, stackTrace),
+                )
+              : SliverToBoxAdapter(
+                  child: errorBuilder(context, error, stackTrace),
+                ),
+        ),
       },
     );
   }
@@ -167,10 +168,8 @@ class _List<PageKey, Value> extends StatelessWidget {
   final IndexedWidgetBuilder? _separatorBuilder;
   final EdgeInsets padding;
 
-  EdgeInsets get _horizontalPadding => EdgeInsets.only(
-        left: padding.left,
-        right: padding.right,
-      );
+  EdgeInsets get _horizontalPadding =>
+      EdgeInsets.only(left: padding.left, right: padding.right);
 
   @override
   Widget build(BuildContext context) {
@@ -182,16 +181,12 @@ class _List<PageKey, Value> extends StatelessWidget {
 
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
-          child: initialLoadingWidget,
-        ),
+        sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
     } else if (state is LoadStateLoading && state.isInit) {
       return SliverPadding(
         padding: padding,
-        sliver: SliverFillRemaining(
-          child: initialLoadingWidget,
-        ),
+        sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
     }
 
@@ -200,17 +195,13 @@ class _List<PageKey, Value> extends StatelessWidget {
       if (fillRemainEmptyWidget) {
         return SliverPadding(
           padding: padding,
-          sliver: SliverFillRemaining(
-            child: emptyWidget,
-          ),
+          sliver: SliverFillRemaining(child: emptyWidget),
         );
       }
 
       return SliverPadding(
         padding: padding,
-        sliver: SliverToBoxAdapter(
-          child: emptyWidget,
-        ),
+        sliver: SliverToBoxAdapter(child: emptyWidget),
       );
     }
 
@@ -232,24 +223,18 @@ class _List<PageKey, Value> extends StatelessWidget {
 
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: padding.top,
-          ),
-        ),
+        SliverToBoxAdapter(child: SizedBox(height: padding.top)),
         if (state is LoadStateLoading && state.isPrepend)
           SliverPadding(
             padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: prependLoadingWidget,
-            ),
+            sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
         SliverPadding(
           padding: _horizontalPadding,
           sliver: _separatorBuilder != null
               ? SliverList.separated(
                   itemBuilder: itemBuilder,
-                  separatorBuilder: _separatorBuilder!,
+                  separatorBuilder: _separatorBuilder,
                   itemCount: items.length,
                 )
               : SliverList.builder(
@@ -260,15 +245,9 @@ class _List<PageKey, Value> extends StatelessWidget {
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(
-              child: appendLoadingWidget,
-            ),
+            sliver: SliverToBoxAdapter(child: appendLoadingWidget),
           ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: padding.bottom,
-          ),
-        ),
+        SliverToBoxAdapter(child: SizedBox(height: padding.bottom)),
       ],
     );
   }

@@ -35,10 +35,7 @@ abstract base class DataSource<PageKey, Value> {
     try {
       await _refresh();
     } catch (error, stackTrace) {
-      _manager.setError(
-        error: error,
-        stackTrace: stackTrace,
-      );
+      _manager.setError(error: error, stackTrace: stackTrace);
     }
   }
 
@@ -62,33 +59,21 @@ abstract base class DataSource<PageKey, Value> {
           await _append();
       }
     } catch (error, stackTrace) {
-      _manager.setError(
-        error: error,
-        stackTrace: stackTrace,
-      );
+      _manager.setError(error: error, stackTrace: stackTrace);
     }
   }
 
   Future<void> _init() async {
-    _manager.changeState(
-      type: LoadType.init,
-    );
+    _manager.changeState(type: LoadType.init);
 
     final result = await load(const Refresh());
     switch (result) {
       case Success(:final page):
-        await _manager.append(
-          newPage: page,
-        );
+        await _manager.append(newPage: page);
       case Failure(:final error, :final stackTrace):
-        _manager.setError(
-          error: error,
-          stackTrace: stackTrace,
-        );
+        _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.append(
-          newPage: null,
-        );
+        await _manager.append(newPage: null);
     }
   }
 
@@ -99,24 +84,15 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(
-      type: LoadType.refresh,
-    );
+    _manager.changeState(type: LoadType.refresh);
     final result = await load(const Refresh());
     switch (result) {
       case Success(:final page):
-        _manager.refresh(
-          newPage: page,
-        );
+        _manager.refresh(newPage: page);
       case Failure(:final error, :final stackTrace):
-        _manager.setError(
-          error: error,
-          stackTrace: stackTrace,
-        );
+        _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        _manager.refresh(
-          newPage: null,
-        );
+        _manager.refresh(newPage: null);
     }
   }
 
@@ -133,28 +109,15 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(
-      type: LoadType.prepend,
-    );
-    final result = await load(
-      Prepend(
-        key: key,
-      ),
-    );
+    _manager.changeState(type: LoadType.prepend);
+    final result = await load(Prepend(key: key));
     switch (result) {
       case Success(:final page):
-        await _manager.prepend(
-          newPage: page,
-        );
+        await _manager.prepend(newPage: page);
       case Failure(:final error, :final stackTrace):
-        _manager.setError(
-          error: error,
-          stackTrace: stackTrace,
-        );
+        _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.prepend(
-          newPage: null,
-        );
+        await _manager.prepend(newPage: null);
     }
   }
 
@@ -171,29 +134,16 @@ abstract base class DataSource<PageKey, Value> {
       return;
     }
 
-    _manager.changeState(
-      type: LoadType.append,
-    );
-    final result = await load(
-      Append(
-        key: key,
-      ),
-    );
+    _manager.changeState(type: LoadType.append);
+    final result = await load(Append(key: key));
 
     switch (result) {
       case Success(:final page):
-        await _manager.append(
-          newPage: page,
-        );
+        await _manager.append(newPage: page);
       case Failure(:final error, :final stackTrace):
-        _manager.setError(
-          error: error,
-          stackTrace: stackTrace,
-        );
+        _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.append(
-          newPage: null,
-        );
+        await _manager.append(newPage: null);
     }
   }
 }

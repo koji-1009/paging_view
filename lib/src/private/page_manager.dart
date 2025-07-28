@@ -6,11 +6,8 @@ import 'package:paging_view/src/private/entity.dart';
 class PageManager<PageKey, Value>
     extends ValueNotifier<PageManagerState<PageKey, Value>> {
   /// Creates a [PageManager].
-  PageManager({
-    this.delay = const Duration(
-      milliseconds: 100,
-    ),
-  }) : super(Paging.init());
+  PageManager({this.delay = const Duration(milliseconds: 100)})
+    : super(Paging.init());
 
   /// The delay time for reflecting the request result in the UI.
   final Duration delay;
@@ -31,115 +28,77 @@ class PageManager<PageKey, Value>
     super.dispose();
   }
 
-  void changeState({
-    required LoadType type,
-  }) {
+  void changeState({required LoadType type}) {
     if (_disposed) {
       return;
     }
 
     value = Paging(
-      state: LoadStateLoading(
-        state: type,
-      ),
+      state: LoadStateLoading(state: type),
       data: value.pages,
     );
   }
 
-  void setError({
-    required Object error,
-    required StackTrace? stackTrace,
-  }) {
+  void setError({required Object error, required StackTrace? stackTrace}) {
     if (_disposed) {
       return;
     }
 
-    value = Warning(
-      error: error,
-      stackTrace: stackTrace,
-    );
+    value = Warning(error: error, stackTrace: stackTrace);
   }
 
-  void refresh({
-    required PageData<PageKey, Value>? newPage,
-  }) {
+  void refresh({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
     }
 
     if (newPage == null) {
-      value = const Paging(
-        state: LoadStateLoaded(),
-        data: [],
-      );
+      value = const Paging(state: LoadStateLoaded(), data: []);
       return;
     }
 
-    value = Paging(
-      state: const LoadStateLoaded(),
-      data: [newPage],
-    );
+    value = Paging(state: const LoadStateLoaded(), data: [newPage]);
   }
 
-  Future<void> prepend({
-    required PageData<PageKey, Value>? newPage,
-  }) async {
+  Future<void> prepend({required PageData<PageKey, Value>? newPage}) async {
     if (_disposed) {
       return;
     }
 
     if (newPage == null) {
-      value = Paging(
-        state: const LoadStateLoaded(),
-        data: value.pages,
-      );
+      value = Paging(state: const LoadStateLoaded(), data: value.pages);
       return;
     }
 
     value = Paging(
-      state: const LoadStateLoading(
-        state: LoadType.prepend,
-      ),
+      state: const LoadStateLoading(state: LoadType.prepend),
       data: [newPage, ...value.pages],
     );
 
     // Reflect the request result in the UI
     await Future.delayed(delay);
 
-    value = Paging(
-      state: const LoadStateLoaded(),
-      data: value.pages,
-    );
+    value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
 
-  Future<void> append({
-    required PageData<PageKey, Value>? newPage,
-  }) async {
+  Future<void> append({required PageData<PageKey, Value>? newPage}) async {
     if (_disposed) {
       return;
     }
 
     if (newPage == null) {
-      value = Paging(
-        state: const LoadStateLoaded(),
-        data: value.pages,
-      );
+      value = Paging(state: const LoadStateLoaded(), data: value.pages);
       return;
     }
 
     value = Paging(
-      state: const LoadStateLoading(
-        state: LoadType.append,
-      ),
+      state: const LoadStateLoading(state: LoadType.append),
       data: [...value.pages, newPage],
     );
 
     // Reflect the request result in the UI
     await Future.delayed(delay);
 
-    value = Paging(
-      state: const LoadStateLoaded(),
-      data: value.pages,
-    );
+    value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
 }
