@@ -1,5 +1,8 @@
 # paging_view
 
+[![pub package](https://img.shields.io/pub/v/paging_view.svg)](https://pub.dev/packages/paging_view)
+[![GitHub license](https://img.shields.io/github/license/koji-1009/paging_view)](https://github.com/koji-1009/paging_view/blob/main/LICENSE)
+
 Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 
 ## Live preview
@@ -31,7 +34,7 @@ DataSourcePublicRepositories dataSourcePublicRepositories(
 }
 
 /// 1
-final class DataSourcePublicRepositories extends DataSource<int, Repository> {
+class DataSourcePublicRepositories extends DataSource<int, Repository> {
   DataSourcePublicRepositories({
     required this.repository,
   });
@@ -41,12 +44,12 @@ final class DataSourcePublicRepositories extends DataSource<int, Repository> {
   @override
   Future<LoadResult<int, Repository>> load(LoadAction<int> action) async =>
       switch (action) {
-        Refresh() => await fetch(null),
-        Prepend(key: final _) => const None(),
-        Append(key: final key) => await fetch(key),
+        Refresh() => await fetch(),
+        Prepend() => const None(),
+        Append(:final key) => await fetch(key: key),
       };
 
-  Future<LoadResult<int, Repository>> fetch(int? key) async {
+  Future<LoadResult<int, Repository>> fetch({int? key}) async {
     final PageData<int, Repository> data;
     if (key == null) {
       data = await repository.repositories();
