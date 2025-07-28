@@ -1,5 +1,8 @@
 # paging_view
 
+[![pub package](https://img.shields.io/pub/v/paging_view.svg)](https://pub.dev/packages/paging_view)
+[![GitHub license](https://img.shields.io/github/license/koji-1009/paging_view)](https://github.com/koji-1009/paging_view/blob/main/LICENSE)
+
 Like Android Jetpack's Paging library 3, manages data and displays paged lists.
 
 ## Live preview
