@@ -101,4 +101,57 @@ class PageManager<PageKey, Value>
 
     value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
+
+  void updateItem(int index, Value Function(Value item) update) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentValue = value;
+    if (currentValue is! Paging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final items = currentValue.items;
+      if (index < 0 || index >= items.length) {
+        throw RangeError.index(index, items, 'index', null, items.length);
+      }
+
+      final itemToUpdate = items[index];
+      final updatedItem = update(itemToUpdate);
+
+      var itemIndexAcrossPages = 0;
+      final updatedPages = <PageData<PageKey, Value>>[];
+
+      for (final page in currentValue.pages) {
+        final pageSize = page.data.length;
+        final isTargetInThisPage =
+            index >= itemIndexAcrossPages &&
+            index < itemIndexAcrossPages + pageSize;
+
+        if (isTargetInThisPage) {
+          final indexInPage = index - itemIndexAcrossPages;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData[indexInPage] = updatedItem;
+
+          updatedPages.add(
+            PageData(
+              data: updatedPageData,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        } else {
+          updatedPages.add(page);
+        }
+
+        itemIndexAcrossPages += pageSize;
+      }
+
+      value = Paging(state: currentValue.state, data: updatedPages);
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
 }
