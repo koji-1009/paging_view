@@ -1,7 +1,6 @@
 import 'package:example/model/entity/repository.dart';
 import 'package:example/model/github_repository.dart';
 import 'package:paging_view/paging_view.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'data_source_public_repositories.g.dart';
