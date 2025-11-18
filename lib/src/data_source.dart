@@ -30,6 +30,15 @@ abstract class DataSource<PageKey, Value> {
     _manager.removeListener(listener);
   }
 
+  /// Update an item at the specified [index] by applying the [update] function.
+  ///
+  /// The [update] function receives the current item and should return the updated item.
+  /// If the index is out of range or if the update function throws an error,
+  /// the error will be set via [PageManager.setError].
+  void updateItem(int index, Value Function(Value item) update) {
+    _manager.updateItem(index, update);
+  }
+
   /// Reload and then replace the data.
   Future<void> refresh() async {
     try {
