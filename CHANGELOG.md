@@ -1,3 +1,8 @@
+## 2.1.0
+
+* Add `updateItem` function to `DataSource`
+* Add unit tests
+
 ## 2.0.0
 
 * Remove deprecated code.
