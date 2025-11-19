@@ -1,3 +1,7 @@
+## 2.2.0
+
+* Add `updateItems` function to `DataSource`
+
 ## 2.1.0
 
 * Add `updateItem` function to `DataSource`
