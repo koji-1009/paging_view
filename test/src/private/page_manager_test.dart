@@ -181,6 +181,41 @@ void main() {
       expect(state.error, isA<Exception>());
     });
 
+    test('updateItems updates all items with index', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page = PageData<int, String>(data: ['a', 'b', 'c']);
+      manager.refresh(newPage: page);
+
+      manager.updateItems((index, item) => '$index:${item.toUpperCase()}');
+
+      expect(manager.values, ['0:A', '1:B', '2:C']);
+    });
+
+    test('updateItems works across multiple pages', () async {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
+      const page2 = PageData<int, String>(data: ['c', 'd']);
+
+      manager.refresh(newPage: page1);
+      await manager.append(newPage: page2);
+
+      manager.updateItems((index, item) => '$index:${item.toUpperCase()}');
+
+      expect(manager.values, ['0:A', '1:B', '2:C', '3:D']);
+    });
+
+    test('updateItems when update function throws sets error', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page = PageData<int, String>(data: ['a', 'b']);
+      manager.refresh(newPage: page);
+
+      manager.updateItems((index, item) => throw Exception('Update error'));
+
+      expect(manager.value, isA<Warning<int, String>>());
+      final state = manager.value as Warning<int, String>;
+      expect(state.error, isA<Exception>());
+    });
+
     test('prependPageKey returns first page prependKey', () async {
       final manager = PageManager<int, String>(delay: Duration.zero);
       const page = PageData<int, String>(data: ['a', 'b'], prependKey: 42);
