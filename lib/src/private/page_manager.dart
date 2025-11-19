@@ -154,4 +154,45 @@ class PageManager<PageKey, Value>
       setError(error: error, stackTrace: stackTrace);
     }
   }
+
+  void updateItems(Value Function(int index, Value item) update) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentValue = value;
+    if (currentValue is! Paging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      var itemIndexAcrossPages = 0;
+      final updatedPages = <PageData<PageKey, Value>>[];
+
+      for (final page in currentValue.pages) {
+        final updatedPageData = <Value>[];
+
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = itemIndexAcrossPages + i;
+          final item = page.data[i];
+          final updatedItem = update(globalIndex, item);
+          updatedPageData.add(updatedItem);
+        }
+
+        updatedPages.add(
+          PageData(
+            data: updatedPageData,
+            prependKey: page.prependKey,
+            appendKey: page.appendKey,
+          ),
+        );
+
+        itemIndexAcrossPages += page.data.length;
+      }
+
+      value = Paging(state: currentValue.state, data: updatedPages);
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
 }

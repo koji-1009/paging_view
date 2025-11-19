@@ -39,6 +39,16 @@ abstract class DataSource<PageKey, Value> {
     _manager.updateItem(index, update);
   }
 
+  /// Update all items by applying the [update] function to each item.
+  ///
+  /// The [update] function receives the current index and item for each element,
+  /// and should return the updated item.
+  /// This is similar to [List.asMap().map()] but updates the data source in place.
+  /// If the update function throws an error, the error will be set via [PageManager.setError].
+  void updateItems(Value Function(int index, Value item) update) {
+    _manager.updateItems(update);
+  }
+
   /// Reload and then replace the data.
   Future<void> refresh() async {
     try {

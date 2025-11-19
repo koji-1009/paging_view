@@ -82,5 +82,25 @@ void main() {
 
       expect(() => dataSource.dispose(), returnsNormally);
     });
+
+    test('updateItem updates single item', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(LoadType.init);
+
+      dataSource.updateItem(1, (item) => item.toUpperCase());
+
+      expect(dataSource.notifier.values, ['1', '2', '3']);
+      dataSource.dispose();
+    });
+
+    test('updateItems updates all items with index', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(LoadType.init);
+
+      dataSource.updateItems((index, item) => '$index:$item');
+
+      expect(dataSource.notifier.values, ['0:1', '1:2', '2:3']);
+      dataSource.dispose();
+    });
   });
 }
