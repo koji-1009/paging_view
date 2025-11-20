@@ -399,6 +399,93 @@ void main() {
       expect(state.error, isA<RangeError>());
     });
 
+    test('insertItem at page boundary', () async {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
+      const page2 = PageData<int, String>(data: ['c', 'd']);
+
+      manager.refresh(newPage: page1);
+      await manager.append(newPage: page2);
+
+      // Insert at the boundary (index 2, start of page2)
+      manager.insertItem(2, 'x');
+
+      expect(manager.values, ['a', 'b', 'x', 'c', 'd']);
+    });
+
+    test('updateItem after dispose does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page = PageData<int, String>(data: ['a', 'b']);
+      manager.refresh(newPage: page);
+
+      manager.dispose();
+      manager.updateItem(0, (item) => 'changed');
+
+      expect(manager.values, ['a', 'b']); // unchanged
+    });
+
+    test('removeItem after dispose does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page = PageData<int, String>(data: ['a', 'b']);
+      manager.refresh(newPage: page);
+
+      manager.dispose();
+      manager.removeItem(0);
+
+      expect(manager.values, ['a', 'b']); // unchanged
+    });
+
+    test('insertItem after dispose does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      const page = PageData<int, String>(data: ['a', 'b']);
+      manager.refresh(newPage: page);
+
+      manager.dispose();
+      manager.insertItem(0, 'x');
+
+      expect(manager.values, ['a', 'b']); // unchanged
+    });
+
+    test('updateItem in Warning state does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      manager.setError(error: Exception('error'), stackTrace: null);
+
+      manager.updateItem(0, (item) => 'changed');
+
+      expect(manager.value, isA<Warning<int, String>>()); // still Warning
+    });
+
+    test('removeItem in Warning state does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      manager.setError(error: Exception('error'), stackTrace: null);
+
+      manager.removeItem(0);
+
+      expect(manager.value, isA<Warning<int, String>>()); // still Warning
+    });
+
+    test('insertItem in Warning state does nothing', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      manager.setError(error: Exception('error'), stackTrace: null);
+
+      manager.insertItem(0, 'x');
+
+      expect(manager.value, isA<Warning<int, String>>()); // still Warning
+    });
+
+    test('multiple operations work correctly', () {
+      final manager = PageManager<int, String>(delay: Duration.zero);
+      manager.refresh(newPage: null);
+
+      manager.insertItem(0, 'a');
+      manager.insertItem(1, 'b');
+      manager.insertItem(2, 'c');
+      manager.updateItem(1, (item) => item.toUpperCase());
+      manager.removeItem(2);
+
+      expect(manager.values, ['a', 'B']);
+    });
+
     test('prependPageKey returns first page prependKey', () async {
       final manager = PageManager<int, String>(delay: Duration.zero);
       const page = PageData<int, String>(data: ['a', 'b'], prependKey: 42);

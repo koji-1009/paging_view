@@ -179,13 +179,16 @@ class PageManager<PageKey, Value>
           updatedPageData.add(updatedItem);
         }
 
-        updatedPages.add(
-          PageData(
-            data: updatedPageData,
-            prependKey: page.prependKey,
-            appendKey: page.appendKey,
-          ),
-        );
+        // Only add page if it still has data
+        if (updatedPageData.isNotEmpty) {
+          updatedPages.add(
+            PageData(
+              data: updatedPageData,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        }
 
         itemIndexAcrossPages += page.data.length;
       }
