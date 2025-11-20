@@ -69,7 +69,6 @@ abstract class DataSource<PageKey, Value> {
   /// Insert an item at the specified [index].
   ///
   /// If the index is out of range, the error will be set via [PageManager.setError].
-  /// Note: This operation may change the indices of subsequent items.
   void insertItem(int index, Value item) {
     _manager.insertItem(index, item);
   }
