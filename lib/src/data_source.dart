@@ -49,6 +49,30 @@ abstract class DataSource<PageKey, Value> {
     _manager.updateItems(update);
   }
 
+  /// Remove an item at the specified [index].
+  ///
+  /// If the index is out of range, the error will be set via [PageManager.setError].
+  void removeItem(int index) {
+    _manager.removeItem(index);
+  }
+
+  /// Remove items by applying the [test] function to each item.
+  ///
+  /// The [test] function receives the current index and item for each element,
+  /// and should return true if the item should be removed.
+  /// This is similar to [List.removeWhere()] but updates the data source in place.
+  /// If the test function throws an error, the error will be set via [PageManager.setError].
+  void removeItems(bool Function(int index, Value item) test) {
+    _manager.removeItems(test);
+  }
+
+  /// Insert an item at the specified [index].
+  ///
+  /// If the index is out of range, the error will be set via [PageManager.setError].
+  void insertItem(int index, Value item) {
+    _manager.insertItem(index, item);
+  }
+
   /// Reload and then replace the data.
   Future<void> refresh() async {
     try {

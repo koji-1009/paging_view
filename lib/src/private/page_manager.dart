@@ -179,15 +179,197 @@ class PageManager<PageKey, Value>
           updatedPageData.add(updatedItem);
         }
 
-        updatedPages.add(
-          PageData(
-            data: updatedPageData,
-            prependKey: page.prependKey,
-            appendKey: page.appendKey,
-          ),
-        );
+        // Only add page if it still has data
+        if (updatedPageData.isNotEmpty) {
+          updatedPages.add(
+            PageData(
+              data: updatedPageData,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        }
 
         itemIndexAcrossPages += page.data.length;
+      }
+
+      value = Paging(state: currentValue.state, data: updatedPages);
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  void removeItem(int index) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentValue = value;
+    if (currentValue is! Paging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final items = currentValue.items;
+      if (index < 0 || index >= items.length) {
+        throw RangeError.index(index, items, 'index', null, items.length);
+      }
+
+      var itemIndexAcrossPages = 0;
+      final updatedPages = <PageData<PageKey, Value>>[];
+
+      for (final page in currentValue.pages) {
+        final pageSize = page.data.length;
+        final isTargetInThisPage =
+            index >= itemIndexAcrossPages &&
+            index < itemIndexAcrossPages + pageSize;
+
+        if (isTargetInThisPage) {
+          final indexInPage = index - itemIndexAcrossPages;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.removeAt(indexInPage);
+
+          // Only add page if it still has data
+          if (updatedPageData.isNotEmpty) {
+            updatedPages.add(
+              PageData(
+                data: updatedPageData,
+                prependKey: page.prependKey,
+                appendKey: page.appendKey,
+              ),
+            );
+          }
+        } else {
+          updatedPages.add(page);
+        }
+
+        itemIndexAcrossPages += pageSize;
+      }
+
+      value = Paging(state: currentValue.state, data: updatedPages);
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  void removeItems(bool Function(int index, Value item) test) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentValue = value;
+    if (currentValue is! Paging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      var itemIndexAcrossPages = 0;
+      final updatedPages = <PageData<PageKey, Value>>[];
+
+      for (final page in currentValue.pages) {
+        final updatedPageData = <Value>[];
+
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = itemIndexAcrossPages + i;
+          final item = page.data[i];
+          final shouldRemove = test(globalIndex, item);
+
+          if (!shouldRemove) {
+            updatedPageData.add(item);
+          }
+        }
+
+        // Only add page if it still has data
+        if (updatedPageData.isNotEmpty) {
+          updatedPages.add(
+            PageData(
+              data: updatedPageData,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        }
+
+        itemIndexAcrossPages += page.data.length;
+      }
+
+      value = Paging(state: currentValue.state, data: updatedPages);
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  void insertItem(int index, Value item) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentValue = value;
+    if (currentValue is! Paging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final items = currentValue.items;
+      if (index < 0 || index > items.length) {
+        throw RangeError.range(index, 0, items.length, 'index');
+      }
+
+      // Special case: insert at the end
+      if (index == items.length) {
+        if (currentValue.pages.isEmpty) {
+          // Create a new page if there are no pages
+          value = Paging(
+            state: currentValue.state,
+            data: [
+              PageData(data: [item]),
+            ],
+          );
+          return;
+        }
+
+        // Add to the last page
+        final lastPage = currentValue.pages.last;
+        final updatedPages = List<PageData<PageKey, Value>>.from(
+          currentValue.pages.take(currentValue.pages.length - 1),
+        );
+        updatedPages.add(
+          PageData(
+            data: [...lastPage.data, item],
+            prependKey: lastPage.prependKey,
+            appendKey: lastPage.appendKey,
+          ),
+        );
+        value = Paging(state: currentValue.state, data: updatedPages);
+        return;
+      }
+
+      var itemIndexAcrossPages = 0;
+      final updatedPages = <PageData<PageKey, Value>>[];
+
+      for (final page in currentValue.pages) {
+        final pageSize = page.data.length;
+        final isTargetInThisPage =
+            index >= itemIndexAcrossPages &&
+            index < itemIndexAcrossPages + pageSize;
+
+        if (isTargetInThisPage) {
+          final indexInPage = index - itemIndexAcrossPages;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.insert(indexInPage, item);
+
+          updatedPages.add(
+            PageData(
+              data: updatedPageData,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        } else {
+          updatedPages.add(page);
+        }
+
+        itemIndexAcrossPages += pageSize;
       }
 
       value = Paging(state: currentValue.state, data: updatedPages);

@@ -102,5 +102,35 @@ void main() {
       expect(dataSource.notifier.values, ['0:1', '1:2', '2:3']);
       dataSource.dispose();
     });
+
+    test('removeItem removes single item', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(LoadType.init);
+
+      dataSource.removeItem(1);
+
+      expect(dataSource.notifier.values, ['1', '3']);
+      dataSource.dispose();
+    });
+
+    test('removeItems removes items matching condition', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(LoadType.init);
+
+      dataSource.removeItems((index, item) => item == '2');
+
+      expect(dataSource.notifier.values, ['1', '3']);
+      dataSource.dispose();
+    });
+
+    test('insertItem inserts item at specified index', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(LoadType.init);
+
+      dataSource.insertItem(1, 'x');
+
+      expect(dataSource.notifier.values, ['1', 'x', '2', '3']);
+      dataSource.dispose();
+    });
   });
 }
