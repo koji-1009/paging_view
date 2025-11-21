@@ -7,3 +7,12 @@ typedef TypedWidgetBuilder<Value> =
 /// Create widget with error [Object].
 typedef ExceptionWidgetBuilder =
     Widget Function(BuildContext context, Object error, StackTrace? stackTrace);
+
+/// Create widget with grouped [Value] type, global index and local index.
+typedef GroupedTypedWidgetBuilder<Value> =
+    Widget Function(
+      BuildContext context,
+      Value element,
+      int globalIndex,
+      int localIndex,
+    );
