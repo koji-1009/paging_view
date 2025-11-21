@@ -205,7 +205,7 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    Widget? itemBuilder(BuildContext context, int index) {
+    Widget itemBuilder(BuildContext context, int index) {
       if (index == 0) {
         // prepend
         WidgetsBinding.instance.addPostFrameCallback((_) async {

@@ -157,6 +157,23 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       );
     }
 
+    Widget itemBuilder(BuildContext context, int index) {
+      if (index == 0) {
+        // prepend
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await dataSource.update(LoadType.prepend);
+        });
+      } else if (index == items.length - 1) {
+        // append
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await dataSource.update(LoadType.append);
+        });
+      }
+
+      final element = items[index];
+      return builder(context, element, index);
+    }
+
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: padding.top)),
@@ -167,24 +184,10 @@ class _Grid<PageKey, Value> extends StatelessWidget {
           ),
         SliverPadding(
           padding: _horizontalPadding,
-          sliver: SliverGrid(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              if (index == 0) {
-                // prepend
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  await dataSource.update(LoadType.prepend);
-                });
-              } else if (index == items.length - 1) {
-                // append
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  await dataSource.update(LoadType.append);
-                });
-              }
-
-              final element = items[index];
-              return builder(context, element, index);
-            }, childCount: items.length),
+          sliver: SliverGrid.builder(
             gridDelegate: gridDelegate,
+            itemBuilder: itemBuilder,
+            itemCount: items.length,
           ),
         ),
         if (state is LoadStateLoading && state.isAppend)
