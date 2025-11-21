@@ -1,3 +1,12 @@
+## 2.3.0
+
+* Add `insertItem`, `removeItem` and `removeItems` functions to `DataSource`
+* Add `GroupedPagingList` and `GroupedPagingSliverList` widgets
+* Add `GroupedDataSource` class
+* Update example project
+* Code cleanup
+* Update README
+
 ## 2.2.0
 
 * Add `updateItems` function to `DataSource`
