@@ -31,7 +31,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-  }) : _itemSeparatorBuilder = null;
+  }) : _separatorBuilder = null;
 
   /// Creates a scrollable list with grouped items, with separators.
   const GroupedPagingList.separated({
@@ -58,8 +58,8 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-    required IndexedWidgetBuilder itemSeparatorBuilder,
-  }) : _itemSeparatorBuilder = itemSeparatorBuilder;
+    required IndexedWidgetBuilder separatorBuilder,
+  }) : _separatorBuilder = separatorBuilder;
 
   /// The grouped data source that provides grouped pages.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
@@ -127,7 +127,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// see [CustomScrollView.clipBehavior]
   final Clip clipBehavior;
 
-  final IndexedWidgetBuilder? _itemSeparatorBuilder;
+  final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +147,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,
       slivers: [
-        _itemSeparatorBuilder != null
+        _separatorBuilder != null
             ? SliverGroupedPagingList<PageKey, Parent, Value>.separated(
                 key: key,
                 dataSource: dataSource,
@@ -159,7 +159,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
                 padding: padding,
-                itemSeparatorBuilder: _itemSeparatorBuilder,
+                separatorBuilder: _separatorBuilder,
               )
             : SliverGroupedPagingList<PageKey, Parent, Value>(
                 key: key,

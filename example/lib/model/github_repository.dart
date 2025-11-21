@@ -38,7 +38,7 @@ class GitHubRepository {
     final rawList = jsonDecode(response.body) as List<dynamic>;
     final list = rawList
         .map((e) => Map<String, dynamic>.from(e as Map))
-        .map((e) => Repository.fromJson(e))
+        .map((e) => Repository.fromJson({...e, 'since': appendKey.toString()}))
         .toList();
 
     return PageData(data: list, appendKey: appendKey);

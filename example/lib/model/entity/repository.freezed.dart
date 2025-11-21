@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Repository implements DiagnosticableTreeMixin {
 
- String get name; int get id; String get fullName; String get description;
+ String get name; int get id; String get fullName; String get description; String get since;
 /// Create a copy of Repository
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $RepositoryCopyWith<Repository> get copyWith => _$RepositoryCopyWithImpl<Reposit
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Repository'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('fullName', fullName))..add(DiagnosticsProperty('description', description));
+    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('fullName', fullName))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('since', since));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Repository&&(identical(other.name, name) || other.name == name)&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Repository&&(identical(other.name, name) || other.name == name)&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.since, since) || other.since == since));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,id,fullName,description);
+int get hashCode => Object.hash(runtimeType,name,id,fullName,description,since);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Repository(name: $name, id: $id, fullName: $fullName, description: $description)';
+  return 'Repository(name: $name, id: $id, fullName: $fullName, description: $description, since: $since)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $RepositoryCopyWith<$Res>  {
   factory $RepositoryCopyWith(Repository value, $Res Function(Repository) _then) = _$RepositoryCopyWithImpl;
 @useResult
 $Res call({
- String name, int id, String fullName, String description
+ String name, int id, String fullName, String description, String since
 });
 
 
@@ -71,12 +71,13 @@ class _$RepositoryCopyWithImpl<$Res>
 
 /// Create a copy of Repository
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? id = null,Object? fullName = null,Object? description = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? id = null,Object? fullName = null,Object? description = null,Object? since = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,since: null == since ? _self.since : since // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int id,  String fullName,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  int id,  String fullName,  String description,  String since)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Repository() when $default != null:
-return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
+return $default(_that.name,_that.id,_that.fullName,_that.description,_that.since);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int id,  String fullName,  String description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  int id,  String fullName,  String description,  String since)  $default,) {final _that = this;
 switch (_that) {
 case _Repository():
-return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
+return $default(_that.name,_that.id,_that.fullName,_that.description,_that.since);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int id,  String fullName,  String description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  int id,  String fullName,  String description,  String since)?  $default,) {final _that = this;
 switch (_that) {
 case _Repository() when $default != null:
-return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
+return $default(_that.name,_that.id,_that.fullName,_that.description,_that.since);case _:
   return null;
 
 }
@@ -218,13 +219,14 @@ return $default(_that.name,_that.id,_that.fullName,_that.description);case _:
 @JsonSerializable()
 
 class _Repository with DiagnosticableTreeMixin implements Repository {
-  const _Repository({required this.name, required this.id, required this.fullName, this.description = ''});
+  const _Repository({required this.name, required this.id, required this.fullName, this.description = '', this.since = ''});
   factory _Repository.fromJson(Map<String, dynamic> json) => _$RepositoryFromJson(json);
 
 @override final  String name;
 @override final  int id;
 @override final  String fullName;
 @override@JsonKey() final  String description;
+@override@JsonKey() final  String since;
 
 /// Create a copy of Repository
 /// with the given fields replaced by the non-null parameter values.
@@ -240,21 +242,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'Repository'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('fullName', fullName))..add(DiagnosticsProperty('description', description));
+    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('id', id))..add(DiagnosticsProperty('fullName', fullName))..add(DiagnosticsProperty('description', description))..add(DiagnosticsProperty('since', since));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Repository&&(identical(other.name, name) || other.name == name)&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Repository&&(identical(other.name, name) || other.name == name)&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.since, since) || other.since == since));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,id,fullName,description);
+int get hashCode => Object.hash(runtimeType,name,id,fullName,description,since);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Repository(name: $name, id: $id, fullName: $fullName, description: $description)';
+  return 'Repository(name: $name, id: $id, fullName: $fullName, description: $description, since: $since)';
 }
 
 
@@ -265,7 +267,7 @@ abstract mixin class _$RepositoryCopyWith<$Res> implements $RepositoryCopyWith<$
   factory _$RepositoryCopyWith(_Repository value, $Res Function(_Repository) _then) = __$RepositoryCopyWithImpl;
 @override @useResult
 $Res call({
- String name, int id, String fullName, String description
+ String name, int id, String fullName, String description, String since
 });
 
 
@@ -282,12 +284,13 @@ class __$RepositoryCopyWithImpl<$Res>
 
 /// Create a copy of Repository
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? id = null,Object? fullName = null,Object? description = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? id = null,Object? fullName = null,Object? description = null,Object? since = null,}) {
   return _then(_Repository(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,since: null == since ? _self.since : since // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

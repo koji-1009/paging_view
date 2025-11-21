@@ -4,6 +4,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 /// A sliver that displays items grouped by a parent element.
 class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
@@ -21,7 +22,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
-  }) : _itemSeparatorBuilder = null;
+  }) : _separatorBuilder = null;
 
   /// Creates a sliver with grouped items and separators.
   const SliverGroupedPagingList.separated({
@@ -37,8 +38,8 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
-    required IndexedWidgetBuilder itemSeparatorBuilder,
-  }) : _itemSeparatorBuilder = itemSeparatorBuilder;
+    required IndexedWidgetBuilder separatorBuilder,
+  }) : _separatorBuilder = separatorBuilder;
 
   /// The grouped data source that provides grouped pages.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
@@ -73,7 +74,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// The padding around the list.
   final EdgeInsets padding;
 
-  final IndexedWidgetBuilder? _itemSeparatorBuilder;
+  final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +94,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           emptyWidget: emptyWidget,
           fillRemainEmptyWidget: fillRemainEmptyWidget,
           padding: padding,
-          itemSeparatorBuilder: _itemSeparatorBuilder,
+          separatorBuilder: _separatorBuilder,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -125,7 +126,7 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     required this.emptyWidget,
     required this.fillRemainEmptyWidget,
     required this.padding,
-    required this.itemSeparatorBuilder,
+    required this.separatorBuilder,
   });
 
   final LoadState state;
@@ -140,7 +141,7 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
   final Widget emptyWidget;
   final bool fillRemainEmptyWidget;
   final EdgeInsets padding;
-  final IndexedWidgetBuilder? itemSeparatorBuilder;
+  final IndexedWidgetBuilder? separatorBuilder;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -178,28 +179,6 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
       );
     }
 
-    final items = [...groupedData.map((parent) => parent.children).flattened];
-    Widget itemBuilder({
-      required BuildContext context,
-      required Value value,
-      required int globalIndex,
-      required int localIndex,
-    }) {
-      if (globalIndex == 0) {
-        // prepend
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await dataSource.update(LoadType.prepend);
-        });
-      } else if (globalIndex == items.length - 1) {
-        // append
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await dataSource.update(LoadType.append);
-        });
-      }
-
-      return valueBuilder(context, value, globalIndex, localIndex);
-    }
-
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: padding.top)),
@@ -208,36 +187,62 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
+
+        SliverVisibilityDetector(
+          key: const Key('SliverGroupedPagingListPrependTrigger'),
+          onVisibilityChanged: (info) {
+            if (info.visibleFraction == 1) {
+              dataSource.update(LoadType.prepend);
+            }
+          },
+          sliver: const SliverToBoxAdapter(
+            child: SizedBox.square(dimension: 0.1),
+          ),
+        ),
+
         ...groupedData.mapIndexed(
-          (groupIndex, parent) => SliverPadding(
+          (groupIndex, group) => SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverMainAxisGroup(
               slivers: [
                 SliverToBoxAdapter(
-                  child: parentBuilder(context, parent.parent, groupIndex),
+                  child: parentBuilder(context, group.parent, groupIndex),
                 ),
-                itemSeparatorBuilder == null
-                    ? SliverList.builder(
-                        itemBuilder: (context, index) => itemBuilder(
-                          context: context,
-                          value: parent.children[index].value,
-                          globalIndex: parent.children[index].index,
-                          localIndex: index,
-                        ),
-                        itemCount: parent.children.length,
-                      )
-                    : SliverList.separated(
-                        itemBuilder: (context, index) => itemBuilder(
-                          context: context,
-                          value: parent.children[index].value,
-                          globalIndex: parent.children[index].index,
-                          localIndex: index,
-                        ),
-                        separatorBuilder: itemSeparatorBuilder!,
-                        itemCount: parent.children.length,
-                      ),
+                if (separatorBuilder == null)
+                  SliverList.builder(
+                    itemCount: group.children.length,
+                    itemBuilder: (context, index) => valueBuilder(
+                      context,
+                      group.children[index].value,
+                      group.children[index].index,
+                      index,
+                    ),
+                  )
+                else
+                  SliverList.separated(
+                    itemCount: group.children.length,
+                    itemBuilder: (context, index) => valueBuilder(
+                      context,
+                      group.children[index].value,
+                      group.children[index].index,
+                      index,
+                    ),
+                    separatorBuilder: separatorBuilder!,
+                  ),
               ],
             ),
+          ),
+        ),
+
+        SliverVisibilityDetector(
+          key: const Key('SliverGroupedPagingListAppendTrigger'),
+          onVisibilityChanged: (info) {
+            if (info.visibleFraction == 1) {
+              dataSource.update(LoadType.append);
+            }
+          },
+          sliver: const SliverToBoxAdapter(
+            child: SizedBox.square(dimension: 0.1),
           ),
         ),
 
