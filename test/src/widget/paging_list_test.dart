@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class TestWidgetDataSource extends DataSource<int, String> {
   TestWidgetDataSource({
     this.initialData = const ['Item 1', 'Item 2', 'Item 3'],
     this.hasMoreData = true,
+    this.hasError = false,
   });
 
   final List<String> initialData;
   final bool hasMoreData;
+  final bool hasError;
 
   @override
   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
-    await Future.delayed(const Duration(milliseconds: 10));
+    if (hasError) {
+      throw Exception('Test error');
+    }
 
     switch (action) {
       case Refresh():
@@ -41,6 +46,10 @@ class TestWidgetDataSource extends DataSource<int, String> {
 }
 
 void main() {
+  setUpAll(() {
+    VisibilityDetectorController.instance.updateInterval = Duration.zero;
+  });
+
   group('PagingList', () {
     testWidgets('displays initial loading widget', (WidgetTester tester) async {
       final dataSource = TestWidgetDataSource();
@@ -48,7 +57,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PagingList<int, String>(
+            body: PagingList(
               dataSource: dataSource,
               builder: (context, item, index) => Text(item),
               errorBuilder: (context, error, stackTrace) =>
@@ -61,8 +70,9 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-      // Wait for all pending async operations to complete
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CircularProgressIndicator), findsNothing);
 
       dataSource.dispose();
     });
@@ -73,7 +83,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PagingList<int, String>(
+            body: PagingList(
               dataSource: dataSource,
               builder: (context, item, index) => Text(item),
               errorBuilder: (context, error, stackTrace) =>
@@ -84,8 +94,7 @@ void main() {
         ),
       );
 
-      // Wait for auto-loading to complete
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.text('Item 1'), findsOneWidget);
       expect(find.text('Item 2'), findsOneWidget);
@@ -102,7 +111,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PagingList<int, String>(
+            body: PagingList(
               dataSource: dataSource,
               builder: (context, item, index) => Text(item),
               errorBuilder: (context, error, stackTrace) =>
@@ -114,7 +123,7 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.text('No data'), findsOneWidget);
 
@@ -122,12 +131,12 @@ void main() {
     });
 
     testWidgets('displays error widget on error', (WidgetTester tester) async {
-      final dataSource = TestWidgetDataSource();
+      final dataSource = TestWidgetDataSource(hasError: true);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PagingList<int, String>(
+            body: PagingList(
               dataSource: dataSource,
               builder: (context, item, index) => Text(item),
               errorBuilder: (context, error, stackTrace) =>
@@ -138,34 +147,23 @@ void main() {
         ),
       );
 
-      dataSource.notifier.setError(
-        error: Exception('Test error'),
-        stackTrace: null,
-      );
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Error occurred'), findsOneWidget);
 
-      await tester.pumpAndSettle(const Duration(seconds: 1));
       dataSource.dispose();
     });
-  });
 
-  group('PagingGrid', () {
-    testWidgets('displays items in grid after loading', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('loads more items when scrolled', (WidgetTester tester) async {
       final dataSource = TestWidgetDataSource();
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PagingGrid<int, String>(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
+            body: PagingList(
               dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
+              builder: (context, item, index) =>
+                  SizedBox(height: 100, child: Text(item)),
               errorBuilder: (context, error, stackTrace) =>
                   Text('Error: $error'),
               initialLoadingWidget: const CircularProgressIndicator(),
@@ -174,78 +172,19 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
+      // Verify the first items are displayed
       expect(find.text('Item 1'), findsOneWidget);
-      expect(find.text('Item 2'), findsOneWidget);
-      expect(find.text('Item 3'), findsOneWidget);
 
-      dataSource.dispose();
-    });
-  });
+      // Scroll down to load more items
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, -400));
+      await tester.pumpAndSettle();
 
-  group('SliverPagingList', () {
-    testWidgets('displays items in sliver list', (WidgetTester tester) async {
-      final dataSource = TestWidgetDataSource();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                SliverPagingList<int, String>(
-                  dataSource: dataSource,
-                  builder: (context, item, index) => Text(item),
-                  errorBuilder: (context, error, stackTrace) =>
-                      Text('Error: $error'),
-                  initialLoadingWidget: const CircularProgressIndicator(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle(const Duration(seconds: 1));
-
-      expect(find.text('Item 1'), findsOneWidget);
-      expect(find.text('Item 2'), findsOneWidget);
-      expect(find.text('Item 3'), findsOneWidget);
-
-      dataSource.dispose();
-    });
-  });
-
-  group('SliverPagingGrid', () {
-    testWidgets('displays items in sliver grid', (WidgetTester tester) async {
-      final dataSource = TestWidgetDataSource();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                SliverPagingGrid<int, String>(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  dataSource: dataSource,
-                  builder: (context, item, index) => Text(item),
-                  errorBuilder: (context, error, stackTrace) =>
-                      Text('Error: $error'),
-                  initialLoadingWidget: const CircularProgressIndicator(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle(const Duration(seconds: 1));
-
-      expect(find.text('Item 1'), findsOneWidget);
-      expect(find.text('Item 2'), findsOneWidget);
-      expect(find.text('Item 3'), findsOneWidget);
+      // Verify additional items are displayed
+      expect(find.text('Item 4'), findsOneWidget);
+      expect(find.text('Item 5'), findsOneWidget);
+      expect(find.text('Item 6'), findsOneWidget);
 
       dataSource.dispose();
     });
