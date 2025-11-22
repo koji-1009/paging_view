@@ -13,6 +13,7 @@ _Repository _$RepositoryFromJson(Map<String, dynamic> json) =>
         id: $checkedConvert('id', (v) => (v as num).toInt()),
         fullName: $checkedConvert('full_name', (v) => v as String),
         description: $checkedConvert('description', (v) => v as String? ?? ''),
+        since: $checkedConvert('since', (v) => v as String? ?? ''),
       );
       return val;
     }, fieldKeyMap: const {'fullName': 'full_name'});
@@ -23,4 +24,5 @@ Map<String, dynamic> _$RepositoryToJson(_Repository instance) =>
       'id': instance.id,
       'full_name': instance.fullName,
       'description': instance.description,
+      'since': instance.since,
     };

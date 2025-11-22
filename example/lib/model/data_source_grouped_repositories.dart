@@ -3,11 +3,11 @@ import 'package:example/model/github_repository.dart';
 import 'package:paging_view/paging_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'data_source_public_repositories.g.dart';
+part 'data_source_grouped_repositories.g.dart';
 
 @riverpod
-DataSourcePublicRepositories dataSourcePublicRepositories(Ref ref) {
-  final dataSource = DataSourcePublicRepositories(
+ExampleGroupedDataSource groupedDataSource(Ref ref) {
+  final dataSource = ExampleGroupedDataSource(
     repository: ref.watch(gitHubRepositoryProvider),
   );
 
@@ -18,8 +18,9 @@ DataSourcePublicRepositories dataSourcePublicRepositories(Ref ref) {
   return dataSource;
 }
 
-final class DataSourcePublicRepositories extends DataSource<int, Repository> {
-  DataSourcePublicRepositories({required this.repository});
+class ExampleGroupedDataSource
+    extends GroupedDataSource<int, String, Repository> {
+  ExampleGroupedDataSource({required this.repository});
 
   final GitHubRepository repository;
 
@@ -40,4 +41,7 @@ final class DataSourcePublicRepositories extends DataSource<int, Repository> {
     }
     return Success(page: data);
   }
+
+  @override
+  String groupBy(Repository value) => 'since: ${value.since}';
 }

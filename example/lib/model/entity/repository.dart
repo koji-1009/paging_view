@@ -11,6 +11,7 @@ abstract class Repository with _$Repository {
     required int id,
     required String fullName,
     @Default('') String description,
+    @Default('') String since,
   }) = _Repository;
 
   factory Repository.fromJson(Map<String, dynamic> json) =>
