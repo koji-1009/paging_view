@@ -1,3 +1,10 @@
+## 2.3.1
+
+* Fix grouped paging list bug.
+* Add unit tests.
+* Add `visibility_detector` package dependency.
+* Update example project.
+
 ## 2.3.0
 
 * Add `insertItem`, `removeItem` and `removeItems` functions to `DataSource`
