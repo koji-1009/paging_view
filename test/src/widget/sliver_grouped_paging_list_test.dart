@@ -97,5 +97,120 @@ void main() {
       expect(find.textContaining('Error:'), findsOneWidget);
       dataSource.dispose();
     });
+
+    testWidgets('displays nothing for empty groups', (
+      WidgetTester tester,
+    ) async {
+      final dataSource = TestGroupedDataSource(items: []);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                SliverGroupedPagingList<int, String, String>(
+                  dataSource: dataSource,
+                  headerBuilder: (context, groupKey, index) =>
+                      Text('Header: $groupKey'),
+                  itemBuilder: (context, item, globalIndex, localIndex) =>
+                      Text(item),
+                  errorBuilder: (context, error, stackTrace) =>
+                      Text('Error: $error'),
+                  initialLoadingWidget: const CircularProgressIndicator(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(Text), findsNothing);
+      dataSource.dispose();
+    });
+
+    testWidgets('displays single group', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource(items: ['X1', 'X2']);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                SliverGroupedPagingList<int, String, String>(
+                  dataSource: dataSource,
+                  headerBuilder: (context, groupKey, index) =>
+                      Text('Header: $groupKey'),
+                  itemBuilder: (context, item, globalIndex, localIndex) =>
+                      Text(item),
+                  errorBuilder: (context, error, stackTrace) =>
+                      Text('Error: $error'),
+                  initialLoadingWidget: const CircularProgressIndicator(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Group A'), findsNothing);
+      expect(find.text('Header: Group B'), findsOneWidget);
+      expect(find.text('X1'), findsOneWidget);
+      expect(find.text('X2'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('handles special group names', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource(items: ['', '@@@']);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                SliverGroupedPagingList<int, String, String>(
+                  dataSource: dataSource,
+                  headerBuilder: (context, groupKey, index) =>
+                      Text('Header: $groupKey'),
+                  itemBuilder: (context, item, globalIndex, localIndex) =>
+                      Text(item),
+                  errorBuilder: (context, error, stackTrace) =>
+                      Text('Error: $error'),
+                  initialLoadingWidget: const CircularProgressIndicator(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Group B'), findsOneWidget);
+      expect(find.text(''), findsOneWidget);
+      expect(find.text('@@@'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('shows loading widget initially', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                SliverGroupedPagingList<int, String, String>(
+                  dataSource: dataSource,
+                  headerBuilder: (context, groupKey, index) =>
+                      Text('Header: $groupKey'),
+                  itemBuilder: (context, item, globalIndex, localIndex) =>
+                      Text(item),
+                  errorBuilder: (context, error, stackTrace) =>
+                      Text('Error: $error'),
+                  initialLoadingWidget: const CircularProgressIndicator(),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pumpAndSettle();
+      dataSource.dispose();
+    });
   });
 }

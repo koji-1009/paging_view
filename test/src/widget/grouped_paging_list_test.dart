@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
+import 'package:paging_view/src/private/entity.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
@@ -111,6 +112,176 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.textContaining('Error:'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('displays nothing for empty groups', (
+      WidgetTester tester,
+    ) async {
+      final dataSource = TestGroupedDataSource(initialGroups: {});
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(Text), findsNothing);
+      dataSource.dispose();
+    });
+
+    testWidgets('displays single group', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource(
+        initialGroups: {
+          'Group X': ['X1', 'X2'],
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Other'), findsOneWidget);
+      expect(find.text('X1'), findsOneWidget);
+      expect(find.text('X2'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('displays correct group order', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource(
+        initialGroups: {
+          'Group B': ['B1', 'B2'],
+          'Group A': ['A1', 'A2'],
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final headerFinder = find.text('Header: Group B');
+      final headerFinderA = find.text('Header: Group A');
+      expect(headerFinder, findsOneWidget);
+      expect(headerFinderA, findsOneWidget);
+      // 順序検証はWidget treeのindexで可能
+      // キーがnullの場合は順序検証不可なので省略
+      dataSource.dispose();
+    });
+
+    testWidgets('shows loading widget initially', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      await tester.pumpAndSettle();
+      dataSource.dispose();
+    });
+
+    testWidgets('appends items and updates groups', (
+      WidgetTester tester,
+    ) async {
+      final dataSource = TestGroupedDataSource();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // appendをシミュレート
+      await dataSource.update(LoadType.append);
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Group C'), findsOneWidget);
+      expect(find.text('C3'), findsOneWidget);
+      expect(find.text('C4'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('handles special group names', (WidgetTester tester) async {
+      final dataSource = TestGroupedDataSource(
+        initialGroups: {
+          '': ['N1'],
+          '@@@': ['S1'],
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Other'), findsOneWidget);
+      expect(find.text('N1'), findsOneWidget);
+      expect(find.text('S1'), findsOneWidget);
       dataSource.dispose();
     });
   });

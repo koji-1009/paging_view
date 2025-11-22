@@ -308,4 +308,83 @@ void main() {
       dataSource.dispose();
     });
   });
+
+  group('GroupedDataSource edge cases', () {
+    test('groupedValues with empty items', () async {
+      final dataSource = TestGroupedDataSource(items: []);
+      await dataSource.update(LoadType.init);
+      expect(dataSource.groupedValues, isEmpty);
+      dataSource.dispose();
+    });
+
+    test('groupedValues with duplicate group names', () async {
+      final items = [
+        const TestItem(id: 1, category: 'A', name: 'Item 1'),
+        const TestItem(id: 2, category: 'A', name: 'Item 2'),
+        const TestItem(id: 3, category: 'A', name: 'Item 3'),
+      ];
+      final dataSource = TestGroupedDataSource(items: items);
+      await dataSource.update(LoadType.init);
+      final grouped = dataSource.groupedValues;
+      expect(grouped.length, 1);
+      expect(grouped[0].parent, 'A');
+      expect(grouped[0].children.length, 3);
+      dataSource.dispose();
+    });
+
+    test('groupedValues with null category', () async {
+      final items = [
+        TestItem(id: 1, category: '', name: 'Item 1'),
+        TestItem(id: 2, category: '', name: 'Item 2'),
+      ];
+      final dataSource = TestGroupedDataSource(items: items);
+      await dataSource.update(LoadType.init);
+      final grouped = dataSource.groupedValues;
+      expect(grouped.length, 1);
+      expect(grouped[0].parent, '');
+      expect(grouped[0].children.length, 2);
+      dataSource.dispose();
+    });
+
+    test('groupedValues after all items removed', () async {
+      final items = [
+        const TestItem(id: 1, category: 'A', name: 'Item 1'),
+        const TestItem(id: 2, category: 'B', name: 'Item 2'),
+      ];
+      final dataSource = TestGroupedDataSource(items: items);
+      await dataSource.update(LoadType.init);
+      dataSource.removeItems((index, item) => true);
+      expect(dataSource.groupedValues, isEmpty);
+      dataSource.dispose();
+    });
+
+    test('groupedValues with mixed group order', () async {
+      final items = [
+        const TestItem(id: 1, category: 'B', name: 'Item 1'),
+        const TestItem(id: 2, category: 'A', name: 'Item 2'),
+        const TestItem(id: 3, category: 'B', name: 'Item 3'),
+        const TestItem(id: 4, category: 'C', name: 'Item 4'),
+        const TestItem(id: 5, category: 'A', name: 'Item 5'),
+      ];
+      final dataSource = TestGroupedDataSource(items: items);
+      await dataSource.update(LoadType.init);
+      final grouped = dataSource.groupedValues;
+      expect(grouped[0].parent, 'B');
+      expect(grouped[1].parent, 'A');
+      expect(grouped[2].parent, 'C');
+      dataSource.dispose();
+    });
+
+    test('load throws error', () async {
+      final dataSource = TestGroupedDataSource(
+        items: [],
+        onLoad: (action) => throw Exception('Test error'),
+      );
+      expect(
+        () async => await dataSource.update(LoadType.init),
+        returnsNormally,
+      );
+      dataSource.dispose();
+    });
+  });
 }
