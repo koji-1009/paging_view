@@ -4,7 +4,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
 /// A sliver that displays items grouped by a parent element.
 class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
@@ -214,19 +214,13 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
-
-        SliverVisibilityDetector(
-          key: const Key('SliverGroupedPagingListPrependTrigger'),
-          onVisibilityChanged: (info) {
-            if (info.visibleFraction == 1) {
+        SliverBoundsDetector(
+          onVisibilityChanged: (isVisible) {
+            if (isVisible) {
               dataSource.update(LoadType.prepend);
             }
           },
-          sliver: const SliverToBoxAdapter(
-            child: SizedBox.square(dimension: 0.1),
-          ),
         ),
-
         ...groupedData.mapIndexed(
           (groupIndex, group) => SliverPadding(
             padding: _horizontalPadding,
@@ -266,19 +260,13 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             ),
           ),
         ),
-
-        SliverVisibilityDetector(
-          key: const Key('SliverGroupedPagingListAppendTrigger'),
-          onVisibilityChanged: (info) {
-            if (info.visibleFraction == 1) {
+        SliverBoundsDetector(
+          onVisibilityChanged: (isVisible) {
+            if (isVisible) {
               dataSource.update(LoadType.append);
             }
           },
-          sliver: const SliverToBoxAdapter(
-            child: SizedBox.square(dimension: 0.1),
-          ),
         ),
-
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,

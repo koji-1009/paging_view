@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
   TestGroupedDataSource({
@@ -32,10 +31,6 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
 }
 
 void main() {
-  setUpAll(() {
-    VisibilityDetectorController.instance.updateInterval = Duration.zero;
-  });
-
   group('SliverGroupedPagingList', () {
     testWidgets('displays grouped items in sliver', (
       WidgetTester tester,
