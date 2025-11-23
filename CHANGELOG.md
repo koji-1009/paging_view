@@ -1,3 +1,7 @@
+## 2.3.3
+
+* Fix prepend and append logic in SliverPagingGrid.
+
 ## 2.3.2
 
 * Fix prepend and append logic.
