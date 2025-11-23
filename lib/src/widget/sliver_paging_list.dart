@@ -4,7 +4,6 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 /// A sliver that manages pages and scroll position to read more data.
 /// Display a single-column list.
@@ -206,6 +205,20 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
+    Widget itemBuilder(BuildContext context, int index) {
+      if (index == 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          dataSource.update(LoadType.prepend);
+        });
+      } else if (index == items.length - 1) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          dataSource.update(LoadType.append);
+        });
+      }
+
+      return builder(context, items[index], index);
+    }
+
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: padding.top)),
@@ -215,44 +228,18 @@ class _List<PageKey, Value> extends StatelessWidget {
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
 
-        SliverVisibilityDetector(
-          key: const Key('PagingListPrependTrigger'),
-          onVisibilityChanged: (info) {
-            if (info.visibleFraction == 1) {
-              dataSource.update(LoadType.prepend);
-            }
-          },
-          sliver: const SliverToBoxAdapter(
-            child: SizedBox.square(dimension: 0.1),
-          ),
-        ),
-
         SliverPadding(
           padding: _horizontalPadding,
           sliver: _separatorBuilder != null
               ? SliverList.separated(
-                  itemBuilder: (context, index) =>
-                      builder(context, items[index], index),
+                  itemBuilder: (context, index) => itemBuilder(context, index),
                   itemCount: items.length,
                   separatorBuilder: _separatorBuilder,
                 )
               : SliverList.builder(
-                  itemBuilder: (context, index) =>
-                      builder(context, items[index], index),
+                  itemBuilder: (context, index) => itemBuilder(context, index),
                   itemCount: items.length,
                 ),
-        ),
-
-        SliverVisibilityDetector(
-          key: const Key('PagingListAppendTrigger'),
-          onVisibilityChanged: (info) {
-            if (info.visibleFraction == 1) {
-              dataSource.update(LoadType.append);
-            }
-          },
-          sliver: const SliverToBoxAdapter(
-            child: SizedBox.square(dimension: 0.1),
-          ),
         ),
 
         if (state is LoadStateLoading && state.isAppend)

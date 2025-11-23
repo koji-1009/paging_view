@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class TestWidgetDataSource extends DataSource<int, String> {
   TestWidgetDataSource({
@@ -46,10 +45,6 @@ class TestWidgetDataSource extends DataSource<int, String> {
 }
 
 void main() {
-  setUpAll(() {
-    VisibilityDetectorController.instance.updateInterval = Duration.zero;
-  });
-
   group('PagingList', () {
     testWidgets('displays initial loading widget', (WidgetTester tester) async {
       final dataSource = TestWidgetDataSource();
