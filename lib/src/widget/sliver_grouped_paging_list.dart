@@ -22,6 +22,9 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
   }) : _separatorBuilder = null;
 
   /// Creates a sliver with grouped items and separators.
@@ -38,6 +41,9 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
@@ -74,6 +80,18 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// The padding around the list.
   final EdgeInsets padding;
 
+  /// If true, group headers will be sticky.
+  final bool stickyHeader;
+
+  /// The prototype widget for the minimum extent of sticky headers.
+  /// see [SliverResizingHeader.minExtentPrototype]
+  final Widget? stickyHeaderMinExtentPrototype;
+
+  /// The prototype widget for the maximum extent of sticky headers.
+  /// see [SliverResizingHeader.maxExtentPrototype]
+  final Widget? stickyHeaderMaxExtentPrototype;
+
+  /// The separator builder between items.
   final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
@@ -85,7 +103,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           state: state,
           groupedData: dataSource.groupedValues,
           dataSource: dataSource,
-          parentBuilder: headerBuilder,
+          headerBuilder: headerBuilder,
           valueBuilder: itemBuilder,
           errorBuilder: errorBuilder,
           initialLoadingWidget: initialLoadingWidget,
@@ -94,6 +112,9 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           emptyWidget: emptyWidget,
           fillRemainEmptyWidget: fillRemainEmptyWidget,
           padding: padding,
+          stickyHeader: stickyHeader,
+          stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
+          stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
           separatorBuilder: _separatorBuilder,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
@@ -117,7 +138,7 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     required this.state,
     required this.groupedData,
     required this.dataSource,
-    required this.parentBuilder,
+    required this.headerBuilder,
     required this.valueBuilder,
     required this.errorBuilder,
     required this.initialLoadingWidget,
@@ -126,13 +147,16 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     required this.emptyWidget,
     required this.fillRemainEmptyWidget,
     required this.padding,
+    required this.stickyHeader,
+    required this.stickyHeaderMinExtentPrototype,
+    required this.stickyHeaderMaxExtentPrototype,
     required this.separatorBuilder,
   });
 
   final LoadState state;
   final List<GroupedPageData<Parent, Value>> groupedData;
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
-  final TypedWidgetBuilder<Parent> parentBuilder;
+  final TypedWidgetBuilder<Parent> headerBuilder;
   final GroupedTypedWidgetBuilder<Value> valueBuilder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
@@ -141,6 +165,9 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
   final Widget emptyWidget;
   final bool fillRemainEmptyWidget;
   final EdgeInsets padding;
+  final bool stickyHeader;
+  final Widget? stickyHeaderMinExtentPrototype;
+  final Widget? stickyHeaderMaxExtentPrototype;
   final IndexedWidgetBuilder? separatorBuilder;
 
   EdgeInsets get _horizontalPadding =>
@@ -205,9 +232,15 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverMainAxisGroup(
               slivers: [
-                SliverToBoxAdapter(
-                  child: parentBuilder(context, group.parent, groupIndex),
-                ),
+                stickyHeader
+                    ? SliverResizingHeader(
+                        minExtentPrototype: stickyHeaderMinExtentPrototype,
+                        maxExtentPrototype: stickyHeaderMaxExtentPrototype,
+                        child: headerBuilder(context, group.parent, groupIndex),
+                      )
+                    : SliverToBoxAdapter(
+                        child: headerBuilder(context, group.parent, groupIndex),
+                      ),
                 if (separatorBuilder == null)
                   SliverList.builder(
                     itemCount: group.children.length,

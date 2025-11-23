@@ -31,6 +31,9 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
   }) : _separatorBuilder = null;
 
   /// Creates a scrollable list with grouped items, with separators.
@@ -58,6 +61,9 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
@@ -127,6 +133,18 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// see [CustomScrollView.clipBehavior]
   final Clip clipBehavior;
 
+  /// If true, group headers will be sticky.
+  final bool stickyHeader;
+
+  /// The prototype widget for the minimum extent of sticky headers.
+  /// see [SliverResizingHeader.minExtentPrototype]
+  final Widget? stickyHeaderMinExtentPrototype;
+
+  /// The prototype widget for the maximum extent of sticky headers.
+  /// see [SliverResizingHeader.maxExtentPrototype]
+  final Widget? stickyHeaderMaxExtentPrototype;
+
+  /// The separator builder between items.
   final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
@@ -159,6 +177,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
                 padding: padding,
+                stickyHeader: stickyHeader,
                 separatorBuilder: _separatorBuilder,
               )
             : SliverGroupedPagingList<PageKey, Parent, Value>(
@@ -172,6 +191,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
                 padding: padding,
+                stickyHeader: stickyHeader,
               ),
       ],
     );

@@ -212,5 +212,36 @@ void main() {
       await tester.pumpAndSettle();
       dataSource.dispose();
     });
+
+    testWidgets('renders sticky headers with stickyHeader=true', (
+      WidgetTester tester,
+    ) async {
+      final dataSource = TestGroupedDataSource();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: CustomScrollView(
+            slivers: [
+              SliverGroupedPagingList<int, String, String>(
+                dataSource: dataSource,
+                headerBuilder: (context, groupKey, index) => Container(
+                  color: Colors.blue,
+                  child: Text('Header: $groupKey'),
+                ),
+                itemBuilder: (context, item, globalIndex, localIndex) =>
+                    Text(item),
+                errorBuilder: (context, error, stackTrace) =>
+                    Text('Error: $error'),
+                initialLoadingWidget: const CircularProgressIndicator(),
+                stickyHeader: true,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Header: Group A'), findsOneWidget);
+      expect(find.text('Header: Group B'), findsOneWidget);
+      dataSource.dispose();
+    });
   });
 }
