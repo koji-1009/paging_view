@@ -1,3 +1,7 @@
+## 2.3.2
+
+* Fix prepend and append logic.
+
 ## 2.3.1
 
 * Fix grouped paging list bug.
