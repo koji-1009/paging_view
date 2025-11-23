@@ -1,5 +1,5 @@
 import 'package:example/model/data_source_grouped_repositories.dart';
-import 'package:example/model/data_source_public_repositories.dart';
+import 'package:example/model/data_source_list_repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:paging_view/paging_view.dart';
@@ -17,30 +17,31 @@ class App extends StatelessWidget {
       title: 'PagingView Example',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      home: const DemoSelectorPage(),
+      home: const DemoPage(),
     );
   }
 }
 
-enum DemoType { paging, grouped }
+enum DemoType { list, grid, groupedList }
 
-class DemoSelectorPage extends StatefulWidget {
-  const DemoSelectorPage({super.key});
+class DemoPage extends StatefulWidget {
+  const DemoPage({super.key});
 
   @override
-  State<DemoSelectorPage> createState() => _DemoSelectorPageState();
+  State<DemoPage> createState() => _DemoPageState();
 }
 
-class _DemoSelectorPageState extends State<DemoSelectorPage> {
-  DemoType _selected = DemoType.paging;
+class _DemoPageState extends State<DemoPage> {
+  DemoType _selected = DemoType.list;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PagingView Example')),
+      appBar: AppBar(title: const Text('paging_view Example')),
       body: switch (_selected) {
-        DemoType.paging => const PagingListDemo(),
-        DemoType.grouped => const GroupedPagingListDemo(),
+        .list => const PagingListDemo(),
+        .grid => const GridPagingListDemo(),
+        .groupedList => const GroupedPagingListDemo(),
       },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected.index,
@@ -52,6 +53,11 @@ class _DemoSelectorPageState extends State<DemoSelectorPage> {
             icon: Icon(Icons.list),
             label: 'PagingList',
             tooltip: 'Paging List',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.grid_view),
+            label: 'GridPagingList',
+            tooltip: 'Grid Paging List',
           ),
           NavigationDestination(
             icon: Icon(Icons.group),
@@ -69,16 +75,60 @@ class PagingListDemo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataSource = ref.watch(dataSourcePublicRepositoriesProvider);
+    final dataSource = ref.watch(dataSourceProvider);
 
     return RefreshIndicator(
       onRefresh: () async => dataSource.refresh(),
       child: PagingList(
         dataSource: dataSource,
-        builder: (context, repository, index) => Card(
+        builder: (context, entity, index) => Card(
           child: ListTile(
-            title: Text(repository.fullName),
-            subtitle: Text(repository.description),
+            title: Text(entity.word),
+            subtitle: Text(entity.description),
+          ),
+        ),
+        errorBuilder: (context, error, stackTrace) =>
+            Center(child: Text('$error')),
+        initialLoadingWidget: const Center(
+          child: Padding(
+            padding: .all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        appendLoadingWidget: const Center(
+          child: Padding(
+            padding: .all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        emptyWidget: const Center(child: Text('No Item')),
+        padding: const .symmetric(horizontal: 16),
+      ),
+    );
+  }
+}
+
+class GridPagingListDemo extends ConsumerWidget {
+  const GridPagingListDemo({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataSource = ref.watch(dataSourceProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async => dataSource.refresh(),
+      child: PagingGrid(
+        dataSource: dataSource,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+        ),
+        builder: (context, entity, index) => Card(
+          child: ListTile(
+            title: Text(entity.word),
+            subtitle: Text(entity.description),
           ),
         ),
         errorBuilder: (context, error, stackTrace) =>
@@ -96,7 +146,7 @@ class PagingListDemo extends ConsumerWidget {
           ),
         ),
         emptyWidget: const Center(child: Text('No Item')),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.all(16),
       ),
     );
   }
@@ -111,34 +161,50 @@ class GroupedPagingListDemo extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async => dataSource.refresh(),
-      child: GroupedPagingList(
-        dataSource: dataSource,
-        headerBuilder: (context, parent, groupIndex) => Text(
-          '$groupIndex: $parent',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        itemBuilder: (context, value, globalIndex, localIndex) => Card(
-          child: ListTile(
-            title: Text(value.fullName),
-            subtitle: Text(value.description),
+      child: CustomScrollView(
+        slivers: [
+          SliverGroupedPagingList(
+            dataSource: dataSource,
+            headerBuilder: (context, parent, groupIndex) => Padding(
+              padding: const .symmetric(vertical: 8),
+              child: Material(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                clipBehavior: .antiAlias,
+                borderRadius: .circular(8),
+                child: Center(
+                  child: Text(
+                    'category: $parent, index: $groupIndex',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ),
+            ),
+            itemBuilder: (context, entity, globalIndex, localIndex) => Card(
+              child: ListTile(
+                title: Text(entity.word),
+                subtitle: Text(entity.description),
+              ),
+            ),
+            errorBuilder: (context, error, stackTrace) =>
+                Center(child: Text('$error')),
+            initialLoadingWidget: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+            appendLoadingWidget: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+            emptyWidget: const Center(child: Text('No Item')),
+            padding: const .symmetric(horizontal: 16),
+            stickyHeader: true,
+            stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
           ),
-        ),
-        errorBuilder: (context, error, stackTrace) =>
-            Center(child: Text('$error')),
-        initialLoadingWidget: const Center(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        ),
-        appendLoadingWidget: const Center(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        ),
-        emptyWidget: const Center(child: Text('No Item')),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        ],
       ),
     );
   }

@@ -1,17 +1,21 @@
+import 'package:example/model/entity/demo_entity.dart';
 import 'package:paging_view/paging_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'entity/demo_entity.dart';
-
-part 'data_source_grouped_repositories.g.dart';
+part 'data_source_list_repositories.g.dart';
 
 @riverpod
-ExampleGroupedDataSource groupedDataSource(Ref ref) {
-  return ExampleGroupedDataSource();
+ExampleDataSource dataSource(Ref ref) {
+  final dataSource = ExampleDataSource();
+
+  ref.onDispose(() {
+    dataSource.dispose();
+  });
+
+  return dataSource;
 }
 
-class ExampleGroupedDataSource
-    extends GroupedDataSource<int, String, DemoEntity> {
+class ExampleDataSource extends DataSource<int, DemoEntity> {
   static const int pageSize = 20;
 
   @override
@@ -26,7 +30,7 @@ class ExampleGroupedDataSource
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 1));
 
-    final int start = key ?? 0;
+    final start = key ?? 0;
     final items = allItems.skip(start).take(pageSize).toList();
     final nextKey = start + pageSize < allItems.length
         ? start + pageSize
@@ -35,7 +39,4 @@ class ExampleGroupedDataSource
       page: PageData(data: items, appendKey: nextKey),
     );
   }
-
-  @override
-  String groupBy(DemoEntity value) => value.category;
 }

@@ -160,11 +160,11 @@ class _Grid<PageKey, Value> extends StatelessWidget {
     Widget itemBuilder(BuildContext context, int index) {
       if (index == 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          dataSource.update(LoadType.append);
+          dataSource.update(LoadType.prepend);
         });
       } else if (index == items.length - 1) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          dataSource.update(LoadType.prepend);
+          dataSource.update(LoadType.append);
         });
       }
 
