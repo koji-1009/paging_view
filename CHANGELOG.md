@@ -1,3 +1,9 @@
+## 2.4.0
+
+* Add `GroupedPagingGrid` and `GroupedPagingSliverGrid` widgets.
+* Remove `visibility_detector` package dependency.
+* Update example project.
+
 ## 2.3.3
 
 * Fix prepend and append logic in SliverPagingGrid.
