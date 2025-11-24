@@ -46,7 +46,7 @@ class TestWidgetDataSource extends DataSource<int, String> {
 
 void main() {
   group('PagingList', () {
-    testWidgets('displays initial loading widget', (WidgetTester tester) async {
+    testWidgets('displays initial loading widget', (tester) async {
       final dataSource = TestWidgetDataSource();
 
       await tester.pumpWidget(
@@ -72,7 +72,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays items after loading', (WidgetTester tester) async {
+    testWidgets('displays items after loading', (tester) async {
       final dataSource = TestWidgetDataSource();
 
       await tester.pumpWidget(
@@ -98,9 +98,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays empty widget when no data', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('displays empty widget when no data', (tester) async {
       final dataSource = TestWidgetDataSource(initialData: const []);
 
       await tester.pumpWidget(
@@ -125,7 +123,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays error widget on error', (WidgetTester tester) async {
+    testWidgets('displays error widget on error', (tester) async {
       final dataSource = TestWidgetDataSource(hasError: true);
 
       await tester.pumpWidget(
@@ -149,7 +147,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('loads more items when scrolled', (WidgetTester tester) async {
+    testWidgets('loads more items when scrolled', (tester) async {
       final dataSource = TestWidgetDataSource();
 
       await tester.pumpWidget(
