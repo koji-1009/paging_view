@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
   TestGroupedDataSource({
@@ -57,14 +56,8 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
 }
 
 void main() {
-  setUpAll(() {
-    VisibilityDetectorController.instance.updateInterval = Duration.zero;
-  });
-
   group('GroupedPagingList', () {
-    testWidgets('displays grouped items after loading', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('displays grouped items after loading', (tester) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
         MaterialApp(
@@ -92,7 +85,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays error widget on error', (WidgetTester tester) async {
+    testWidgets('displays error widget on error', (tester) async {
       final dataSource = TestGroupedDataSource(hasError: true);
       await tester.pumpWidget(
         MaterialApp(
@@ -115,9 +108,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays nothing for empty groups', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('displays nothing for empty groups', (tester) async {
       final dataSource = TestGroupedDataSource(initialGroups: {});
       await tester.pumpWidget(
         MaterialApp(
@@ -140,7 +131,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays single group', (WidgetTester tester) async {
+    testWidgets('displays single group', (tester) async {
       final dataSource = TestGroupedDataSource(
         initialGroups: {
           'Group X': ['X1', 'X2'],
@@ -169,7 +160,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays correct group order', (WidgetTester tester) async {
+    testWidgets('displays correct group order', (tester) async {
       final dataSource = TestGroupedDataSource(
         initialGroups: {
           'Group B': ['B1', 'B2'],
@@ -197,12 +188,12 @@ void main() {
       final headerFinderA = find.text('Header: Group A');
       expect(headerFinder, findsOneWidget);
       expect(headerFinderA, findsOneWidget);
-      // 順序検証はWidget treeのindexで可能
-      // キーがnullの場合は順序検証不可なので省略
+      // Order verification can be done using the index in the Widget tree
+      // If the key is null, order verification is not possible, so it is omitted
       dataSource.dispose();
     });
 
-    testWidgets('shows loading widget initially', (WidgetTester tester) async {
+    testWidgets('shows loading widget initially', (tester) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
         MaterialApp(
@@ -225,9 +216,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('appends items and updates groups', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('appends items and updates groups', (tester) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
         MaterialApp(
@@ -246,7 +235,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      // appendをシミュレート
+      // Simulate append
       await dataSource.update(LoadType.append);
       await tester.pumpAndSettle();
       expect(find.text('Header: Group C'), findsOneWidget);
@@ -255,7 +244,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('handles special group names', (WidgetTester tester) async {
+    testWidgets('handles special group names', (tester) async {
       final dataSource = TestGroupedDataSource(
         initialGroups: {
           '': ['N1'],
@@ -286,7 +275,7 @@ void main() {
     });
 
     testWidgets('renders sticky headers with stickyHeader=true', (
-      WidgetTester tester,
+      tester,
     ) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
