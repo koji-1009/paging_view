@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
+import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
@@ -8,10 +9,10 @@ import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
 /// A sliver that displays items grouped by a parent element.
 /// Display a grid list.
-class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
-  /// Creates a sliver with grouped items.
-  const SliverGroupedPagingList({
+class SliverGroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
+  const SliverGroupedPagingGrid({
     super.key,
+    required this.gridDelegate,
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
@@ -26,27 +27,10 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
-  }) : _separatorBuilder = null;
+  });
 
-  /// Creates a sliver with grouped items and separators.
-  const SliverGroupedPagingList.separated({
-    super.key,
-    required this.dataSource,
-    required this.headerBuilder,
-    required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
-    this.fillRemainErrorWidget = true,
-    this.fillRemainEmptyWidget = true,
-    this.padding = EdgeInsets.zero,
-    this.stickyHeader = false,
-    this.stickyHeaderMinExtentPrototype,
-    this.stickyHeaderMaxExtentPrototype,
-    required IndexedWidgetBuilder separatorBuilder,
-  }) : _separatorBuilder = separatorBuilder;
+  /// The delegate that controls the layout of the children within the grid.
+  final SliverGridDelegate gridDelegate;
 
   /// The grouped data source that provides grouped pages.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
@@ -78,7 +62,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// If true, the empty widget will fill the remaining space.
   final bool fillRemainEmptyWidget;
 
-  /// The padding around the list.
+  /// The padding around the grid.
   final EdgeInsets padding;
 
   /// If true, group headers will be sticky.
@@ -92,31 +76,28 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// see [SliverResizingHeader.maxExtentPrototype]
   final Widget? stickyHeaderMaxExtentPrototype;
 
-  /// The separator builder between items.
-  final IndexedWidgetBuilder? _separatorBuilder;
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(:final state) => _GroupedList<PageKey, Parent, Value>(
+        Paging(:final state) => _GroupedGrid<PageKey, Parent, Value>(
           state: state,
           groupedData: dataSource.groupedValues,
+          gridDelegate: gridDelegate,
           dataSource: dataSource,
           headerBuilder: headerBuilder,
-          valueBuilder: itemBuilder,
+          itemBuilder: itemBuilder,
           errorBuilder: errorBuilder,
           initialLoadingWidget: initialLoadingWidget,
           prependLoadingWidget: prependLoadingWidget,
           appendLoadingWidget: appendLoadingWidget,
           emptyWidget: emptyWidget,
-          fillRemainEmptyWidget: fillRemainEmptyWidget,
+          fillEmptyWidget: fillRemainEmptyWidget,
           padding: padding,
           stickyHeader: stickyHeader,
           stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
           stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
-          separatorBuilder: _separatorBuilder,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -133,43 +114,43 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   }
 }
 
-/// Internal widget for [SliverGroupedPagingList].
-class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
-  const _GroupedList({
+/// Internal widget for [SliverGroupedPagingGrid].
+class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
+  const _GroupedGrid({
     required this.state,
     required this.groupedData,
+    required this.gridDelegate,
     required this.dataSource,
     required this.headerBuilder,
-    required this.valueBuilder,
+    required this.itemBuilder,
     required this.errorBuilder,
     required this.initialLoadingWidget,
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
     required this.emptyWidget,
-    required this.fillRemainEmptyWidget,
+    required this.fillEmptyWidget,
     required this.padding,
     required this.stickyHeader,
     required this.stickyHeaderMinExtentPrototype,
     required this.stickyHeaderMaxExtentPrototype,
-    required this.separatorBuilder,
   });
 
   final LoadState state;
   final List<GroupedPageData<Parent, Value>> groupedData;
-  final GroupedDataSource<PageKey, Parent, Value> dataSource;
+  final SliverGridDelegate gridDelegate;
+  final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Parent> headerBuilder;
-  final GroupedTypedWidgetBuilder<Value> valueBuilder;
+  final GroupedTypedWidgetBuilder<Value> itemBuilder;
   final ExceptionWidgetBuilder errorBuilder;
   final Widget initialLoadingWidget;
   final Widget prependLoadingWidget;
   final Widget appendLoadingWidget;
   final Widget emptyWidget;
-  final bool fillRemainEmptyWidget;
+  final bool fillEmptyWidget;
   final EdgeInsets padding;
   final bool stickyHeader;
   final Widget? stickyHeaderMinExtentPrototype;
   final Widget? stickyHeaderMaxExtentPrototype;
-  final IndexedWidgetBuilder? separatorBuilder;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -194,7 +175,7 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     }
 
     if (state is LoadStateLoaded && groupedData.isEmpty) {
-      if (fillRemainEmptyWidget) {
+      if (fillEmptyWidget) {
         return SliverPadding(
           padding: padding,
           sliver: SliverFillRemaining(child: emptyWidget),
@@ -236,27 +217,16 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
                     : SliverToBoxAdapter(
                         child: headerBuilder(context, group.parent, groupIndex),
                       ),
-                if (separatorBuilder == null)
-                  SliverList.builder(
-                    itemCount: group.children.length,
-                    itemBuilder: (context, index) => valueBuilder(
-                      context,
-                      group.children[index].value,
-                      group.children[index].index,
-                      index,
-                    ),
-                  )
-                else
-                  SliverList.separated(
-                    itemCount: group.children.length,
-                    itemBuilder: (context, index) => valueBuilder(
-                      context,
-                      group.children[index].value,
-                      group.children[index].index,
-                      index,
-                    ),
-                    separatorBuilder: separatorBuilder!,
+                SliverGrid.builder(
+                  gridDelegate: gridDelegate,
+                  itemCount: group.children.length,
+                  itemBuilder: (context, index) => itemBuilder(
+                    context,
+                    group.children[index].value,
+                    group.children[index].index,
+                    index,
                   ),
+                ),
               ],
             ),
           ),

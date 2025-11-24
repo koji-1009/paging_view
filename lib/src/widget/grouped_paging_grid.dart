@@ -2,13 +2,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
-import 'package:paging_view/src/widget/sliver_grouped_paging_list.dart';
+import 'package:paging_view/src/widget/sliver_grouped_paging_grid.dart';
 
 /// A scrollable list that displays grouped items.
-class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
-  /// Creates a scrollable list with grouped items.
-  const GroupedPagingList({
+class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
+  /// Creates a scrollable, 2D array of widgets that are created on demand.
+  const GroupedPagingGrid({
     super.key,
+    required this.gridDelegate,
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
@@ -36,40 +37,10 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
-  }) : _separatorBuilder = null;
+  });
 
-  /// Creates a scrollable list with grouped items, with separators.
-  const GroupedPagingList.separated({
-    super.key,
-    required this.dataSource,
-    required this.headerBuilder,
-    required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
-    this.fillRemainErrorWidget = true,
-    this.fillRemainEmptyWidget = true,
-    this.padding = EdgeInsets.zero,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.controller,
-    this.primary,
-    this.physics,
-    this.scrollBehavior,
-    this.center,
-    this.anchor = 0.0,
-    this.shrinkWrap = false,
-    this.cacheExtent,
-    this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
-    this.clipBehavior = Clip.hardEdge,
-    this.stickyHeader = false,
-    this.stickyHeaderMinExtentPrototype,
-    this.stickyHeaderMaxExtentPrototype,
-    required IndexedWidgetBuilder separatorBuilder,
-  }) : _separatorBuilder = separatorBuilder;
+  /// The delegate that controls the layout of the children within the grid.
+  final SliverGridDelegate gridDelegate;
 
   /// The grouped data source that provides grouped pages.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
@@ -101,8 +72,19 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// If true, the empty widget will fill the remaining space.
   final bool fillRemainEmptyWidget;
 
-  /// The padding around the list.
+  /// The padding around the grid.
   final EdgeInsets padding;
+
+  /// If true, group headers will be sticky.
+  final bool stickyHeader;
+
+  /// The prototype widget for the minimum extent of sticky headers.
+  /// see [SliverResizingHeader.minExtentPrototype]
+  final Widget? stickyHeaderMinExtentPrototype;
+
+  /// The prototype widget for the maximum extent of sticky headers.
+  /// see [SliverResizingHeader.maxExtentPrototype]
+  final Widget? stickyHeaderMaxExtentPrototype;
 
   /// see [CustomScrollView.scrollDirection]
   final Axis scrollDirection;
@@ -122,14 +104,14 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// see [CustomScrollView.scrollBehavior]
   final ScrollBehavior? scrollBehavior;
 
+  /// see [CustomScrollView.shrinkWrap]
+  final bool shrinkWrap;
+
   /// see [CustomScrollView.center]
   final Key? center;
 
   /// see [CustomScrollView.anchor]
   final double anchor;
-
-  /// see [CustomScrollView.shrinkWrap]
-  final bool shrinkWrap;
 
   /// see [CustomScrollView.cacheExtent]
   final double? cacheExtent;
@@ -142,20 +124,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
 
   /// see [CustomScrollView.clipBehavior]
   final Clip clipBehavior;
-
-  /// If true, group headers will be sticky.
-  final bool stickyHeader;
-
-  /// The prototype widget for the minimum extent of sticky headers.
-  /// see [SliverResizingHeader.minExtentPrototype]
-  final Widget? stickyHeaderMinExtentPrototype;
-
-  /// The prototype widget for the maximum extent of sticky headers.
-  /// see [SliverResizingHeader.maxExtentPrototype]
-  final Widget? stickyHeaderMaxExtentPrototype;
-
-  /// The separator builder between items.
-  final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -175,34 +143,24 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,
       slivers: [
-        _separatorBuilder != null
-            ? SliverGroupedPagingList<PageKey, Parent, Value>.separated(
-                key: key,
-                dataSource: dataSource,
-                headerBuilder: headerBuilder,
-                itemBuilder: itemBuilder,
-                errorBuilder: errorBuilder,
-                initialLoadingWidget: initialLoadingWidget,
-                prependLoadingWidget: prependLoadingWidget,
-                appendLoadingWidget: appendLoadingWidget,
-                emptyWidget: emptyWidget,
-                padding: padding,
-                stickyHeader: stickyHeader,
-                separatorBuilder: _separatorBuilder,
-              )
-            : SliverGroupedPagingList<PageKey, Parent, Value>(
-                key: key,
-                dataSource: dataSource,
-                headerBuilder: headerBuilder,
-                itemBuilder: itemBuilder,
-                errorBuilder: errorBuilder,
-                initialLoadingWidget: initialLoadingWidget,
-                prependLoadingWidget: prependLoadingWidget,
-                appendLoadingWidget: appendLoadingWidget,
-                emptyWidget: emptyWidget,
-                padding: padding,
-                stickyHeader: stickyHeader,
-              ),
+        SliverGroupedPagingGrid<PageKey, Parent, Value>(
+          key: key,
+          gridDelegate: gridDelegate,
+          dataSource: dataSource,
+          headerBuilder: headerBuilder,
+          itemBuilder: itemBuilder,
+          errorBuilder: errorBuilder,
+          initialLoadingWidget: initialLoadingWidget,
+          prependLoadingWidget: prependLoadingWidget,
+          appendLoadingWidget: appendLoadingWidget,
+          emptyWidget: emptyWidget,
+          fillRemainErrorWidget: fillRemainErrorWidget,
+          fillRemainEmptyWidget: fillRemainEmptyWidget,
+          padding: padding,
+          stickyHeader: stickyHeader,
+          stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
+          stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
+        ),
       ],
     );
   }
