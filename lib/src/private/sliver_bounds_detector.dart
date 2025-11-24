@@ -54,8 +54,7 @@ class RenderSliverBoundsDetector extends RenderSliver {
     geometry = SliverGeometry.zero;
 
     // The sliver's scroll extent range in scroll coordinates.
-    final sliverStart = constraints.precedingScrollExtent;
-    final sliverEnd = sliverStart;
+    final sliverPosition = constraints.precedingScrollExtent;
 
     // The cache area's range in scroll coordinates.
     final cacheAreaStart = constraints.scrollOffset + constraints.cacheOrigin;
@@ -64,7 +63,7 @@ class RenderSliverBoundsDetector extends RenderSliver {
 
     // Check if the sliver's extent overlaps with the cache area's extent.
     final isNowVisible =
-        (sliverStart < cacheAreaEnd) && (sliverEnd > cacheAreaStart);
+        (sliverPosition < cacheAreaEnd) && (sliverPosition > cacheAreaStart);
 
     if (isNowVisible != _isVisible) {
       _isVisible = isNowVisible;
