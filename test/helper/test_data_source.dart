@@ -25,8 +25,8 @@ class TestDataSource extends DataSource<int, String> {
 
     return switch (action) {
       Refresh() => _handleRefresh(),
-      Prepend(key: final key) => _handlePrepend(key),
-      Append(key: final key) => _handleAppend(key),
+      Prepend(:final key) => _handlePrepend(key),
+      Append(:final key) => _handleAppend(key),
     };
   }
 
@@ -89,7 +89,7 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
 
     return switch (action) {
       Refresh() => _handleRefresh(),
-      Append(key: final key) => _handleAppend(key),
+      Append(:final key) => _handleAppend(key),
       Prepend() => const None(),
     };
   }
