@@ -188,8 +188,8 @@ void main() {
       final headerFinderA = find.text('Header: Group A');
       expect(headerFinder, findsOneWidget);
       expect(headerFinderA, findsOneWidget);
-      // 順序検証はWidget treeのindexで可能
-      // キーがnullの場合は順序検証不可なので省略
+      // Order verification can be done using the index in the Widget tree
+      // If the key is null, order verification is not possible, so it is omitted
       dataSource.dispose();
     });
 
@@ -235,7 +235,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      // appendをシミュレート
+      // Simulate append
       await dataSource.update(LoadType.append);
       await tester.pumpAndSettle();
       expect(find.text('Header: Group C'), findsOneWidget);
