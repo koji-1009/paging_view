@@ -7,7 +7,13 @@ part 'data_source_grouped_repositories.g.dart';
 
 @riverpod
 ExampleGroupedDataSource groupedDataSource(Ref ref) {
-  return ExampleGroupedDataSource();
+  final dataSource = ExampleGroupedDataSource();
+
+  ref.onDispose(() {
+    dataSource.dispose();
+  });
+
+  return dataSource;
 }
 
 class ExampleGroupedDataSource

@@ -14,7 +14,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PagingView Example',
+      title: 'paging_view Demo App',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: const DemoPage(),
@@ -37,7 +37,7 @@ class _DemoPageState extends State<DemoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('paging_view Example')),
+      appBar: AppBar(title: const Text('paging_view')),
       body: switch (_selected) {
         .list => const PagingListDemo(),
         .grid => const PagingGridDemo(),
@@ -52,22 +52,22 @@ class _DemoPageState extends State<DemoPage> {
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.list),
-            label: 'PagingList',
+            label: 'List',
             tooltip: 'Paging List',
           ),
           NavigationDestination(
             icon: Icon(Icons.grid_view),
-            label: 'GridPagingList',
+            label: 'Grid',
             tooltip: 'Grid Paging List',
           ),
           NavigationDestination(
             icon: Icon(Icons.group),
-            label: 'GroupedPagingList',
+            label: 'Grouped List',
             tooltip: 'Grouped Paging List',
           ),
           NavigationDestination(
             icon: Icon(Icons.group_work),
-            label: 'GroupedPagingGrid',
+            label: 'Grouped Grid',
             tooltip: 'Grouped Paging Grid',
           ),
         ],
@@ -141,18 +141,18 @@ class PagingGridDemo extends ConsumerWidget {
             Center(child: Text('$error')),
         initialLoadingWidget: const Center(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: .all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         appendLoadingWidget: const Center(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: .all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         emptyWidget: const Center(child: Text('No Item')),
-        padding: const EdgeInsets.all(16),
+        padding: const .all(16),
       ),
     );
   }
@@ -234,7 +234,7 @@ class GroupedPagingGridDemo extends ConsumerWidget {
           crossAxisSpacing: 8,
         ),
         headerBuilder: (context, element, index) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: const .symmetric(vertical: 8),
           child: Material(
             color: Theme.of(context).colorScheme.primaryContainer,
             clipBehavior: .antiAlias,
