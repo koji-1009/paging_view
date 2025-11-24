@@ -16,13 +16,9 @@ class TestDataSource extends DataSource<int, String> {
   final bool hasErrorOnRefresh;
   final bool hasErrorOnPrepend;
   final bool hasErrorOnAppend;
-  final List<LoadAction<int>> loadHistory = [];
 
   @override
   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
-    loadHistory.add(action);
-    await Future<void>.delayed(const Duration(milliseconds: 10));
-
     return switch (action) {
       Refresh() => _handleRefresh(),
       Prepend(:final key) => _handlePrepend(key),
@@ -80,17 +76,13 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
   final List<String> appendedItems;
   final bool hasErrorOnRefresh;
   final bool hasErrorOnAppend;
-  final List<LoadAction<int>> loadHistory = [];
 
   @override
   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
-    loadHistory.add(action);
-    await Future<void>.delayed(const Duration(milliseconds: 10));
-
     return switch (action) {
       Refresh() => _handleRefresh(),
-      Append(:final key) => _handleAppend(key),
       Prepend() => const None(),
+      Append(:final key) => _handleAppend(key),
     };
   }
 
@@ -120,13 +112,9 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
 
   @override
   String groupBy(String value) {
-    if (value.startsWith('Item')) {
-      final number = int.parse(value.split(' ')[1]);
-      return number < 10 ? 'Group A' : 'Group B';
-    }
-    if (value.startsWith('Appended')) {
-      return 'Group C';
-    }
-    return value.startsWith('A') ? 'Group A' : 'Group B';
+    if (value.startsWith('A')) return 'Group A';
+    if (value.startsWith('B')) return 'Group B';
+    if (value.startsWith('C')) return 'Group C';
+    return 'Other';
   }
 }

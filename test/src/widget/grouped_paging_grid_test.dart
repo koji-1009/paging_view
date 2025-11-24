@@ -5,13 +5,20 @@ import 'package:paging_view/paging_view.dart';
 import '../../helper/test_data_source.dart';
 
 void main() {
-  group('GroupedPagingList', () {
+  const gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    mainAxisSpacing: 10,
+    crossAxisSpacing: 10,
+  );
+
+  group('GroupedPagingGrid', () {
     testWidgets('displays grouped items after loading', (tester) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -39,7 +46,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -62,7 +70,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -85,7 +94,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -112,7 +122,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -140,7 +151,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -163,7 +175,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) =>
                   Text('Header: $groupKey'),
@@ -190,7 +203,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GroupedPagingList<int, String, String>(
+            body: GroupedPagingGrid<int, String, String>(
+              gridDelegate: gridDelegate,
               dataSource: dataSource,
               headerBuilder: (context, groupKey, index) => Container(
                 color: Colors.blue,

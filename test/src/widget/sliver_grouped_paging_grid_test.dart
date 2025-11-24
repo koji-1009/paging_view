@@ -5,7 +5,13 @@ import 'package:paging_view/paging_view.dart';
 import '../../helper/test_data_source.dart';
 
 void main() {
-  group('SliverGroupedPagingList', () {
+  const gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    mainAxisSpacing: 10,
+    crossAxisSpacing: 10,
+  );
+
+  group('SliverGroupedPagingGrid', () {
     testWidgets('displays grouped items in sliver', (tester) async {
       final dataSource = TestGroupedDataSource();
       await tester.pumpWidget(
@@ -13,7 +19,8 @@ void main() {
           home: Scaffold(
             body: CustomScrollView(
               slivers: [
-                SliverGroupedPagingList<int, String, String>(
+                SliverGroupedPagingGrid<int, String, String>(
+                  gridDelegate: gridDelegate,
                   dataSource: dataSource,
                   headerBuilder: (context, groupKey, index) =>
                       Text('Header: $groupKey'),
@@ -45,7 +52,8 @@ void main() {
           home: Scaffold(
             body: CustomScrollView(
               slivers: [
-                SliverGroupedPagingList<int, String, String>(
+                SliverGroupedPagingGrid<int, String, String>(
+                  gridDelegate: gridDelegate,
                   dataSource: dataSource,
                   headerBuilder: (context, groupKey, index) =>
                       Text('Header: $groupKey'),
@@ -72,7 +80,8 @@ void main() {
           home: Scaffold(
             body: CustomScrollView(
               slivers: [
-                SliverGroupedPagingList<int, String, String>(
+                SliverGroupedPagingGrid<int, String, String>(
+                  gridDelegate: gridDelegate,
                   dataSource: dataSource,
                   headerBuilder: (context, groupKey, index) =>
                       Text('Header: $groupKey'),
@@ -102,7 +111,8 @@ void main() {
           home: Scaffold(
             body: CustomScrollView(
               slivers: [
-                SliverGroupedPagingList<int, String, String>(
+                SliverGroupedPagingGrid<int, String, String>(
+                  gridDelegate: gridDelegate,
                   dataSource: dataSource,
                   headerBuilder: (context, groupKey, index) =>
                       Text('Header: $groupKey'),

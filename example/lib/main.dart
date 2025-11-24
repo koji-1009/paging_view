@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   }
 }
 
-enum DemoType { list, grid, groupedList }
+enum DemoType { list, grid, groupedList, groupedGrid }
 
 class DemoPage extends StatefulWidget {
   const DemoPage({super.key});
@@ -40,8 +40,9 @@ class _DemoPageState extends State<DemoPage> {
       appBar: AppBar(title: const Text('paging_view Example')),
       body: switch (_selected) {
         .list => const PagingListDemo(),
-        .grid => const GridPagingListDemo(),
+        .grid => const PagingGridDemo(),
         .groupedList => const GroupedPagingListDemo(),
+        .groupedGrid => const GroupedPagingGridDemo(),
       },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected.index,
@@ -63,6 +64,11 @@ class _DemoPageState extends State<DemoPage> {
             icon: Icon(Icons.group),
             label: 'GroupedPagingList',
             tooltip: 'Grouped Paging List',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.group_work),
+            label: 'GroupedPagingGrid',
+            tooltip: 'Grouped Paging Grid',
           ),
         ],
       ),
@@ -108,8 +114,8 @@ class PagingListDemo extends ConsumerWidget {
   }
 }
 
-class GridPagingListDemo extends ConsumerWidget {
-  const GridPagingListDemo({super.key});
+class PagingGridDemo extends ConsumerWidget {
+  const PagingGridDemo({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -205,6 +211,66 @@ class GroupedPagingListDemo extends ConsumerWidget {
             stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class GroupedPagingGridDemo extends ConsumerWidget {
+  const GroupedPagingGridDemo({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataSource = ref.watch(groupedDataSourceProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async => dataSource.refresh(),
+      child: GroupedPagingGrid(
+        dataSource: dataSource,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+        ),
+        headerBuilder: (context, element, index) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Material(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            clipBehavior: .antiAlias,
+            borderRadius: .circular(8),
+            child: Center(
+              child: Text(
+                'category: $element, index: $index',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ),
+        ),
+        itemBuilder: (context, entity, globalIndex, localIndex) => Card(
+          child: ListTile(
+            title: Text(entity.word),
+            subtitle: Text(entity.description),
+          ),
+        ),
+        errorBuilder: (context, error, stackTrace) =>
+            Center(child: Text('$error')),
+        initialLoadingWidget: const Center(
+          child: Padding(
+            padding: .all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        appendLoadingWidget: const Center(
+          child: Padding(
+            padding: .all(16),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        emptyWidget: const Center(child: Text('No Item')),
+        padding: const .all(16),
+        stickyHeader: true,
+        stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
       ),
     );
   }
