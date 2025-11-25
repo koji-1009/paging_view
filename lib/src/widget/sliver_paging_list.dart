@@ -22,6 +22,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.autoLoadAppend = true,
+    this.autoLoadPrepend = true,
   }) : _separatorBuilder = null;
 
   /// Creates a scrollable linear array of list "items" separated
@@ -39,6 +41,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
     required IndexedWidgetBuilder separatorBuilder,
+    this.autoLoadAppend = true,
+    this.autoLoadPrepend = true,
   }) : _separatorBuilder = separatorBuilder;
 
   /// The data source that provides pages from loader.
@@ -74,6 +78,14 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   /// The padding around the list.
   final EdgeInsets padding;
 
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
@@ -84,7 +96,6 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
               ? _List<PageKey, Value>.separated(
                   state: state,
                   pages: data,
-                  separatorBuilder: _separatorBuilder,
                   dataSource: dataSource,
                   builder: builder,
                   errorBuilder: errorBuilder,
@@ -94,6 +105,9 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   emptyWidget: emptyWidget,
                   fillRemainEmptyWidget: fillRemainEmptyWidget,
                   padding: padding,
+                  autoLoadPrepend: autoLoadPrepend,
+                  autoLoadAppend: autoLoadAppend,
+                  separatorBuilder: _separatorBuilder,
                 )
               : _List<PageKey, Value>(
                   state: state,
@@ -107,6 +121,8 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   emptyWidget: emptyWidget,
                   fillRemainEmptyWidget: fillRemainEmptyWidget,
                   padding: padding,
+                  autoLoadPrepend: autoLoadPrepend,
+                  autoLoadAppend: autoLoadAppend,
                 ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -137,6 +153,8 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.emptyWidget,
     required this.fillRemainEmptyWidget,
     required this.padding,
+    required this.autoLoadPrepend,
+    required this.autoLoadAppend,
   }) : _separatorBuilder = null;
 
   /// Creates a scrollable linear array of list "items" separated
@@ -153,6 +171,8 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.emptyWidget,
     required this.fillRemainEmptyWidget,
     required this.padding,
+    required this.autoLoadPrepend,
+    required this.autoLoadAppend,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
@@ -168,6 +188,8 @@ class _List<PageKey, Value> extends StatelessWidget {
   final bool fillRemainEmptyWidget;
   final IndexedWidgetBuilder? _separatorBuilder;
   final EdgeInsets padding;
+  final bool autoLoadPrepend;
+  final bool autoLoadAppend;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -214,13 +236,14 @@ class _List<PageKey, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.prepend);
-            }
-          },
-        ),
+        if (autoLoadPrepend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.prepend);
+              }
+            },
+          ),
         SliverPadding(
           padding: _horizontalPadding,
           sliver: _separatorBuilder != null
@@ -236,13 +259,14 @@ class _List<PageKey, Value> extends StatelessWidget {
                   itemCount: items.length,
                 ),
         ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.append);
-            }
-          },
-        ),
+        if (autoLoadAppend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.append);
+              }
+            },
+          ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,

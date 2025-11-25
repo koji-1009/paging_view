@@ -22,7 +22,12 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.autoLoadAppend = true,
+    this.autoLoadPrepend = true,
   });
+
+  /// The delegate that controls the layout of the children within the grid.
+  final SliverGridDelegate gridDelegate;
 
   /// The data source that provides pages from loader.
   final DataSource<PageKey, Value> dataSource;
@@ -54,8 +59,13 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   /// The padding around the grid.
   final EdgeInsets padding;
 
-  /// The delegate that controls the layout of the children within the grid.
-  final SliverGridDelegate gridDelegate;
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +85,8 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
           emptyWidget: emptyWidget,
           fillEmptyWidget: fillRemainEmptyWidget,
           padding: padding,
+          autoLoadPrepend: autoLoadPrepend,
+          autoLoadAppend: autoLoadAppend,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -94,9 +106,9 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
 /// Internal widget for [SliverPagingGrid].
 class _Grid<PageKey, Value> extends StatelessWidget {
   const _Grid({
+    required this.gridDelegate,
     required this.state,
     required this.pages,
-    required this.gridDelegate,
     required this.dataSource,
     required this.builder,
     required this.errorBuilder,
@@ -106,8 +118,11 @@ class _Grid<PageKey, Value> extends StatelessWidget {
     required this.emptyWidget,
     required this.fillEmptyWidget,
     required this.padding,
+    required this.autoLoadPrepend,
+    required this.autoLoadAppend,
   });
 
+  final SliverGridDelegate gridDelegate;
   final LoadState state;
   final List<PageData<PageKey, Value>> pages;
   final DataSource<PageKey, Value> dataSource;
@@ -119,7 +134,8 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   final Widget emptyWidget;
   final bool fillEmptyWidget;
   final EdgeInsets padding;
-  final SliverGridDelegate gridDelegate;
+  final bool autoLoadPrepend;
+  final bool autoLoadAppend;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -166,13 +182,14 @@ class _Grid<PageKey, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.prepend);
-            }
-          },
-        ),
+        if (autoLoadPrepend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.prepend);
+              }
+            },
+          ),
         SliverPadding(
           padding: _horizontalPadding,
           sliver: SliverGrid.builder(
@@ -182,13 +199,14 @@ class _Grid<PageKey, Value> extends StatelessWidget {
             itemCount: items.length,
           ),
         ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.append);
-            }
-          },
-        ),
+        if (autoLoadAppend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.append);
+              }
+            },
+          ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,

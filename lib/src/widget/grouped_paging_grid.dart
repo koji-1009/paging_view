@@ -47,6 +47,8 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
   });
 
   /// A delegate that controls the layout of the children within the grid.
@@ -105,6 +107,14 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   ///
   /// See [SliverResizingHeader.maxExtentPrototype].
   final Widget? stickyHeaderMaxExtentPrototype;
+
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
 
   /// The axis along which the scroll view scrolls.
   ///
@@ -209,6 +219,8 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
           stickyHeader: stickyHeader,
           stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
           stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
+          autoLoadPrepend: autoLoadPrepend,
+          autoLoadAppend: autoLoadAppend,
         ),
       ],
     );

@@ -26,6 +26,8 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
     this.padding = EdgeInsets.zero,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -71,6 +73,14 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
   ///
   /// See [GridView.gridDelegate].
   final SliverGridDelegate gridDelegate;
+
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
 
   /// The axis along which the scroll view scrolls.
   ///
