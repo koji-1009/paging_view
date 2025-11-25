@@ -181,5 +181,68 @@ void main() {
 
       dataSource.dispose();
     });
+
+    testWidgets('displays separators when using PagingList.separated', (
+      tester,
+    ) async {
+      final dataSource = TestWidgetDataSource(hasMoreData: false);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PagingList.separated(
+              dataSource: dataSource,
+              builder: (context, item, index) => Text(item),
+              separatorBuilder: (context, index) =>
+                  const Divider(key: Key('separator')),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // There are 3 items, so there should be 2 separators.
+      expect(find.byKey(const Key('separator')), findsNWidgets(2));
+
+      dataSource.dispose();
+    });
+
+    testWidgets('renders items in reverse when reverse is true', (
+      tester,
+    ) async {
+      final dataSource = TestWidgetDataSource(
+        initialData: const ['Item 1', 'Item 2'],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PagingList(
+              dataSource: dataSource,
+              reverse: true,
+              builder: (context, item, index) => Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Get the positions of the two items.
+      final item1Pos = tester.getTopLeft(find.text('Item 1'));
+      final item2Pos = tester.getTopLeft(find.text('Item 2'));
+
+      // In reverse order, Item 2 should be physically above Item 1.
+      expect(item2Pos.dy, lessThan(item1Pos.dy));
+
+      dataSource.dispose();
+    });
   });
 }

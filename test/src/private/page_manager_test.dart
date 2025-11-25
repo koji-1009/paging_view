@@ -71,7 +71,7 @@ void main() {
     });
 
     test('append with null keeps existing data', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page1);
 
@@ -83,7 +83,7 @@ void main() {
     });
 
     test('append adds page data to the end', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -97,7 +97,7 @@ void main() {
     });
 
     test('prepend with null keeps existing data', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page1);
 
@@ -109,7 +109,7 @@ void main() {
     });
 
     test('prepend adds page data to the beginning', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['c', 'd'], prependKey: 0);
       const page2 = PageData<int, String>(data: ['a', 'b']);
 
@@ -123,7 +123,7 @@ void main() {
     });
 
     test('updateItem updates item at specified index', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b', 'c']);
       manager.refresh(newPage: page);
 
@@ -133,7 +133,7 @@ void main() {
     });
 
     test('updateItem works across multiple pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -146,7 +146,7 @@ void main() {
     });
 
     test('updateItem with invalid index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -158,7 +158,7 @@ void main() {
     });
 
     test('updateItem with negative index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -170,7 +170,7 @@ void main() {
     });
 
     test('updateItem when update function throws sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -182,7 +182,7 @@ void main() {
     });
 
     test('updateItems updates all items with index', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b', 'c']);
       manager.refresh(newPage: page);
 
@@ -192,7 +192,7 @@ void main() {
     });
 
     test('updateItems works across multiple pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -205,7 +205,7 @@ void main() {
     });
 
     test('updateItems when update function throws sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -217,7 +217,7 @@ void main() {
     });
 
     test('removeItem removes item at specified index', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b', 'c']);
       manager.refresh(newPage: page);
 
@@ -227,7 +227,7 @@ void main() {
     });
 
     test('removeItem works across multiple pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -240,7 +240,7 @@ void main() {
     });
 
     test('removeItem removes page when last item is removed', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a']);
       manager.refresh(newPage: page);
 
@@ -250,7 +250,7 @@ void main() {
     });
 
     test('removeItem with invalid index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -262,7 +262,7 @@ void main() {
     });
 
     test('removeItem with negative index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -274,7 +274,7 @@ void main() {
     });
 
     test('removeItems removes items matching condition', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b', 'c', 'd']);
       manager.refresh(newPage: page);
 
@@ -284,7 +284,7 @@ void main() {
     });
 
     test('removeItems works across multiple pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -297,7 +297,7 @@ void main() {
     });
 
     test('removeItems removes empty pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -312,7 +312,7 @@ void main() {
     });
 
     test('removeItems when test function throws sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -324,7 +324,7 @@ void main() {
     });
 
     test('insertItem inserts item at specified index', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b', 'c']);
       manager.refresh(newPage: page);
 
@@ -334,7 +334,7 @@ void main() {
     });
 
     test('insertItem at beginning', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -344,7 +344,7 @@ void main() {
     });
 
     test('insertItem at end', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -354,7 +354,7 @@ void main() {
     });
 
     test('insertItem in empty list', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       manager.refresh(newPage: null);
 
       manager.insertItem(0, 'x');
@@ -363,7 +363,7 @@ void main() {
     });
 
     test('insertItem works across multiple pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -376,7 +376,7 @@ void main() {
     });
 
     test('insertItem with invalid index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -388,7 +388,7 @@ void main() {
     });
 
     test('insertItem with negative index sets error', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -400,7 +400,7 @@ void main() {
     });
 
     test('insertItem at page boundary', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
@@ -414,7 +414,7 @@ void main() {
     });
 
     test('updateItem after dispose does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -425,7 +425,7 @@ void main() {
     });
 
     test('removeItem after dispose does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -436,7 +436,7 @@ void main() {
     });
 
     test('insertItem after dispose does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page);
 
@@ -447,7 +447,7 @@ void main() {
     });
 
     test('updateItem in Warning state does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       manager.setError(error: Exception('error'), stackTrace: null);
 
       manager.updateItem(0, (item) => 'changed');
@@ -456,7 +456,7 @@ void main() {
     });
 
     test('removeItem in Warning state does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       manager.setError(error: Exception('error'), stackTrace: null);
 
       manager.removeItem(0);
@@ -465,7 +465,7 @@ void main() {
     });
 
     test('insertItem in Warning state does nothing', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       manager.setError(error: Exception('error'), stackTrace: null);
 
       manager.insertItem(0, 'x');
@@ -474,7 +474,7 @@ void main() {
     });
 
     test('multiple operations work correctly', () {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       manager.refresh(newPage: null);
 
       manager.insertItem(0, 'a');
@@ -487,7 +487,7 @@ void main() {
     });
 
     test('prependPageKey returns first page prependKey', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b'], prependKey: 42);
 
       manager.refresh(newPage: page);
@@ -496,7 +496,7 @@ void main() {
     });
 
     test('appendPageKey returns last page appendKey', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b'], appendKey: 99);
 
       manager.refresh(newPage: page);
@@ -505,7 +505,7 @@ void main() {
     });
 
     test('values returns all items from all pages', () async {
-      final manager = PageManager<int, String>(delay: Duration.zero);
+      final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 

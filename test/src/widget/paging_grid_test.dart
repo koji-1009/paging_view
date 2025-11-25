@@ -159,8 +159,12 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('loads more items in grid when scrolled', (tester) async {
-      final dataSource = TestWidgetDataSource();
+    testWidgets('renders grid items in reverse when reverse is true', (
+      tester,
+    ) async {
+      final dataSource = TestWidgetDataSource(
+        initialData: const ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -170,8 +174,8 @@ void main() {
                 crossAxisCount: 2,
               ),
               dataSource: dataSource,
-              builder: (context, item, index) =>
-                  SizedBox(height: 100, child: Text(item)),
+              reverse: true,
+              builder: (context, item, index) => Text(item),
               errorBuilder: (context, error, stackTrace) =>
                   Text('Error: $error'),
               initialLoadingWidget: const CircularProgressIndicator(),
@@ -182,18 +186,13 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Item 1'), findsOneWidget);
+      // Get the positions of items in the first and second rows.
+      final item1Pos = tester.getTopLeft(find.text('Item 1'));
+      final item3Pos = tester.getTopLeft(find.text('Item 3'));
 
-      // グリッドを下にスクロール
-      await tester.drag(
-        find.byType(PagingGrid<int, String>),
-        const Offset(0, -400),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Item 4'), findsOneWidget);
-      expect(find.text('Item 5'), findsOneWidget);
-      expect(find.text('Item 6'), findsOneWidget);
+      // In a reversed grid, the row containing Item 3 should be physically
+      // above the row containing Item 1.
+      expect(item3Pos.dy, lessThan(item1Pos.dy));
 
       dataSource.dispose();
     });

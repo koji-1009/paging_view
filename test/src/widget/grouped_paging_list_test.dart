@@ -57,7 +57,7 @@ void main() {
       dataSource.dispose();
     });
 
-    testWidgets('displays nothing for empty groups', (tester) async {
+    testWidgets('displays empty widget for empty groups', (tester) async {
       final dataSource = TestGroupedDataSource(initialItems: const []);
       await tester.pumpWidget(
         MaterialApp(
@@ -71,12 +71,13 @@ void main() {
               errorBuilder: (context, error, stackTrace) =>
                   Text('Error: $error'),
               initialLoadingWidget: const CircularProgressIndicator(),
+              emptyWidget: const Text('No Items'),
             ),
           ),
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(Text), findsNothing);
+      expect(find.text('No Items'), findsOneWidget);
       dataSource.dispose();
     });
 
@@ -209,6 +210,66 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Header: Group A'), findsOneWidget);
       expect(find.text('Header: Group B'), findsOneWidget);
+      dataSource.dispose();
+    });
+
+    testWidgets('displays separators when using .separated constructor', (
+      tester,
+    ) async {
+      final dataSource = TestGroupedDataSource();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList.separated(
+              dataSource: dataSource,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              separatorBuilder: (context, index) =>
+                  const Divider(key: Key('separator')),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // 4 items should have 3 separators between them.
+      expect(find.byKey(const Key('separator')), findsNWidgets(3));
+      dataSource.dispose();
+    });
+
+    testWidgets('renders groups in reverse when reverse is true', (
+      tester,
+    ) async {
+      final dataSource = TestGroupedDataSource(); // A -> B
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: GroupedPagingList<int, String, String>(
+              dataSource: dataSource,
+              reverse: true,
+              headerBuilder: (context, groupKey, index) =>
+                  Text('Header: $groupKey'),
+              itemBuilder: (context, item, globalIndex, localIndex) =>
+                  Text(item),
+              errorBuilder: (context, error, stackTrace) =>
+                  Text('Error: $error'),
+              initialLoadingWidget: const CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final headerAPos = tester.getTopLeft(find.text('Header: Group A'));
+      final headerBPos = tester.getTopLeft(find.text('Header: Group B'));
+
+      // In reverse order, Group B should be physically above Group A.
+      expect(headerBPos.dy, lessThan(headerAPos.dy));
       dataSource.dispose();
     });
   });
