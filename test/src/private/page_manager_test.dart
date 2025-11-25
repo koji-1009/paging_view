@@ -655,4 +655,40 @@ void main() {
       expect(loading.isAppend, true);
     });
   });
+
+  group('PageManager API flags', () {
+    late PageManager<int, String> manager;
+
+    setUp(() {
+      manager = PageManager<int, String>();
+    });
+
+    test('isRefreshing is true during refresh', () async {
+      manager.changeState(type: LoadType.refresh);
+      expect(manager.isRefreshing, isTrue);
+      expect(manager.isPrepending, isFalse);
+      expect(manager.isAppending, isFalse);
+    });
+
+    test('isPrepending is true during prepend', () async {
+      manager.changeState(type: LoadType.prepend);
+      expect(manager.isPrepending, isTrue);
+      expect(manager.isRefreshing, isFalse);
+      expect(manager.isAppending, isFalse);
+    });
+
+    test('isAppending is true during append', () async {
+      manager.changeState(type: LoadType.append);
+      expect(manager.isAppending, isTrue);
+      expect(manager.isRefreshing, isFalse);
+      expect(manager.isPrepending, isFalse);
+    });
+
+    test('All flags are false when loaded', () async {
+      manager.value = Paging(state: const LoadStateLoaded(), data: []);
+      expect(manager.isRefreshing, isFalse);
+      expect(manager.isPrepending, isFalse);
+      expect(manager.isAppending, isFalse);
+    });
+  });
 }

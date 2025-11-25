@@ -31,6 +31,11 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -44,9 +49,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-    this.stickyHeader = false,
-    this.stickyHeaderMinExtentPrototype,
-    this.stickyHeaderMaxExtentPrototype,
   }) : _separatorBuilder = null;
 
   /// Creates a scrollable list with grouped items and separators between items.
@@ -63,6 +65,12 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
+    this.stickyHeader = false,
+    this.stickyHeaderMinExtentPrototype,
+    this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
+    required IndexedWidgetBuilder separatorBuilder,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -76,10 +84,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
-    this.stickyHeader = false,
-    this.stickyHeaderMinExtentPrototype,
-    this.stickyHeaderMaxExtentPrototype,
-    required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
   /// The [GroupedDataSource] that provides the paginated and grouped data.
@@ -119,6 +123,31 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
 
   /// The amount of space by which to inset the children.
   final EdgeInsets padding;
+
+  /// If `true`, group headers will remain visible at the top of the screen
+  /// as the user scrolls down through the items in that group.
+  final bool stickyHeader;
+
+  /// A prototype widget for calculating the minimum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.minExtentPrototype].
+  final Widget? stickyHeaderMinExtentPrototype;
+
+  /// A prototype widget for calculating the maximum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.maxExtentPrototype].
+  final Widget? stickyHeaderMaxExtentPrototype;
+
+  /// A builder for creating separators between items.
+  final IndexedWidgetBuilder? _separatorBuilder;
+
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
 
   /// The axis along which the scroll view scrolls.
   ///
@@ -188,23 +217,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// See [ScrollView.clipBehavior].
   final Clip clipBehavior;
 
-  /// If `true`, group headers will remain visible at the top of the screen
-  /// as the user scrolls down through the items in that group.
-  final bool stickyHeader;
-
-  /// A prototype widget for calculating the minimum extent of a sticky header.
-  ///
-  /// See [SliverResizingHeader.minExtentPrototype].
-  final Widget? stickyHeaderMinExtentPrototype;
-
-  /// A prototype widget for calculating the maximum extent of a sticky header.
-  ///
-  /// See [SliverResizingHeader.maxExtentPrototype].
-  final Widget? stickyHeaderMaxExtentPrototype;
-
-  /// A builder for creating separators between items.
-  final IndexedWidgetBuilder? _separatorBuilder;
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -236,6 +248,10 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 emptyWidget: emptyWidget,
                 padding: padding,
                 stickyHeader: stickyHeader,
+                stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
+                stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
+                autoLoadAppend: autoLoadAppend,
+                autoLoadPrepend: autoLoadPrepend,
                 separatorBuilder: _separatorBuilder,
               )
             : SliverGroupedPagingList<PageKey, Parent, Value>(
@@ -250,6 +266,10 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 emptyWidget: emptyWidget,
                 padding: padding,
                 stickyHeader: stickyHeader,
+                stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
+                stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
+                autoLoadAppend: autoLoadAppend,
+                autoLoadPrepend: autoLoadPrepend,
               ),
       ],
     );

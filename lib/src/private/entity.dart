@@ -82,7 +82,22 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   bool get isLoading => switch (this) {
-    Paging(state: final state) => state is LoadStateLoading,
+    Paging(:final state) => state is LoadStateLoading,
+    Warning() => false,
+  };
+
+  bool get isRefreshing => switch (this) {
+    Paging(:final state) => state is LoadStateLoading && state.isRefresh,
+    Warning() => false,
+  };
+
+  bool get isPrepending => switch (this) {
+    Paging(:final state) => state is LoadStateLoading && state.isPrepend,
+    Warning() => false,
+  };
+
+  bool get isAppending => switch (this) {
+    Paging(:final state) => state is LoadStateLoading && state.isAppend,
     Warning() => false,
   };
 

@@ -26,6 +26,8 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
   }) : _separatorBuilder = null;
 
   /// Creates a sliver with grouped items and separators.
@@ -45,6 +47,8 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
@@ -95,6 +99,14 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// The separator builder between items.
   final IndexedWidgetBuilder? _separatorBuilder;
 
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
@@ -117,6 +129,8 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
           stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
           separatorBuilder: _separatorBuilder,
+          autoLoadPrepend: autoLoadPrepend,
+          autoLoadAppend: autoLoadAppend,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -152,6 +166,8 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     required this.stickyHeaderMinExtentPrototype,
     required this.stickyHeaderMaxExtentPrototype,
     required this.separatorBuilder,
+    required this.autoLoadPrepend,
+    required this.autoLoadAppend,
   });
 
   final LoadState state;
@@ -170,6 +186,8 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
   final Widget? stickyHeaderMinExtentPrototype;
   final Widget? stickyHeaderMaxExtentPrototype;
   final IndexedWidgetBuilder? separatorBuilder;
+  final bool autoLoadPrepend;
+  final bool autoLoadAppend;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -215,13 +233,14 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.prepend);
-            }
-          },
-        ),
+        if (autoLoadPrepend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.prepend);
+              }
+            },
+          ),
         ...groupedData.mapIndexed(
           (groupIndex, group) => SliverPadding(
             padding: _horizontalPadding,
@@ -261,13 +280,14 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
             ),
           ),
         ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.append);
-            }
-          },
-        ),
+        if (autoLoadAppend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.append);
+              }
+            },
+          ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,

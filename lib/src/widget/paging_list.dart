@@ -25,6 +25,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
     this.padding = EdgeInsets.zero,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -52,6 +54,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
     this.appendLoadingWidget = const SizedBox.shrink(),
     this.emptyWidget = const SizedBox.shrink(),
     this.padding = EdgeInsets.zero,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -93,6 +97,17 @@ class PagingList<PageKey, Value> extends StatelessWidget {
 
   /// The amount of space by which to inset the children.
   final EdgeInsets padding;
+
+  /// The separator builder between items.
+  final IndexedWidgetBuilder? _separatorBuilder;
+
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
 
   /// The axis along which the scroll view scrolls.
   ///
@@ -162,8 +177,6 @@ class PagingList<PageKey, Value> extends StatelessWidget {
   ///
   /// See [ScrollView.clipBehavior].
   final Clip clipBehavior;
-
-  final IndexedWidgetBuilder? _separatorBuilder;
 
   @override
   Widget build(BuildContext context) {

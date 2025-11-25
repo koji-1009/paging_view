@@ -27,6 +27,8 @@ class SliverGroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeader = false,
     this.stickyHeaderMinExtentPrototype,
     this.stickyHeaderMaxExtentPrototype,
+    this.autoLoadPrepend = true,
+    this.autoLoadAppend = true,
   });
 
   /// The delegate that controls the layout of the children within the grid.
@@ -76,6 +78,14 @@ class SliverGroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   /// see [SliverResizingHeader.maxExtentPrototype]
   final Widget? stickyHeaderMaxExtentPrototype;
 
+  /// Automatically load more data at the beginning of the list
+  /// when reaching the boundary.
+  final bool autoLoadPrepend;
+
+  /// Automatically load more data at the end of the list
+  /// when reaching the boundary.
+  final bool autoLoadAppend;
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
@@ -98,6 +108,8 @@ class SliverGroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
           stickyHeader: stickyHeader,
           stickyHeaderMinExtentPrototype: stickyHeaderMinExtentPrototype,
           stickyHeaderMaxExtentPrototype: stickyHeaderMaxExtentPrototype,
+          autoLoadPrepend: autoLoadPrepend,
+          autoLoadAppend: autoLoadAppend,
         ),
         Warning(:final error, :final stackTrace) => SliverPadding(
           padding: padding,
@@ -133,6 +145,8 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
     required this.stickyHeader,
     required this.stickyHeaderMinExtentPrototype,
     required this.stickyHeaderMaxExtentPrototype,
+    required this.autoLoadPrepend,
+    required this.autoLoadAppend,
   });
 
   final LoadState state;
@@ -151,6 +165,8 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
   final bool stickyHeader;
   final Widget? stickyHeaderMinExtentPrototype;
   final Widget? stickyHeaderMaxExtentPrototype;
+  final bool autoLoadPrepend;
+  final bool autoLoadAppend;
 
   EdgeInsets get _horizontalPadding =>
       EdgeInsets.only(left: padding.left, right: padding.right);
@@ -196,13 +212,14 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
           ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.prepend);
-            }
-          },
-        ),
+        if (autoLoadPrepend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.prepend);
+              }
+            },
+          ),
         ...groupedData.mapIndexed(
           (groupIndex, group) => SliverPadding(
             padding: _horizontalPadding,
@@ -231,13 +248,14 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
             ),
           ),
         ),
-        SliverBoundsDetector(
-          onVisibilityChanged: (isVisible) {
-            if (isVisible) {
-              dataSource.update(LoadType.append);
-            }
-          },
-        ),
+        if (autoLoadAppend)
+          SliverBoundsDetector(
+            onVisibilityChanged: (isVisible) {
+              if (isVisible) {
+                dataSource.update(LoadType.append);
+              }
+            },
+          ),
         if (state is LoadStateLoading && state.isAppend)
           SliverPadding(
             padding: _horizontalPadding,

@@ -164,4 +164,47 @@ void main() {
       dataSource.dispose();
     });
   });
+
+  group('DataSource API flags', () {
+    late TestDataSource dataSource;
+
+    setUp(() {
+      dataSource = TestDataSource();
+    });
+
+    tearDown(() {
+      dataSource.dispose();
+    });
+
+    test('isRefreshing is true during refresh', () async {
+      dataSource.notifier.changeState(type: LoadType.refresh);
+      expect(dataSource.isRefreshing, isTrue);
+      expect(dataSource.isPrepending, isFalse);
+      expect(dataSource.isAppending, isFalse);
+    });
+
+    test('isPrepending is true during prepend', () async {
+      dataSource.notifier.changeState(type: LoadType.prepend);
+      expect(dataSource.isPrepending, isTrue);
+      expect(dataSource.isRefreshing, isFalse);
+      expect(dataSource.isAppending, isFalse);
+    });
+
+    test('isAppending is true during append', () async {
+      dataSource.notifier.changeState(type: LoadType.append);
+      expect(dataSource.isAppending, isTrue);
+      expect(dataSource.isRefreshing, isFalse);
+      expect(dataSource.isPrepending, isFalse);
+    });
+
+    test('All flags are false when loaded', () async {
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [],
+      );
+      expect(dataSource.isRefreshing, isFalse);
+      expect(dataSource.isPrepending, isFalse);
+      expect(dataSource.isAppending, isFalse);
+    });
+  });
 }
