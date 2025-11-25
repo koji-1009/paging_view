@@ -24,10 +24,10 @@ class TestDataSource extends DataSource<int, String> {
     switch (action) {
       case Refresh():
         return const Success(
-          page: PageData(data: ['1', '2', '3'], appendKey: 2),
+          page: PageData(data: ['1', '2', '3'], prependKey: 0, appendKey: 2),
         );
       case Prepend(:final key):
-        if (key <= 0) {
+        if (key < 0) {
           return const None();
         }
         return Success(
@@ -87,9 +87,9 @@ void main() {
       final dataSource = TestDataSource();
       await dataSource.update(LoadType.init);
 
-      dataSource.updateItem(1, (item) => item.toUpperCase());
+      dataSource.updateItem(1, (item) => 'X');
 
-      expect(dataSource.notifier.values, ['1', '2', '3']);
+      expect(dataSource.notifier.values, ['1', 'X', '3']);
       dataSource.dispose();
     });
 
@@ -130,6 +130,37 @@ void main() {
       dataSource.insertItem(1, 'x');
 
       expect(dataSource.notifier.values, ['1', 'x', '2', '3']);
+      dataSource.dispose();
+    });
+
+    test('append adds data to the end of the list', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(
+        LoadType.init,
+      ); // Initial: ['1', '2', '3'], appendKey: 2
+      expect(dataSource.notifier.appendPageKey, 2);
+
+      await dataSource.update(
+        LoadType.append,
+      ); // Appends ['2a', '2b'], appendKey: 3
+
+      expect(dataSource.notifier.values, ['1', '2', '3', '2a', '2b']);
+      expect(dataSource.notifier.appendPageKey, 3);
+      dataSource.dispose();
+    });
+
+    test('prepend adds data to the beginning of the list', () async {
+      final dataSource = TestDataSource();
+      await dataSource.update(
+        LoadType.init,
+      ); // Initial: ['1', '2', '3'], prependKey: 0, appendKey: 2
+
+      await dataSource.update(
+        LoadType.prepend,
+      ); // Prepends ['-1a', '-1b'], prependKey: -1
+
+      expect(dataSource.notifier.values, ['-1a', '-1b', '1', '2', '3']);
+      expect(dataSource.notifier.prependPageKey, -1);
       dataSource.dispose();
     });
   });
