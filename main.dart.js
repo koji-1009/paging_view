@@ -65094,15 +65094,14 @@ if(!J.d(b.y1,s)){b.y1=s
 b.a5()}}}
 A.FF.prototype={
 ga70(){return this.y1},
-bj(){var s,r,q,p,o,n=this
-n.dy=B.fa
+bj(){var s,r,q,p,o=this
+o.dy=B.fa
 s=t.p
-r=s.a(A.t.prototype.gK.call(n)).e
-q=s.a(A.t.prototype.gK.call(n))
-p=s.a(A.t.prototype.gK.call(n))
-o=r<s.a(A.t.prototype.gK.call(n)).e+s.a(A.t.prototype.gK.call(n)).Q&&r>q.d+p.z
-if(o!==n.y2){n.y2=o
-$.a5.k4$.push(new A.a0i(n))}},
+r=s.a(A.t.prototype.gK.call(o))
+q=s.a(A.t.prototype.gK.call(o)).d<=0
+p=r.Q>0&&q
+if(p!==o.y2){o.y2=p
+$.a5.k4$.push(new A.a0i(o))}},
 a71(a){return this.ga70().$1(a)}}
 A.a0i.prototype={
 $1(a){var s=this.a
