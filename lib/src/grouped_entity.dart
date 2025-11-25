@@ -1,12 +1,15 @@
-/// Data structure for grouped items.
+/// Represents a single group in a sectioned list.
+///
+/// This data structure holds the `parent` (e.g., the header or category)
+/// and a list of its `children` (the items within that group).
 class GroupedPageData<Parent, Value> {
   /// Creates a [GroupedPageData].
   const GroupedPageData({required this.parent, required this.children});
 
-  /// The parent element.
+  /// The parent element, often used as the group's header.
   final Parent parent;
 
-  /// The child elements.
+  /// The list of child items belonging to this group.
   final List<ValueWithIndex<Value>> children;
 
   @override

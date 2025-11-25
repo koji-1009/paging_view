@@ -4,7 +4,17 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/widget/sliver_grouped_paging_grid.dart';
 
-/// A scrollable list that displays grouped items.
+/// A high-level widget that displays a scrollable, paginated grid with grouped items.
+///
+/// [GroupedPagingGrid] is a convenient wrapper around [SliverGroupedPagingGrid]
+/// that handles creating the [CustomScrollView] for you. It's the easiest way
+/// to display a grid with sections and headers.
+///
+/// It requires a [GroupedDataSource] to provide the data and grouping logic.
+///
+/// For more complex layouts, such as those with a `SliverAppBar` or multiple
+/// slivers, consider using [SliverGroupedPagingGrid] directly inside a
+/// [CustomScrollView].
 class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   /// Creates a scrollable, 2D array of widgets that are created on demand.
   const GroupedPagingGrid({
@@ -39,90 +49,129 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
     this.stickyHeaderMaxExtentPrototype,
   });
 
-  /// The delegate that controls the layout of the children within the grid.
+  /// A delegate that controls the layout of the children within the grid.
+  ///
+  /// See [GridView.gridDelegate].
   final SliverGridDelegate gridDelegate;
 
-  /// The grouped data source that provides grouped pages.
+  /// The [GroupedDataSource] that provides the paginated and grouped data.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
 
-  /// The builder for group headers.
+  /// A builder that creates a widget for each group header.
+  ///
+  /// The `parent` argument is the value returned by the `groupBy` method
+  /// in your [GroupedDataSource].
   final TypedWidgetBuilder<Parent> headerBuilder;
 
-  /// The builder for individual items within a group.
+  /// A builder that creates a widget for each item within a group.
   final GroupedTypedWidgetBuilder<Value> itemBuilder;
 
-  /// The builder that builds a widget for the given exception.
+  /// A builder that creates a widget to display when an error occurs.
   final ExceptionWidgetBuilder errorBuilder;
 
-  /// The widget that is shown when the data is loading for the first time.
+  /// The widget to display while the first page is being loaded.
   final Widget initialLoadingWidget;
 
-  /// The widget that is shown when the data is loading at the beginning of the list.
+  /// The widget to display at the top of the grid when a `prepend` operation
+  /// is in progress.
   final Widget prependLoadingWidget;
 
-  /// The widget that is shown when the data is loading at the end of the list.
+  /// The widget to display at the bottom of the grid when an `append` operation
+  /// is in progress.
   final Widget appendLoadingWidget;
 
-  /// The widget that is shown when the data is empty.
+  /// The widget to display when the grid is empty.
   final Widget emptyWidget;
 
-  /// If true, the error widget will fill the remaining space.
+  /// Whether the `errorBuilder` should be constrained to fill the viewport.
   final bool fillRemainErrorWidget;
 
-  /// If true, the empty widget will fill the remaining space.
+  /// Whether the `emptyWidget` should be constrained to fill the viewport.
   final bool fillRemainEmptyWidget;
 
-  /// The padding around the grid.
+  /// The amount of space by which to inset the children.
   final EdgeInsets padding;
 
-  /// If true, group headers will be sticky.
+  /// If `true`, group headers will remain visible at the top of the screen
+  /// as the user scrolls down through the items in that group.
   final bool stickyHeader;
 
-  /// The prototype widget for the minimum extent of sticky headers.
-  /// see [SliverResizingHeader.minExtentPrototype]
+  /// A prototype widget for calculating the minimum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.minExtentPrototype].
   final Widget? stickyHeaderMinExtentPrototype;
 
-  /// The prototype widget for the maximum extent of sticky headers.
-  /// see [SliverResizingHeader.maxExtentPrototype]
+  /// A prototype widget for calculating the maximum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.maxExtentPrototype].
   final Widget? stickyHeaderMaxExtentPrototype;
 
-  /// see [CustomScrollView.scrollDirection]
+  /// The axis along which the scroll view scrolls.
+  ///
+  /// See [ScrollView.scrollDirection].
   final Axis scrollDirection;
 
-  /// see [CustomScrollView.reverse]
+  /// Whether the scroll view scrolls in the reading direction.
+  ///
+  /// See [ScrollView.reverse].
   final bool reverse;
 
-  /// see [CustomScrollView.controller]
+  /// An object that can be used to control the position to which this scroll
+  /// view is scrolled.
+  ///
+  /// See [ScrollView.controller].
   final ScrollController? controller;
 
-  /// see [CustomScrollView.primary]
+  /// Whether this is the primary scroll view associated with the parent
+  /// [PrimaryScrollController].
+  ///
+  /// See [ScrollView.primary].
   final bool? primary;
 
-  /// see [CustomScrollView.physics]
+  /// How the scroll view should respond to user input.
+  ///
+  /// See [ScrollView.physics].
   final ScrollPhysics? physics;
 
-  /// see [CustomScrollView.scrollBehavior]
+  /// A [ScrollBehavior] that will be applied to this widget individually.
+  ///
+  /// See [ScrollView.scrollBehavior].
   final ScrollBehavior? scrollBehavior;
 
-  /// see [CustomScrollView.shrinkWrap]
+  /// Whether to wrap the entire scrollable contents in a [Center] widget.
+  ///
+  /// See [GridView.shrinkWrap].
   final bool shrinkWrap;
 
-  /// see [CustomScrollView.center]
+  /// The key of the sliver that should be centered in the viewport.
+  ///
+  /// See [CustomScrollView.center].
   final Key? center;
 
-  /// see [CustomScrollView.anchor]
+  /// The relative position of the center sliver.
+  ///
+  /// See [ScrollView.anchor].
   final double anchor;
 
-  /// see [CustomScrollView.cacheExtent]
+  /// The cache extent of the scroll view.
+  ///
+  /// See [ScrollView.cacheExtent].
   final double? cacheExtent;
 
-  /// see [CustomScrollView.dragStartBehavior]
+  /// Determines the way that drag start behavior is handled.
+  ///
+  /// See [ScrollView.dragStartBehavior].
   final DragStartBehavior dragStartBehavior;
 
-  /// see [CustomScrollView.keyboardDismissBehavior]
+  /// [ScrollViewKeyboardDismissBehavior] the defines how this [ScrollView] will
+  /// dismiss the keyboard automatically.
+  ///
+  /// See [ScrollView.keyboardDismissBehavior].
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
-  /// see [CustomScrollView.clipBehavior]
+  /// The content will be clipped (or not) according to this option.
+  ///
+  /// See [ScrollView.clipBehavior].
   final Clip clipBehavior;
 
   @override

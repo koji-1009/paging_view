@@ -1,6 +1,6 @@
 ## 2.4.0
 
-* Add `GroupedPagingGrid` and `GroupedPagingSliverGrid` widgets.
+* Add `GroupedPagingGrid` and `SliverGroupedPagingGrid` widgets.
 * Remove `visibility_detector` package dependency.
 * Update example project.
 
@@ -22,7 +22,7 @@
 ## 2.3.0
 
 * Add `insertItem`, `removeItem` and `removeItems` functions to `DataSource`
-* Add `GroupedPagingList` and `GroupedPagingSliverList` widgets
+* Add `GroupedPagingList` and `SliverGroupedPagingList` widgets
 * Add `GroupedDataSource` class
 * Update example project
 * Code cleanup

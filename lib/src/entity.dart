@@ -1,4 +1,9 @@
-/// Required action to load necessary data.
+/// Represents the type of data loading action to be performed by the [DataSource].
+///
+/// This is a sealed class, with three concrete implementations:
+/// - [Refresh]: For a full refresh of the data.
+/// - [Prepend]: To load more data at the beginning of the list (e.g., older messages in a chat).
+/// - [Append]: To load more data at the end of the list (e.g., in an infinite scroll feed).
 sealed class LoadAction<PageKey> {
   const LoadAction._();
 }
@@ -47,13 +52,29 @@ class None<PageKey, Value> implements LoadResult<PageKey, Value> {
   const None();
 }
 
-/// Data structure of page.
+/// A container for a single "page" of data loaded by a [DataSource].
+///
+/// It holds the list of items for the current page and, optionally, keys
+/// to fetch the previous or next pages.
 class PageData<PageKey, Value> {
-  /// Creates a page data.
-  const PageData({this.data = const [], this.prependKey, this.appendKey});
+  /// Creates a page of data.
+  const PageData({
+    this.data = const [],
+    this.prependKey,
+    this.appendKey,
+  });
 
+  /// The list of items in this page.
   final List<Value> data;
+
+  /// The key to be used to fetch the *previous* page of data.
+  ///
+  /// If `null`, it indicates that there is no previous page to load.
   final PageKey? prependKey;
+
+  /// The key to be used to fetch the *next* page of data.
+  ///
+  /// If `null`, it indicates that there is no next page to load.
   final PageKey? appendKey;
 
   @override
