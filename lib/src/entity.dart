@@ -58,11 +58,7 @@ class None<PageKey, Value> implements LoadResult<PageKey, Value> {
 /// to fetch the previous or next pages.
 class PageData<PageKey, Value> {
   /// Creates a page of data.
-  const PageData({
-    this.data = const [],
-    this.prependKey,
-    this.appendKey,
-  });
+  const PageData({this.data = const [], this.prependKey, this.appendKey});
 
   /// The list of items in this page.
   final List<Value> data;
