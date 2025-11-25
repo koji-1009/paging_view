@@ -73,11 +73,9 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoading(state: LoadType.prepend),
+      state: const LoadStateLoaded(),
       data: [newPage, ...value.pages],
     );
-
-    value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
 
   void append({required PageData<PageKey, Value>? newPage}) {
@@ -91,11 +89,9 @@ class PageManager<PageKey, Value>
     }
 
     value = Paging(
-      state: const LoadStateLoading(state: LoadType.append),
+      state: const LoadStateLoaded(),
       data: [...value.pages, newPage],
     );
-
-    value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
 
   void updateItem(int index, Value Function(Value item) update) {
