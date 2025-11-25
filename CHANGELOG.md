@@ -1,3 +1,9 @@
+## 2.4.2
+
+* Fix SliverBoundsDetector logic and test.
+* Improve performance.
+* Add manual load mode.
+
 ## 2.4.1
 
 * Update documentation.
