@@ -22,7 +22,7 @@ void main() {
                   visibilityNotifier.value = isVisible;
                 },
               ),
-              const SliverToBoxAdapter(child: SizedBox(height: 1600)),
+              const SliverToBoxAdapter(child: SizedBox(height: 800)),
             ],
           ),
         ),
