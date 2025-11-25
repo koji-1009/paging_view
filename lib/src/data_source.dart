@@ -176,11 +176,11 @@ abstract class DataSource<PageKey, Value> {
     final result = await load(const Refresh());
     switch (result) {
       case Success(:final page):
-        await _manager.append(newPage: page);
+        _manager.append(newPage: page);
       case Failure(:final error, :final stackTrace):
         _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.append(newPage: null);
+        _manager.append(newPage: null);
     }
   }
 
@@ -220,11 +220,11 @@ abstract class DataSource<PageKey, Value> {
     final result = await load(Prepend(key: key));
     switch (result) {
       case Success(:final page):
-        await _manager.prepend(newPage: page);
+        _manager.prepend(newPage: page);
       case Failure(:final error, :final stackTrace):
         _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.prepend(newPage: null);
+        _manager.prepend(newPage: null);
     }
   }
 
@@ -246,11 +246,11 @@ abstract class DataSource<PageKey, Value> {
 
     switch (result) {
       case Success(:final page):
-        await _manager.append(newPage: page);
+        _manager.append(newPage: page);
       case Failure(:final error, :final stackTrace):
         _manager.setError(error: error, stackTrace: stackTrace);
       case None():
-        await _manager.append(newPage: null);
+        _manager.append(newPage: null);
     }
   }
 }
