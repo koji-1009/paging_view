@@ -50,24 +50,28 @@ class RenderSliverBoundsDetector extends RenderSliver {
 
   @override
   void performLayout() {
-    // This sliver does not produce any visible content.
+    // This sliver acts only as a marker and does not occupy any space in the viewport.
     geometry = SliverGeometry.zero;
 
-    // The sliver's scroll extent range in scroll coordinates.
-    final sliverPosition = constraints.precedingScrollExtent;
+    // Check if the viewport (including the cache area) has reached the start of this sliver.
+    // `remainingCacheExtent` > 0 means the sliver is within the visible area or cache.
+    // If it is 0, the sliver is effectively positioned below the viewport (off-screen).
+    final hasReachedSliverStart = constraints.remainingCacheExtent > 0;
 
-    // The cache area's range in scroll coordinates.
-    final cacheAreaStart = constraints.scrollOffset + constraints.cacheOrigin;
-    final cacheAreaEnd =
-        constraints.precedingScrollExtent + constraints.remainingCacheExtent;
+    // Check if the viewport has scrolled past this sliver.
+    // `scrollOffset` is the scroll position relative to the start of *this* sliver.
+    // Since this sliver has zero extent, any positive offset means the viewport
+    // has already passed it.
+    final hasNotPassedSliver = constraints.scrollOffset <= 0;
 
-    // Check if the sliver's extent overlaps with the cache area's extent.
-    final isNowVisible =
-        (sliverPosition < cacheAreaEnd) && (sliverPosition > cacheAreaStart);
+    final isNowVisible = hasReachedSliverStart && hasNotPassedSliver;
 
     if (isNowVisible != _isVisible) {
       _isVisible = isNowVisible;
-      // To avoid calling the callback during layout.
+
+      // Schedule the callback for the end of the frame.
+      // This prevents triggering state changes or new layout passes while the
+      // current layout pass is still active.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (attached) {
           onVisibilityChanged(_isVisible);
