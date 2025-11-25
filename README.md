@@ -11,11 +11,13 @@ Whether you are building a simple infinite scroll list, a complex grid, a groupe
 ## Features
 
 - **Separation of Concerns**: Defines data loading logic in a dedicated `DataSource` class, keeping your Widgets clean, focused, and testable.
+- **Real-time Data Updates**: `DataSource` allows dynamic `updateItem`, `updateItems`, `insertItem`, and `removeItem` operations for seamless UI synchronization.
 - **Versatile UI**:
   - `PagingList`, `PagingGrid`: High-level widgets for common use cases.
   - `SliverPagingList`, `SliverPagingGrid`: For use in a `CustomScrollView` to create sophisticated scroll effects (e.g., with an `SliverAppBar`).
 - **Grouped Lists**: Built-in support for `GroupedPagingList` and `GroupedPagingGrid`, making it easy to render sectioned data (e.g., by date or category) with sticky headers.
 - **Bidirectional Loading**: Supports `Refresh`, `Append` (load more), and `Prepend` (load previous/history), making it ideal for feeds and chat applications.
+- **Manual Paging Control**: Provides `autoLoadAppend=false` and `autoLoadPrepend=false` options for widgets and explicit `dataSource.append()`/`prepend()` calls for fine-grained control over data loading.
 - **Modern & Type-Safe**: Leverages modern Dart patterns (sealed classes with switch expressions) to handle loading states elegantly.
 - **Customizable**: Full control over loading indicators, error widgets, and empty states.
 
@@ -88,6 +90,49 @@ class ExampleDataSource extends DataSource<int, DemoEntity> {
     }
   }
 }
+
+#### Updating Data in DataSource
+
+`DataSource` provides methods to dynamically update, insert, or remove individual items or a collection of items based on their position (index) or a predicate, allowing for real-time UI updates without a full data refresh.
+
+```dart
+// Assuming 'dataSource' is an instance of your DataSource
+// and 'DemoEntity' is your item type, which in this example is
+// typedef DemoEntity = ({String word, String description,});
+
+// Update a single item at a specific index
+// This example updates the item at index 1.
+dataSource.updateItem(
+  1, // The index of the item to update
+  (oldItem) => (
+    word: oldItem.word,
+    description: 'UPDATED: ${oldItem.description}',
+  ),
+);
+
+// Update multiple items based on a condition or transformation
+// This example prepends the index to the word of each item.
+dataSource.updateItems(
+  (index, item) => (
+    word: '$index: ${item.word}',
+    description: item.description,
+  ),
+);
+
+// Insert a new item at a specific index
+dataSource.insertItem(
+  0, // The index where the item should be inserted
+  (word: 'New Item', description: 'This is a newly added item.'),
+);
+
+// Remove an item at a specific index
+dataSource.removeItem(2); // Removes the item at index 2
+
+// Remove multiple items based on a condition
+// This example removes all items whose word starts with 'Updated'.
+dataSource.removeItems(
+  (index, item) => item.word.startsWith('Updated'),
+);
 ```
 
 ### 3. Display the List
@@ -126,10 +171,12 @@ class _PagingListDemoState extends State<PagingListDemo> {
       onRefresh: () async => _dataSource.refresh(),
       child: PagingList(
         dataSource: _dataSource,
-        initialLoadingWidget: const Center(child: CircularProgressIndicator.adaptive()),
+        initialLoadingWidget: const Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
         appendLoadingWidget: const Center(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: .all(16.0),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
@@ -137,19 +184,82 @@ class _PagingListDemoState extends State<PagingListDemo> {
           child: Text('An error occurred: $error'),
         ),
         emptyWidget: const Center(child: Text('No items found.')),
-        builder: (context, entity, index) {
-          return Card(
-            child: ListTile(
-              title: Text(entity.word),
-              subtitle: Text(entity.description),
-            ),
-          );
-        },
+        builder: (context, entity, index) => Card(
+          child: ListTile(
+            title: Text(entity.word),
+            subtitle: Text(entity.description),
+          ),
+        ),
       ),
     );
   }
 }
 ```
+
+### 4. Displaying Grids
+
+For a grid layout, you can use `PagingGrid` with a `SliverGridDelegate` (e.g., `SliverGridDelegateWithFixedCrossAxisCount`).
+
+```dart
+class PagingGridDemo extends StatefulWidget {
+  const PagingGridDemo({super.key});
+
+  @override
+  State<PagingGridDemo> createState() => _PagingGridDemoState();
+}
+
+class _PagingGridDemoState extends State<PagingGridDemo> {
+  late final ExampleDataSource _dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = ExampleDataSource();
+  }
+
+  @override
+  void dispose() {
+    _dataSource.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async => _dataSource.refresh(),
+      child: PagingGrid(
+        dataSource: _dataSource,
+        initialLoadingWidget: const Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+        appendLoadingWidget: const Center(
+          child: Padding(
+            padding: .all(16.0),
+            child: CircularProgressIndicator.adaptive(),
+          ),
+        ),
+        errorBuilder: (context, error, stackTrace) => Center(
+          child: Text('An error occurred: $error'),
+        ),
+        emptyWidget: const Center(child: Text('No items found.')),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // 2 items per row
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+          childAspectRatio: 1.0, // Square items
+        ),
+        builder: (context, entity, index) => Card(
+          child: Center(
+            child: Text(entity.word),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Similarly, `SliverPagingGrid` can be used within a `CustomScrollView` for grid layouts with custom scroll effects.
 
 ## Advanced Usage
 
@@ -175,6 +285,95 @@ CustomScrollView(
     ),
   ],
 )
+```
+
+### Manual Load Mode
+
+In some scenarios, you might want to control when to load more data explicitly, rather than relying on automatic scroll detection. `paging_view` supports a manual load mode for this purpose.
+
+To enable manual load mode, set `autoLoadPrepend: false` and `autoLoadAppend: false` in your `PagingList`, `PagingGrid`, `SliverPagingList`, or `SliverPagingGrid` widget. You can then trigger loading more data by calling `dataSource.append()` or `dataSource.prepend()` manually, for example, via a button press.
+
+```dart
+class ManualLoadDemo extends StatefulWidget {
+  const ManualLoadDemo({super.key});
+
+  @override
+  State<ManualLoadDemo> createState() => _ManualLoadDemoState();
+}
+
+class _ManualLoadDemoState extends State<ManualLoadDemo> {
+  // It is recommended to keep the DataSource in a state management solution
+  // (like Riverpod or Provider) rather than in a StatefulWidget.
+  // This is a simplified example.
+  late final ExampleDataSource _dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = ExampleDataSource();
+  }
+
+  @override
+  void dispose() {
+    _dataSource.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async => _dataSource.refresh(),
+      child: CustomScrollView(
+        slivers: [
+          SliverPagingList(
+            dataSource: _dataSource,
+            // Disable automatic loading
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+            initialLoadingWidget: const Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            appendLoadingWidget: const Center(
+              child: Padding(
+                padding: .all(16.0),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: Text('An error occurred: $error'),
+            ),
+            emptyWidget: const Center(child: Text('No items found.')),
+            builder: (context, entity, index) => Card(
+              child: ListTile(
+                title: Text(entity.word),
+                subtitle: Text(entity.description),
+              ),
+            ),
+          ),
+          // Only show the "Load More" button if not currently appending
+          // and if there are more items to append.
+          ValueListenableBuilder(
+            valueListenable: _dataSource.notifier,
+            builder: (context, state, _) => SliverToBoxAdapter(
+              child: _dataSource.isAppending || !_dataSource.hasNextAppend
+                  ? const SizedBox.shrink()
+                  : Padding(
+                      padding: const .all(8.0),
+                      child: FilledButton(
+                        onPressed: () {
+                          // Manually trigger appending more data
+                          _dataSource.append();
+                        },
+                        child: const Text('Load More'),
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 ```
 
 ### Grouped Data
