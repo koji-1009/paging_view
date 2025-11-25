@@ -1,3 +1,8 @@
+## 2.4.1
+
+* Update documentation.
+* Update unit tests.
+
 ## 2.4.0
 
 * Add `GroupedPagingGrid` and `SliverGroupedPagingGrid` widgets.
