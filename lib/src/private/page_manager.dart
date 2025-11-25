@@ -6,11 +6,7 @@ import 'package:paging_view/src/private/entity.dart';
 class PageManager<PageKey, Value>
     extends ValueNotifier<PageManagerState<PageKey, Value>> {
   /// Creates a [PageManager].
-  PageManager({this.delay = const Duration(milliseconds: 100)})
-    : super(Paging.init());
-
-  /// The delay time for reflecting the request result in the UI.
-  final Duration delay;
+  PageManager() : super(Paging.init());
 
   bool get isLoading => value.isLoading;
 
@@ -66,7 +62,7 @@ class PageManager<PageKey, Value>
     value = Paging(state: const LoadStateLoaded(), data: [newPage]);
   }
 
-  Future<void> prepend({required PageData<PageKey, Value>? newPage}) async {
+  void prepend({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
     }
@@ -81,13 +77,10 @@ class PageManager<PageKey, Value>
       data: [newPage, ...value.pages],
     );
 
-    // Reflect the request result in the UI
-    await Future.delayed(delay);
-
     value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }
 
-  Future<void> append({required PageData<PageKey, Value>? newPage}) async {
+  void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
     }
@@ -101,9 +94,6 @@ class PageManager<PageKey, Value>
       state: const LoadStateLoading(state: LoadType.append),
       data: [...value.pages, newPage],
     );
-
-    // Reflect the request result in the UI
-    await Future.delayed(delay);
 
     value = Paging(state: const LoadStateLoaded(), data: value.pages);
   }

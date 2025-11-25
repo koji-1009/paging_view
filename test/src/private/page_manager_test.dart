@@ -70,25 +70,25 @@ void main() {
       expect(manager.values, ['a', 'b', 'c']);
     });
 
-    test('append with null keeps existing data', () async {
+    test('append with null keeps existing data', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page1);
 
-      await manager.append(newPage: null);
+      manager.append(newPage: null);
 
       expect(manager.value, isA<Paging<int, String>>());
       final state = manager.value as Paging<int, String>;
       expect(state.data, [page1]);
     });
 
-    test('append adds page data to the end', () async {
+    test('append adds page data to the end', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       expect(manager.value, isA<Paging<int, String>>());
       final state = manager.value as Paging<int, String>;
@@ -96,25 +96,25 @@ void main() {
       expect(manager.values, ['a', 'b', 'c', 'd']);
     });
 
-    test('prepend with null keeps existing data', () async {
+    test('prepend with null keeps existing data', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b']);
       manager.refresh(newPage: page1);
 
-      await manager.prepend(newPage: null);
+      manager.prepend(newPage: null);
 
       expect(manager.value, isA<Paging<int, String>>());
       final state = manager.value as Paging<int, String>;
       expect(state.data, [page1]);
     });
 
-    test('prepend adds page data to the beginning', () async {
+    test('prepend adds page data to the beginning', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['c', 'd'], prependKey: 0);
       const page2 = PageData<int, String>(data: ['a', 'b']);
 
       manager.refresh(newPage: page1);
-      await manager.prepend(newPage: page2);
+      manager.prepend(newPage: page2);
 
       expect(manager.value, isA<Paging<int, String>>());
       final state = manager.value as Paging<int, String>;
@@ -132,13 +132,13 @@ void main() {
       expect(manager.values, ['a', 'B', 'c']);
     });
 
-    test('updateItem works across multiple pages', () async {
+    test('updateItem works across multiple pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.updateItem(2, (item) => item.toUpperCase());
 
@@ -191,13 +191,13 @@ void main() {
       expect(manager.values, ['0:A', '1:B', '2:C']);
     });
 
-    test('updateItems works across multiple pages', () async {
+    test('updateItems works across multiple pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.updateItems((index, item) => '$index:${item.toUpperCase()}');
 
@@ -226,13 +226,13 @@ void main() {
       expect(manager.values, ['a', 'c']);
     });
 
-    test('removeItem works across multiple pages', () async {
+    test('removeItem works across multiple pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.removeItem(2);
 
@@ -283,26 +283,26 @@ void main() {
       expect(manager.values, ['a', 'c']);
     });
 
-    test('removeItems works across multiple pages', () async {
+    test('removeItems works across multiple pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.removeItems((index, item) => index % 2 == 0);
 
       expect(manager.values, ['b', 'd']);
     });
 
-    test('removeItems removes empty pages', () async {
+    test('removeItems removes empty pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.removeItems((index, item) => item == 'a' || item == 'b');
 
@@ -362,13 +362,13 @@ void main() {
       expect(manager.values, ['x']);
     });
 
-    test('insertItem works across multiple pages', () async {
+    test('insertItem works across multiple pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       manager.insertItem(2, 'x');
 
@@ -399,13 +399,13 @@ void main() {
       expect(state.error, isA<RangeError>());
     });
 
-    test('insertItem at page boundary', () async {
+    test('insertItem at page boundary', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       // Insert at the boundary (index 2, start of page2)
       manager.insertItem(2, 'x');
@@ -486,7 +486,7 @@ void main() {
       expect(manager.values, ['a', 'B']);
     });
 
-    test('prependPageKey returns first page prependKey', () async {
+    test('prependPageKey returns first page prependKey', () {
       final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b'], prependKey: 42);
 
@@ -495,7 +495,7 @@ void main() {
       expect(manager.prependPageKey, 42);
     });
 
-    test('appendPageKey returns last page appendKey', () async {
+    test('appendPageKey returns last page appendKey', () {
       final manager = PageManager<int, String>();
       const page = PageData<int, String>(data: ['a', 'b'], appendKey: 99);
 
@@ -504,13 +504,13 @@ void main() {
       expect(manager.appendPageKey, 99);
     });
 
-    test('values returns all items from all pages', () async {
+    test('values returns all items from all pages', () {
       final manager = PageManager<int, String>();
       const page1 = PageData<int, String>(data: ['a', 'b'], appendKey: 2);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
       manager.refresh(newPage: page1);
-      await manager.append(newPage: page2);
+      manager.append(newPage: page2);
 
       expect(manager.values, ['a', 'b', 'c', 'd']);
     });
@@ -663,28 +663,28 @@ void main() {
       manager = PageManager<int, String>();
     });
 
-    test('isRefreshing is true during refresh', () async {
+    test('isRefreshing is true during refresh', () {
       manager.changeState(type: LoadType.refresh);
       expect(manager.isRefreshing, isTrue);
       expect(manager.isPrepending, isFalse);
       expect(manager.isAppending, isFalse);
     });
 
-    test('isPrepending is true during prepend', () async {
+    test('isPrepending is true during prepend', () {
       manager.changeState(type: LoadType.prepend);
       expect(manager.isPrepending, isTrue);
       expect(manager.isRefreshing, isFalse);
       expect(manager.isAppending, isFalse);
     });
 
-    test('isAppending is true during append', () async {
+    test('isAppending is true during append', () {
       manager.changeState(type: LoadType.append);
       expect(manager.isAppending, isTrue);
       expect(manager.isRefreshing, isFalse);
       expect(manager.isPrepending, isFalse);
     });
 
-    test('All flags are false when loaded', () async {
+    test('All flags are false when loaded', () {
       manager.value = Paging(state: const LoadStateLoaded(), data: []);
       expect(manager.isRefreshing, isFalse);
       expect(manager.isPrepending, isFalse);
