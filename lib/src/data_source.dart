@@ -116,6 +116,37 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
+  /// Triggers a prepend operation to load data before the current items.
+  ///
+  /// This calls the [load] method with a [Prepend] action.
+  Future<void> prepend() async {
+    try {
+      await _prepend();
+    } catch (error, stackTrace) {
+      _manager.setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Triggers an append operation to load data after the current items.
+  ///
+  /// This calls the [load] method with an [Append] action.
+  Future<void> append() async {
+    try {
+      await _append();
+    } catch (error, stackTrace) {
+      _manager.setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Whether a refresh operation is currently in progress.
+  bool get isRefreshing => _manager.isRefreshing;
+
+  /// Whether a prepend operation is currently in progress.
+  bool get isPrepending => _manager.isPrepending;
+
+  /// Whether an append operation is currently in progress.
+  bool get isAppending => _manager.isAppending;
+
   /// Called by `paging_view` widgets to trigger a data load.
   ///
   /// This method is intended for internal use. You should typically call
