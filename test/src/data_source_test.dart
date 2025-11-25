@@ -207,4 +207,52 @@ void main() {
       expect(dataSource.isAppending, isFalse);
     });
   });
+
+  group('hasNext flags', () {
+    late TestDataSource dataSource;
+
+    setUp(() {
+      dataSource = TestDataSource();
+    });
+
+    tearDown(() {
+      dataSource.dispose();
+    });
+
+    test('hasNextPrepend reflects prependPageKey presence', () async {
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: ['data'], prependKey: 0, appendKey: 1),
+        ],
+      );
+      expect(dataSource.hasNextPrepend, isTrue);
+
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: ['data'], prependKey: null, appendKey: 1),
+        ],
+      );
+      expect(dataSource.hasNextPrepend, isFalse);
+    });
+
+    test('hasNextAppend reflects appendPageKey presence', () async {
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: ['data'], prependKey: 0, appendKey: 1),
+        ],
+      );
+      expect(dataSource.hasNextAppend, isTrue);
+
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: ['data'], prependKey: 0, appendKey: null),
+        ],
+      );
+      expect(dataSource.hasNextAppend, isFalse);
+    });
+  });
 }

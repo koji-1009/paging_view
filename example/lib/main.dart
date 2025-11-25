@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   }
 }
 
-enum DemoType { list, grid, groupedList, groupedGrid }
+enum DemoType { list, grid, groupedList, groupedGrid, manual }
 
 class DemoPage extends StatefulWidget {
   const DemoPage({super.key});
@@ -43,6 +43,7 @@ class _DemoPageState extends State<DemoPage> {
         .grid => const PagingGridDemo(),
         .groupedList => const GroupedPagingListDemo(),
         .groupedGrid => const GroupedPagingGridDemo(),
+        .manual => const ManualListDemo(),
       },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected.index,
@@ -69,6 +70,11 @@ class _DemoPageState extends State<DemoPage> {
             icon: Icon(Icons.group_work),
             label: 'Grouped Grid',
             tooltip: 'Grouped Paging Grid',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.handshake),
+            label: 'Manual',
+            tooltip: 'Manual Paging List',
           ),
         ],
       ),
@@ -271,6 +277,60 @@ class GroupedPagingGridDemo extends ConsumerWidget {
         padding: const .all(16),
         stickyHeader: true,
         stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
+      ),
+    );
+  }
+}
+
+class ManualListDemo extends ConsumerWidget {
+  const ManualListDemo({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataSource = ref.watch(dataSourceProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async => dataSource.refresh(),
+      child: CustomScrollView(
+        slivers: [
+          SliverPagingList(
+            dataSource: dataSource,
+            builder: (context, entity, index) => Card(
+              child: ListTile(
+                title: Text(entity.word),
+                subtitle: Text(entity.description),
+              ),
+            ),
+            errorBuilder: (context, error, stackTrace) =>
+                Center(child: Text('$error')),
+            initialLoadingWidget: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+            appendLoadingWidget: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+            emptyWidget: const Center(child: Text('No Item')),
+            padding: const .symmetric(horizontal: 16),
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+          ),
+          if (!dataSource.isAppending && dataSource.hasNextAppend)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const .all(16),
+                child: FilledButton(
+                  onPressed: () => dataSource.append(),
+                  child: const Text('Load More'),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
