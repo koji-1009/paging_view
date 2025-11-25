@@ -14,14 +14,14 @@ Whether you are building a simple infinite scroll list, a complex grid, a groupe
 - **Versatile UI**:
   - `PagingList`, `PagingGrid`: High-level widgets for common use cases.
   - `SliverPagingList`, `SliverPagingGrid`: For use in a `CustomScrollView` to create sophisticated scroll effects (e.g., with an `SliverAppBar`).
-- **Grouped Lists**: Built-in support for `GroupedPagingList`, making it easy to render sectioned data (e.g., by date or category) with sticky headers.
+- **Grouped Lists**: Built-in support for `GroupedPagingList` and `GroupedPagingGrid`, making it easy to render sectioned data (e.g., by date or category) with sticky headers.
 - **Bidirectional Loading**: Supports `Refresh`, `Append` (load more), and `Prepend` (load previous/history), making it ideal for feeds and chat applications.
 - **Modern & Type-Safe**: Leverages modern Dart patterns (sealed classes with switch expressions) to handle loading states elegantly.
 - **Customizable**: Full control over loading indicators, error widgets, and empty states.
 
 ## Live Preview
 
-👉 **[See it in action!](https://koji-1009.github.io/paging_view/)**
+https://koji-1009.github.io/paging_view/
 
 ## Getting Started
 
@@ -167,7 +167,7 @@ CustomScrollView(
       floating: true,
     ),
     // Use SliverPagingList directly
-    SliverPagingList<int, DemoEntity>(
+    SliverPagingList(
       dataSource: dataSource,
       builder: (context, entity, index) => ListTile(
         title: Text(entity.word),
@@ -182,7 +182,7 @@ CustomScrollView(
 Easily handle sectioned lists (e.g., contacts grouped by initial, transaction history by date) using `GroupedPagingList`. You'll need to use a `GroupedDataSource`.
 
 ```dart
-GroupedPagingList<int, String, DemoEntity>(
+GroupedPagingList(
   dataSource: groupedDataSource,
   // Define how to group your items
   headerBuilder: (context, groupKey, index) => Padding(
