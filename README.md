@@ -353,20 +353,17 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
           // Only show the "Load More" button if not currently appending
           // and if there are more items to append.
           ValueListenableBuilder(
-            valueListenable: _dataSource.notifier,
-            builder: (context, state, _) => SliverToBoxAdapter(
-              child: _dataSource.isAppending || !_dataSource.hasNextAppend
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const .all(8.0),
+            valueListenable: dataSource.notifier,
+            builder: (context, _, _) => SliverToBoxAdapter(
+              child: !dataSource.isAppending && dataSource.hasNextAppend
+                  ? Padding(
+                      padding: const .all(16),
                       child: FilledButton(
-                        onPressed: () {
-                          // Manually trigger appending more data
-                          _dataSource.append();
-                        },
+                        onPressed: () => dataSource.append(),
                         child: const Text('Load More'),
                       ),
-                    ),
+                    )
+                  : null,
             ),
           ),
         ],
