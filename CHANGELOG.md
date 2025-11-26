@@ -1,3 +1,7 @@
+## 2.4.4
+
+* Fix api.
+
 ## 2.4.3
 
 * Add hasNextAppend and hasNextPrepend flags to DataSource.
