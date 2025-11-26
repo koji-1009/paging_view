@@ -1,3 +1,8 @@
+## 2.4.3
+
+* Add hasNextAppend and hasNextPrepend flags to DataSource.
+* Update example and README.
+
 ## 2.4.2
 
 * Fix SliverBoundsDetector logic and test.
