@@ -207,6 +207,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
                 padding: padding,
+                autoLoadPrepend: autoLoadPrepend,
+                autoLoadAppend: autoLoadAppend,
                 separatorBuilder: _separatorBuilder,
               )
             : SliverPagingList<PageKey, Value>(
@@ -219,6 +221,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
                 padding: padding,
+                autoLoadPrepend: autoLoadPrepend,
+                autoLoadAppend: autoLoadAppend,
               ),
       ],
     );
