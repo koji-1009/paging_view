@@ -320,16 +320,20 @@ class ManualListDemo extends ConsumerWidget {
             autoLoadPrepend: false,
             autoLoadAppend: false,
           ),
-          if (!dataSource.isAppending && dataSource.hasNextAppend)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const .all(16),
-                child: FilledButton(
-                  onPressed: () => dataSource.append(),
-                  child: const Text('Load More'),
-                ),
-              ),
+          ValueListenableBuilder(
+            valueListenable: dataSource.notifier,
+            builder: (context, _, _) => SliverToBoxAdapter(
+              child: !dataSource.isAppending && dataSource.hasNextAppend
+                  ? Padding(
+                      padding: const .all(16),
+                      child: FilledButton(
+                        onPressed: () => dataSource.append(),
+                        child: const Text('Load More'),
+                      ),
+                    )
+                  : null,
             ),
+          ),
         ],
       ),
     );
