@@ -10,12 +10,6 @@ class PageManager<PageKey, Value>
 
   bool get isLoading => value.isLoading;
 
-  bool get isRefreshing => value.isRefreshing;
-
-  bool get isPrepending => value.isPrepending;
-
-  bool get isAppending => value.isAppending;
-
   PageKey? get prependPageKey => value.prependPageKey;
 
   PageKey? get appendPageKey => value.appendPageKey;

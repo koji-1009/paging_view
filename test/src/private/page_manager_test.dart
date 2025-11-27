@@ -16,10 +16,10 @@ void main() {
 
     test('isLoading returns correct value', () {
       final manager = PageManager<int, String>();
-      expect(manager.isLoading, false);
+      expect(manager.isLoading, isFalse);
 
       manager.changeState(type: LoadType.init);
-      expect(manager.isLoading, true);
+      expect(manager.isLoading, isTrue);
     });
 
     test('changeState updates state to loading', () {
@@ -535,7 +535,7 @@ void main() {
 
       manager.changeState(type: LoadType.refresh);
 
-      expect(notified, true);
+      expect(notified, isTrue);
     });
 
     test('removeListener prevents notification', () {
@@ -550,7 +550,7 @@ void main() {
 
       manager.changeState(type: LoadType.refresh);
 
-      expect(notified, false);
+      expect(notified, isFalse);
     });
   });
 
@@ -561,13 +561,13 @@ void main() {
         data: [],
       );
 
-      expect(state.isLoading, true);
+      expect(state.isLoading, isTrue);
     });
 
     test('isLoading returns false for LoadStateLoaded', () {
       const state = Paging<int, String>(state: LoadStateLoaded(), data: []);
 
-      expect(state.isLoading, false);
+      expect(state.isLoading, isFalse);
     });
 
     test('isLoading returns false for Warning', () {
@@ -576,7 +576,7 @@ void main() {
         stackTrace: null,
       );
 
-      expect(state.isLoading, false);
+      expect(state.isLoading, isFalse);
     });
 
     test('items returns flattened list of all page data', () {
@@ -619,76 +619,6 @@ void main() {
       );
 
       expect(state.appendPageKey, 99);
-    });
-  });
-
-  group('LoadState', () {
-    test('LoadStateLoading has correct state properties', () {
-      const loading = LoadStateLoading(state: LoadType.init);
-      expect(loading.isInit, true);
-      expect(loading.isRefresh, false);
-      expect(loading.isPrepend, false);
-      expect(loading.isAppend, false);
-    });
-
-    test('LoadStateLoading identifies refresh correctly', () {
-      const loading = LoadStateLoading(state: LoadType.refresh);
-      expect(loading.isInit, false);
-      expect(loading.isRefresh, true);
-      expect(loading.isPrepend, false);
-      expect(loading.isAppend, false);
-    });
-
-    test('LoadStateLoading identifies prepend correctly', () {
-      const loading = LoadStateLoading(state: LoadType.prepend);
-      expect(loading.isInit, false);
-      expect(loading.isRefresh, false);
-      expect(loading.isPrepend, true);
-      expect(loading.isAppend, false);
-    });
-
-    test('LoadStateLoading identifies append correctly', () {
-      const loading = LoadStateLoading(state: LoadType.append);
-      expect(loading.isInit, false);
-      expect(loading.isRefresh, false);
-      expect(loading.isPrepend, false);
-      expect(loading.isAppend, true);
-    });
-  });
-
-  group('PageManager API flags', () {
-    late PageManager<int, String> manager;
-
-    setUp(() {
-      manager = PageManager<int, String>();
-    });
-
-    test('isRefreshing is true during refresh', () {
-      manager.changeState(type: LoadType.refresh);
-      expect(manager.isRefreshing, isTrue);
-      expect(manager.isPrepending, isFalse);
-      expect(manager.isAppending, isFalse);
-    });
-
-    test('isPrepending is true during prepend', () {
-      manager.changeState(type: LoadType.prepend);
-      expect(manager.isPrepending, isTrue);
-      expect(manager.isRefreshing, isFalse);
-      expect(manager.isAppending, isFalse);
-    });
-
-    test('isAppending is true during append', () {
-      manager.changeState(type: LoadType.append);
-      expect(manager.isAppending, isTrue);
-      expect(manager.isRefreshing, isFalse);
-      expect(manager.isPrepending, isFalse);
-    });
-
-    test('All flags are false when loaded', () {
-      manager.value = Paging(state: const LoadStateLoaded(), data: []);
-      expect(manager.isRefreshing, isFalse);
-      expect(manager.isPrepending, isFalse);
-      expect(manager.isAppending, isFalse);
     });
   });
 }

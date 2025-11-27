@@ -138,21 +138,6 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
-  /// Whether a refresh operation is currently in progress.
-  bool get isRefreshing => _manager.isRefreshing;
-
-  /// Whether a prepend operation is currently in progress.
-  bool get isPrepending => _manager.isPrepending;
-
-  /// Whether there is a next page key available for prepend.
-  bool get hasNextPrepend => _manager.prependPageKey != null;
-
-  /// Whether an append operation is currently in progress.
-  bool get isAppending => _manager.isAppending;
-
-  /// Whether there is a next page key available for append.
-  bool get hasNextAppend => _manager.appendPageKey != null;
-
   /// Called by `paging_view` widgets to trigger a data load.
   ///
   /// This method is intended for internal use. You should typically call

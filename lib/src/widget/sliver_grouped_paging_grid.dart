@@ -171,7 +171,7 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = this.state;
-    if (state is LoadStateInit) {
+    if (state.isInit) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await dataSource.update(LoadType.init);
       });
@@ -180,14 +180,14 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
         padding: padding,
         sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
-    } else if (state is LoadStateLoading && state.isInit) {
+    } else if (state.isInitLoading) {
       return SliverPadding(
         padding: padding,
         sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
     }
 
-    if (state is LoadStateLoaded && groupedData.isEmpty) {
+    if (state.isLoaded && groupedData.isEmpty) {
       if (fillEmptyWidget) {
         return SliverPadding(
           padding: padding,
@@ -204,7 +204,7 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: padding.top)),
-        if (state is LoadStateLoading && state.isPrepend)
+        if (state.isPrependLoading)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
@@ -253,7 +253,7 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
               }
             },
           ),
-        if (state is LoadStateLoading && state.isAppend)
+        if (state.isAppendLoading)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: appendLoadingWidget),
