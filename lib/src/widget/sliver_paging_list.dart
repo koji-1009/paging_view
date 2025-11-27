@@ -192,7 +192,7 @@ class _List<PageKey, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = this.state;
-    if (state is LoadStateInit) {
+    if (state.isInit) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await dataSource.update(LoadType.init);
       });
@@ -201,7 +201,7 @@ class _List<PageKey, Value> extends StatelessWidget {
         padding: padding,
         sliver: SliverFillRemaining(child: initialLoadingWidget),
       );
-    } else if (state is LoadStateLoading && state.isInit) {
+    } else if (state.isInitLoading) {
       return SliverPadding(
         padding: padding,
         sliver: SliverFillRemaining(child: initialLoadingWidget),
@@ -209,7 +209,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     }
 
     final items = [...pages.map((e) => e.data).flattened];
-    if (state is LoadStateLoaded && items.isEmpty) {
+    if (state.isLoaded && items.isEmpty) {
       if (fillRemainEmptyWidget) {
         return SliverPadding(
           padding: padding,
@@ -226,7 +226,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: padding.top)),
-        if (state is LoadStateLoading && state.isPrepend)
+        if (state.isPrependLoading)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: prependLoadingWidget),
@@ -262,7 +262,7 @@ class _List<PageKey, Value> extends StatelessWidget {
               }
             },
           ),
-        if (state is LoadStateLoading && state.isAppend)
+        if (state.isAppendLoading)
           SliverPadding(
             padding: _horizontalPadding,
             sliver: SliverToBoxAdapter(child: appendLoadingWidget),
