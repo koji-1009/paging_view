@@ -135,7 +135,11 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   bool get isLoading => switch (this) {
-    Paging(:final state) => state is LoadStateLoading,
+    Paging(:final state) =>
+      state.isInitLoading ||
+          state.isRefreshLoading ||
+          state.isPrependLoading ||
+          state.isAppendLoading,
     Warning() => false,
   };
 
@@ -144,7 +148,7 @@ extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   PageKey? get appendPageKey => pages.lastOrNull?.appendKey;
 
   List<PageData<PageKey, Value>> get pages => switch (this) {
-    Paging(data: final data) => data,
+    Paging(:final data) => data,
     Warning() => const [],
   };
 
