@@ -15,11 +15,11 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -36,11 +36,11 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -62,19 +62,19 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   final GroupedTypedWidgetBuilder<Value> itemBuilder;
 
   /// The builder that builds a widget for the given exception.
-  final ExceptionWidgetBuilder errorBuilder;
+  final ExceptionWidgetBuilder? errorBuilder;
 
   /// The widget that is shown when the data is loading for the first time.
-  final Widget initialLoadingWidget;
+  final Widget? initialLoadingWidget;
 
   /// The widget that is shown when the data is loading at the beginning of the list.
-  final Widget prependLoadingWidget;
+  final Widget? prependLoadingWidget;
 
   /// The widget that is shown when the data is loading at the end of the list.
-  final Widget appendLoadingWidget;
+  final Widget? appendLoadingWidget;
 
   /// The widget that is shown when the data is empty.
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// If true, the error widget will fill the remaining space.
   final bool fillRemainErrorWidget;
@@ -118,7 +118,6 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           dataSource: dataSource,
           headerBuilder: headerBuilder,
           valueBuilder: itemBuilder,
-          errorBuilder: errorBuilder,
           initialLoadingWidget: initialLoadingWidget,
           prependLoadingWidget: prependLoadingWidget,
           appendLoadingWidget: appendLoadingWidget,
@@ -136,10 +135,10 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
           padding: padding,
           sliver: fillRemainErrorWidget
               ? SliverFillRemaining(
-                  child: errorBuilder(context, error, stackTrace),
+                  child: errorBuilder?.call(context, error, stackTrace),
                 )
               : SliverToBoxAdapter(
-                  child: errorBuilder(context, error, stackTrace),
+                  child: errorBuilder?.call(context, error, stackTrace),
                 ),
         ),
       },
@@ -155,7 +154,6 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
     required this.dataSource,
     required this.headerBuilder,
     required this.valueBuilder,
-    required this.errorBuilder,
     required this.initialLoadingWidget,
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
@@ -175,11 +173,10 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
   final TypedWidgetBuilder<Parent> headerBuilder;
   final GroupedTypedWidgetBuilder<Value> valueBuilder;
-  final ExceptionWidgetBuilder errorBuilder;
-  final Widget initialLoadingWidget;
-  final Widget prependLoadingWidget;
-  final Widget appendLoadingWidget;
-  final Widget emptyWidget;
+  final Widget? initialLoadingWidget;
+  final Widget? prependLoadingWidget;
+  final Widget? appendLoadingWidget;
+  final Widget? emptyWidget;
   final bool fillRemainEmptyWidget;
   final EdgeInsets padding;
   final bool stickyHeader;

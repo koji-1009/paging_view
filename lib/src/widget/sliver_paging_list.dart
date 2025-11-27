@@ -14,11 +14,11 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     super.key,
     required this.dataSource,
     required this.builder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -32,11 +32,11 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     super.key,
     required this.dataSource,
     required this.builder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -52,19 +52,19 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   final TypedWidgetBuilder<Value> builder;
 
   /// The builder that builds a widget for the given exception.
-  final ExceptionWidgetBuilder errorBuilder;
+  final ExceptionWidgetBuilder? errorBuilder;
 
   /// The widget that is shown when the data is loading for the first time.
-  final Widget initialLoadingWidget;
+  final Widget? initialLoadingWidget;
 
   /// The widget that is shown when the data is loading at the beginning of the list.
-  final Widget prependLoadingWidget;
+  final Widget? prependLoadingWidget;
 
   /// The widget that is shown when the data is loading at the end of the list.
-  final Widget appendLoadingWidget;
+  final Widget? appendLoadingWidget;
 
   /// The widget that is shown when the data is empty.
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// If true, the error widget will fill the remaining space.
   final bool fillRemainErrorWidget;
@@ -98,7 +98,6 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   pages: data,
                   dataSource: dataSource,
                   builder: builder,
-                  errorBuilder: errorBuilder,
                   initialLoadingWidget: initialLoadingWidget,
                   prependLoadingWidget: prependLoadingWidget,
                   appendLoadingWidget: appendLoadingWidget,
@@ -114,7 +113,6 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                   pages: data,
                   dataSource: dataSource,
                   builder: builder,
-                  errorBuilder: errorBuilder,
                   initialLoadingWidget: initialLoadingWidget,
                   prependLoadingWidget: prependLoadingWidget,
                   appendLoadingWidget: appendLoadingWidget,
@@ -128,10 +126,10 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
           padding: padding,
           sliver: fillRemainErrorWidget
               ? SliverFillRemaining(
-                  child: errorBuilder(context, error, stackTrace),
+                  child: errorBuilder?.call(context, error, stackTrace),
                 )
               : SliverToBoxAdapter(
-                  child: errorBuilder(context, error, stackTrace),
+                  child: errorBuilder?.call(context, error, stackTrace),
                 ),
         ),
       },
@@ -146,7 +144,6 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.pages,
     required this.dataSource,
     required this.builder,
-    required this.errorBuilder,
     required this.initialLoadingWidget,
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
@@ -164,7 +161,6 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.pages,
     required this.dataSource,
     required this.builder,
-    required this.errorBuilder,
     required this.initialLoadingWidget,
     required this.prependLoadingWidget,
     required this.appendLoadingWidget,
@@ -180,11 +176,10 @@ class _List<PageKey, Value> extends StatelessWidget {
   final List<PageData<PageKey, Value>> pages;
   final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
-  final ExceptionWidgetBuilder errorBuilder;
-  final Widget initialLoadingWidget;
-  final Widget prependLoadingWidget;
-  final Widget appendLoadingWidget;
-  final Widget emptyWidget;
+  final Widget? initialLoadingWidget;
+  final Widget? prependLoadingWidget;
+  final Widget? appendLoadingWidget;
+  final Widget? emptyWidget;
   final bool fillRemainEmptyWidget;
   final IndexedWidgetBuilder? _separatorBuilder;
   final EdgeInsets padding;

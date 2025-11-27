@@ -23,11 +23,11 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -57,11 +57,11 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     required this.dataSource,
     required this.headerBuilder,
     required this.itemBuilder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.fillRemainErrorWidget = true,
     this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
@@ -99,21 +99,21 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   final GroupedTypedWidgetBuilder<Value> itemBuilder;
 
   /// A builder that creates a widget to display when an error occurs.
-  final ExceptionWidgetBuilder errorBuilder;
+  final ExceptionWidgetBuilder? errorBuilder;
 
   /// The widget to display while the first page is being loaded.
-  final Widget initialLoadingWidget;
+  final Widget? initialLoadingWidget;
 
   /// The widget to display at the top of the list when a `prepend` operation
   /// is in progress.
-  final Widget prependLoadingWidget;
+  final Widget? prependLoadingWidget;
 
   /// The widget to display at the bottom of the list when an `append` operation
   /// is in progress.
-  final Widget appendLoadingWidget;
+  final Widget? appendLoadingWidget;
 
   /// The widget to display when the list is empty.
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// Whether the `errorBuilder` should be constrained to fill the viewport.
   final bool fillRemainErrorWidget;
