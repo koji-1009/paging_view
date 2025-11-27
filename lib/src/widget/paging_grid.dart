@@ -20,11 +20,11 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
     required this.gridDelegate,
     required this.dataSource,
     required this.builder,
-    required this.errorBuilder,
-    required this.initialLoadingWidget,
-    this.prependLoadingWidget = const SizedBox.shrink(),
-    this.appendLoadingWidget = const SizedBox.shrink(),
-    this.emptyWidget = const SizedBox.shrink(),
+    this.errorBuilder,
+    this.initialLoadingWidget,
+    this.prependLoadingWidget,
+    this.appendLoadingWidget,
+    this.emptyWidget,
     this.padding = EdgeInsets.zero,
     this.autoLoadPrepend = true,
     this.autoLoadAppend = true,
@@ -50,21 +50,21 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
   final TypedWidgetBuilder<Value> builder;
 
   /// A builder that creates a widget to display when an error occurs.
-  final ExceptionWidgetBuilder errorBuilder;
+  final ExceptionWidgetBuilder? errorBuilder;
 
   /// The widget to display while the first page is being loaded.
-  final Widget initialLoadingWidget;
+  final Widget? initialLoadingWidget;
 
   /// The widget to display at the top of the grid when a `prepend` operation
   /// is in progress.
-  final Widget prependLoadingWidget;
+  final Widget? prependLoadingWidget;
 
   /// The widget to display at the bottom of the grid when an `append` operation
   /// is in progress.
-  final Widget appendLoadingWidget;
+  final Widget? appendLoadingWidget;
 
   /// The widget to display when the grid is empty.
-  final Widget emptyWidget;
+  final Widget? emptyWidget;
 
   /// The amount of space by which to inset the children.
   final EdgeInsets padding;
