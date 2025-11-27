@@ -1,3 +1,7 @@
+## 2.4.5
+
+* Made optional widgets nullable.
+
 ## 2.4.4
 
 * Fix api.
