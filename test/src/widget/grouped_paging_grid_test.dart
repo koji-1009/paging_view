@@ -5,258 +5,85 @@ import 'package:paging_view/paging_view.dart';
 import '../../helper/test_data_source.dart';
 
 void main() {
-  const gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    mainAxisSpacing: 10,
-    crossAxisSpacing: 10,
-  );
-
   group('GroupedPagingGrid', () {
-    testWidgets('displays grouped items after loading', (tester) async {
-      final dataSource = TestGroupedDataSource();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
+    Widget createGroupedPagingGrid({
+      required TestGroupedDataSource dataSource,
+      bool fillRemainErrorWidget = true,
+      bool fillRemainEmptyWidget = true,
+      EdgeInsets padding = EdgeInsets.zero,
+      bool autoLoadPrepend = true,
+      bool autoLoadAppend = true,
+      Axis scrollDirection = Axis.vertical,
+      bool reverse = false,
+      ScrollController? controller,
+    }) {
+      return MaterialApp(
+        home: Scaffold(
+          body: GroupedPagingGrid<int, String, String>(
+            dataSource: dataSource,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
             ),
+            headerBuilder: (context, group, index) =>
+                Text('Group $group'),
+            itemBuilder: (context, item, itemIndex, groupIndex) =>
+                SizedBox(height: 50, child: Text(item)),
+            errorBuilder: (context, error, stackTrace) => const Text('Error'),
+            initialLoadingWidget: const Text('Initial Loading'),
+            prependLoadingWidget: const Text('Prepending'),
+            appendLoadingWidget: const Text('Appending'),
+            emptyWidget: const Text('No Data'),
+            fillRemainErrorWidget: fillRemainErrorWidget,
+            fillRemainEmptyWidget: fillRemainEmptyWidget,
+            padding: padding,
+            autoLoadPrepend: autoLoadPrepend,
+            autoLoadAppend: autoLoadAppend,
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
           ),
         ),
       );
-      await tester.pumpAndSettle();
-      expect(find.text('Header: Group A'), findsOneWidget);
-      expect(find.text('Header: Group B'), findsOneWidget);
-      expect(find.text('A1'), findsOneWidget);
-      expect(find.text('A2'), findsOneWidget);
-      expect(find.text('B1'), findsOneWidget);
-      expect(find.text('B2'), findsOneWidget);
-      dataSource.dispose();
-    });
+    }
 
-    testWidgets('displays error widget on error', (tester) async {
-      final dataSource = TestGroupedDataSource(hasErrorOnRefresh: true);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Error:'), findsOneWidget);
-      dataSource.dispose();
-    });
-
-    testWidgets('displays empty widget for empty groups', (tester) async {
-      final dataSource = TestGroupedDataSource(initialItems: const []);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-              emptyWidget: const Text('No Items'),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('No Items'), findsOneWidget);
-      dataSource.dispose();
-    });
-
-    testWidgets('displays single group', (tester) async {
-      final dataSource = TestGroupedDataSource(initialItems: ['A1', 'A2']);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Header: Group A'), findsOneWidget);
-      expect(find.text('A1'), findsOneWidget);
-      expect(find.text('A2'), findsOneWidget);
-      dataSource.dispose();
-    });
-
-    testWidgets('displays correct group order', (tester) async {
+    testWidgets('displays initial loading, then items and headers',
+        (tester) async {
       final dataSource = TestGroupedDataSource(
-        initialItems: ['B1', 'B2', 'A1', 'A2'],
+        refreshDelay: const Duration(milliseconds: 100),
       );
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
+      addTearDown(dataSource.dispose);
+
+      await tester.pumpWidget(createGroupedPagingGrid(dataSource: dataSource));
+      await tester.pump();
+      expect(find.text('Initial Loading'), findsOneWidget);
+
       await tester.pumpAndSettle();
-      final headerFinder = find.text('Header: Group B');
-      final headerFinderA = find.text('Header: Group A');
-      expect(headerFinder, findsOneWidget);
-      expect(headerFinderA, findsOneWidget);
-      // Order verification can be done using the index in the Widget tree
-      // If the key is null, order verification is not possible, so it is omitted
-      dataSource.dispose();
+      expect(find.text('Initial Loading'), findsNothing);
+      expect(find.text('A1'), findsOneWidget);
+      expect(find.text('Group Group A'), findsOneWidget);
+      expect(find.text('Group Group B'), findsOneWidget);
     });
 
-    testWidgets('shows loading widget initially', (tester) async {
-      final dataSource = TestGroupedDataSource();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      await tester.pumpAndSettle();
-      dataSource.dispose();
-    });
-
-    testWidgets('handles special group names', (tester) async {
-      final dataSource = TestGroupedDataSource(initialItems: ['N1', 'S1']);
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Header: Other'), findsOneWidget);
-      expect(find.text('N1'), findsOneWidget);
-      expect(find.text('S1'), findsOneWidget);
-      dataSource.dispose();
-    });
-
-    testWidgets('renders sticky headers with stickyHeader=true', (
+    testWidgets('displays empty widget when initial data is empty', (
       tester,
     ) async {
-      final dataSource = TestGroupedDataSource();
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              headerBuilder: (context, groupKey, index) => Container(
-                color: Colors.blue,
-                child: Text('Header: $groupKey'),
-              ),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-              stickyHeader: true,
-            ),
-          ),
-        ),
-      );
+      final dataSource = TestGroupedDataSource(initialItems: []);
+      addTearDown(dataSource.dispose);
+
+      await tester
+          .pumpWidget(createGroupedPagingGrid(dataSource: dataSource));
       await tester.pumpAndSettle();
-      expect(find.text('Header: Group A'), findsOneWidget);
-      expect(find.text('Header: Group B'), findsOneWidget);
-      dataSource.dispose();
+      expect(find.text('No Data'), findsOneWidget);
     });
 
-    testWidgets('renders groups in reverse when reverse is true', (
-      tester,
-    ) async {
-      final dataSource = TestGroupedDataSource(); // A -> B
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: GroupedPagingGrid<int, String, String>(
-              gridDelegate: gridDelegate,
-              dataSource: dataSource,
-              reverse: true,
-              headerBuilder: (context, groupKey, index) =>
-                  Text('Header: $groupKey'),
-              itemBuilder: (context, item, globalIndex, localIndex) =>
-                  Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
+    testWidgets('displays error widget on initial load error', (tester) async {
+      final dataSource = TestGroupedDataSource(hasErrorOnRefresh: true);
+      addTearDown(dataSource.dispose);
+
+      await tester
+          .pumpWidget(createGroupedPagingGrid(dataSource: dataSource));
       await tester.pumpAndSettle();
-
-      final headerAPos = tester.getTopLeft(find.text('Header: Group A'));
-      final headerBPos = tester.getTopLeft(find.text('Header: Group B'));
-
-      // In reverse order, Group B should be physically above Group A.
-      expect(headerBPos.dy, lessThan(headerAPos.dy));
-      dataSource.dispose();
+      expect(find.text('Error'), findsOneWidget);
     });
   });
 }

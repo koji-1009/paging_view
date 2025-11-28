@@ -2,247 +2,325 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
 
-class TestWidgetDataSource extends DataSource<int, String> {
-  TestWidgetDataSource({
-    this.initialData = const ['Item 1', 'Item 2', 'Item 3'],
-    this.hasMoreData = true,
-    this.hasError = false,
-  });
-
-  final List<String> initialData;
-  final bool hasMoreData;
-  final bool hasError;
-
-  @override
-  Future<LoadResult<int, String>> load(LoadAction<int> action) async {
-    if (hasError) {
-      throw Exception('Test error');
-    }
-
-    switch (action) {
-      case Refresh():
-        return Success(
-          page: PageData(data: initialData, appendKey: hasMoreData ? 1 : null),
-        );
-      case Append(:final key):
-        if (key >= 3) {
-          return const None();
-        }
-        return Success(
-          page: PageData(
-            data: [
-              'Item ${key * 3 + 1}',
-              'Item ${key * 3 + 2}',
-              'Item ${key * 3 + 3}',
-            ],
-            appendKey: key + 1 < 3 ? key + 1 : null,
-          ),
-        );
-      case Prepend():
-        return const None();
-    }
-  }
-}
+import '../../helper/test_data_source.dart';
 
 void main() {
   group('PagingList', () {
-    testWidgets('displays initial loading widget', (tester) async {
-      final dataSource = TestWidgetDataSource();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
+    Widget createPagingList({
+      required TestDataSource dataSource,
+      IndexedWidgetBuilder? separatorBuilder,
+      bool fillRemainErrorWidget = true,
+      bool fillRemainEmptyWidget = true,
+      EdgeInsets padding = EdgeInsets.zero,
+      bool autoLoadPrepend = true,
+      bool autoLoadAppend = true,
+      Axis scrollDirection = Axis.vertical,
+      bool reverse = false,
+      ScrollController? controller,
+    }) {
+      return MaterialApp(
+        home: Scaffold(
+          body: separatorBuilder != null
+              ? PagingList.separated(
+                  dataSource: dataSource,
+                  builder: (context, item, index) =>
+                      SizedBox(height: 50, child: Text(item)),
+                  separatorBuilder: separatorBuilder,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Text('Error'),
+                  initialLoadingWidget: const Text('Initial Loading'),
+                  prependLoadingWidget: const Text('Prepending'),
+                  appendLoadingWidget: const Text('Appending'),
+                  emptyWidget: const Text('No Data'),
+                  fillRemainErrorWidget: fillRemainErrorWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
+                  padding: padding,
+                  autoLoadPrepend: autoLoadPrepend,
+                  autoLoadAppend: autoLoadAppend,
+                  scrollDirection: scrollDirection,
+                  reverse: reverse,
+                  controller: controller,
+                )
+              : PagingList(
+                  dataSource: dataSource,
+                  builder: (context, item, index) =>
+                      SizedBox(height: 50, child: Text(item)),
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Text('Error'),
+                  initialLoadingWidget: const Text('Initial Loading'),
+                  prependLoadingWidget: const Text('Prepending'),
+                  appendLoadingWidget: const Text('Appending'),
+                  emptyWidget: const Text('No Data'),
+                  fillRemainErrorWidget: fillRemainErrorWidget,
+                  fillRemainEmptyWidget: fillRemainEmptyWidget,
+                  padding: padding,
+                  autoLoadPrepend: autoLoadPrepend,
+                  autoLoadAppend: autoLoadAppend,
+                  scrollDirection: scrollDirection,
+                  reverse: reverse,
+                  controller: controller,
+                ),
         ),
       );
+    }
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-      await tester.pumpAndSettle();
-
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-
-      dataSource.dispose();
-    });
-
-    testWidgets('displays items after loading', (tester) async {
-      final dataSource = TestWidgetDataSource();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
+    testWidgets('displays initial loading, then items', (tester) async {
+      final dataSource = TestDataSource(
+        refreshDelay: const Duration(milliseconds: 100),
       );
+      addTearDown(dataSource.dispose);
+
+      await tester.pumpWidget(createPagingList(dataSource: dataSource));
+      await tester.pump();
+      expect(find.text('Initial Loading'), findsOneWidget);
 
       await tester.pumpAndSettle();
-
+      expect(find.text('Initial Loading'), findsNothing);
       expect(find.text('Item 1'), findsOneWidget);
-      expect(find.text('Item 2'), findsOneWidget);
-      expect(find.text('Item 3'), findsOneWidget);
-
-      dataSource.dispose();
     });
 
-    testWidgets('displays empty widget when no data', (tester) async {
-      final dataSource = TestWidgetDataSource(initialData: const []);
+    testWidgets('displays empty widget when initial data is empty', (
+      tester,
+    ) async {
+      final dataSource = TestDataSource(initialItems: []);
+      addTearDown(dataSource.dispose);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-              emptyWidget: const Text('No data'),
-            ),
-          ),
-        ),
-      );
-
+      await tester.pumpWidget(createPagingList(dataSource: dataSource));
       await tester.pumpAndSettle();
-
-      expect(find.text('No data'), findsOneWidget);
-
-      dataSource.dispose();
+      expect(find.text('No Data'), findsOneWidget);
     });
 
-    testWidgets('displays error widget on error', (tester) async {
-      final dataSource = TestWidgetDataSource(hasError: true);
+    testWidgets('displays error widget on initial load error', (tester) async {
+      final dataSource = TestDataSource(hasErrorOnRefresh: true);
+      addTearDown(dataSource.dispose);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  const Text('Error occurred'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
-      );
-
+      await tester.pumpWidget(createPagingList(dataSource: dataSource));
       await tester.pumpAndSettle();
-
-      expect(find.text('Error occurred'), findsOneWidget);
-
-      dataSource.dispose();
+      expect(find.text('Error'), findsOneWidget);
     });
 
-    testWidgets('loads more items when scrolled', (tester) async {
-      final dataSource = TestWidgetDataSource();
+    testWidgets('loads more items on scroll (append)', (tester) async {
+      final dataSource = TestDataSource(
+        maxAppendPages: 1,
+        initialItems: List.generate(12, (index) => 'Item $index'),
+      );
+      addTearDown(dataSource.dispose);
+
+      await tester.pumpWidget(createPagingList(dataSource: dataSource));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Appended Item 1'), findsNothing);
+
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, -500),
+        1000,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Appended Item 1'), findsOneWidget);
+    });
+
+    testWidgets('loads more items on scroll (prepend)', (tester) async {
+      final dataSource = TestDataSource(
+        maxPrependPages: 1,
+        initialItems: List.generate(12, (index) => 'Item $index'),
+      );
+      addTearDown(dataSource.dispose);
+
+      final controller = ScrollController(initialScrollOffset: 1000.0);
+      await tester.pumpWidget(
+        createPagingList(dataSource: dataSource, controller: controller),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Prepended Item -1'), findsNothing);
+
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 500),
+        1000,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Prepended Item -1'), findsOneWidget);
+    });
+
+    testWidgets('displays append loading widget during append', (tester) async {
+      final dataSource = TestDataSource(
+        maxAppendPages: 1,
+        appendDelay: const Duration(microseconds: 100),
+      );
+      addTearDown(dataSource.dispose);
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              builder: (context, item, index) =>
-                  SizedBox(height: 100, child: Text(item)),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
+        createPagingList(dataSource: dataSource, autoLoadAppend: false),
       );
+      await tester.pumpAndSettle();
+      expect(find.text('Appending'), findsNothing);
+
+      dataSource.append();
+      await tester.pump();
+      expect(find.text('Appending'), findsOneWidget);
 
       await tester.pumpAndSettle();
+      expect(find.text('Appending'), findsNothing);
+      expect(find.text('Appended Item 1'), findsOneWidget);
+    });
 
-      // Verify the first items are displayed
-      expect(find.text('Item 1'), findsOneWidget);
+    testWidgets('displays prepend loading widget during prepend', (
+      tester,
+    ) async {
+      final dataSource = TestDataSource(
+        maxPrependPages: 1,
+        prependDelay: const Duration(microseconds: 100),
+      );
+      addTearDown(dataSource.dispose);
 
-      // Scroll down to load more items
-      await tester.drag(find.byType(CustomScrollView), const Offset(0, -400));
+      await tester.pumpWidget(
+        createPagingList(dataSource: dataSource, autoLoadPrepend: false),
+      );
       await tester.pumpAndSettle();
+      expect(find.text('Prepending'), findsNothing);
 
-      // Verify additional items are displayed
-      expect(find.text('Item 4'), findsOneWidget);
-      expect(find.text('Item 5'), findsOneWidget);
-      expect(find.text('Item 6'), findsOneWidget);
-
-      dataSource.dispose();
+      dataSource.prepend();
+      await tester.pump();
+      expect(find.text('Prepending'), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.text('Prepending'), findsNothing);
+      expect(find.text('Prepended Item -1'), findsOneWidget);
     });
 
     testWidgets('displays separators when using PagingList.separated', (
       tester,
     ) async {
-      final dataSource = TestWidgetDataSource(hasMoreData: false);
+      final dataSource = TestDataSource(maxAppendPages: 0, maxPrependPages: 0);
+      addTearDown(dataSource.dispose);
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList.separated(
-              dataSource: dataSource,
-              builder: (context, item, index) => Text(item),
-              separatorBuilder: (context, index) =>
-                  const Divider(key: Key('separator')),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
+        createPagingList(
+          dataSource: dataSource,
+          separatorBuilder: (context, index) =>
+              const Divider(key: Key('separator')),
         ),
       );
-
       await tester.pumpAndSettle();
-
-      // There are 3 items, so there should be 2 separators.
       expect(find.byKey(const Key('separator')), findsNWidgets(2));
-
-      dataSource.dispose();
     });
 
     testWidgets('renders items in reverse when reverse is true', (
       tester,
     ) async {
-      final dataSource = TestWidgetDataSource(
-        initialData: const ['Item 1', 'Item 2'],
-      );
+      final dataSource = TestDataSource(maxAppendPages: 0, maxPrependPages: 0);
+      addTearDown(dataSource.dispose);
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PagingList(
-              dataSource: dataSource,
-              reverse: true,
-              builder: (context, item, index) => Text(item),
-              errorBuilder: (context, error, stackTrace) =>
-                  Text('Error: $error'),
-              initialLoadingWidget: const CircularProgressIndicator(),
-            ),
-          ),
-        ),
+        createPagingList(dataSource: dataSource, reverse: true),
       );
-
       await tester.pumpAndSettle();
 
-      // Get the positions of the two items.
       final item1Pos = tester.getTopLeft(find.text('Item 1'));
       final item2Pos = tester.getTopLeft(find.text('Item 2'));
-
-      // In reverse order, Item 2 should be physically above Item 1.
-      expect(item2Pos.dy, lessThan(item1Pos.dy));
-
-      dataSource.dispose();
+      expect(item1Pos.dy, greaterThan(item2Pos.dy));
     });
+
+    testWidgets('applies padding correctly', (tester) async {
+      final dataSource = TestDataSource(maxAppendPages: 0, maxPrependPages: 0);
+      addTearDown(dataSource.dispose);
+
+      await tester.pumpWidget(
+        createPagingList(
+          dataSource: dataSource,
+          padding: const EdgeInsets.all(20.0),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Item 1'), findsOneWidget);
+
+      final item1Rect = tester.getRect(find.text('Item 1'));
+      expect(item1Rect.left, 20.0);
+      expect(item1Rect.top, 20.0);
+    });
+
+    testWidgets(
+      'error widget fills remaining space if fillRemainErrorWidget is true',
+      (tester) async {
+        final dataSource = TestDataSource(hasErrorOnRefresh: true);
+        addTearDown(dataSource.dispose);
+
+        await tester.pumpWidget(
+          createPagingList(dataSource: dataSource, fillRemainErrorWidget: true),
+        );
+        await tester.pumpAndSettle();
+
+        final errorWidget = find.text('Error');
+        expect(
+          tester.getSize(errorWidget).height,
+          equals(tester.getSize(find.byType(Scaffold)).height),
+        );
+      },
+    );
+
+    testWidgets(
+      'empty widget fills remaining space if fillRemainEmptyWidget is true',
+      (tester) async {
+        final dataSource = TestDataSource(initialItems: []);
+        addTearDown(dataSource.dispose);
+
+        await tester.pumpWidget(
+          createPagingList(dataSource: dataSource, fillRemainEmptyWidget: true),
+        );
+        await tester.pumpAndSettle();
+
+        final emptyWidget = find.text('No Data');
+        expect(
+          tester.getSize(emptyWidget).height,
+          equals(tester.getSize(find.byType(Scaffold)).height),
+        );
+      },
+    );
+
+    testWidgets(
+      'error widget does not fill remaining space if fillRemainErrorWidget is false',
+      (tester) async {
+        final dataSource = TestDataSource(hasErrorOnRefresh: true);
+        addTearDown(dataSource.dispose);
+
+        await tester.pumpWidget(
+          createPagingList(
+            dataSource: dataSource,
+            fillRemainErrorWidget: false,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final errorWidget = find.text('Error');
+        expect(
+          tester.getSize(errorWidget).height,
+          lessThan(tester.getSize(find.byType(Scaffold)).height),
+        );
+      },
+    );
+
+    testWidgets(
+      'empty widget does not fill remaining space if fillRemainEmptyWidget is false',
+      (tester) async {
+        final dataSource = TestDataSource(initialItems: []);
+        addTearDown(dataSource.dispose);
+
+        await tester.pumpWidget(
+          createPagingList(
+            dataSource: dataSource,
+            fillRemainEmptyWidget: false,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final emptyWidget = find.text('No Data');
+        expect(
+          tester.getSize(emptyWidget).height,
+          lessThan(tester.getSize(find.byType(Scaffold)).height),
+        );
+      },
+    );
   });
 }

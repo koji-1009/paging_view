@@ -7,27 +7,42 @@ import '../../helper/test_data_source.dart';
 
 void main() {
   group('PrependLoadStateBuilder', () {
-    testWidgets('shows button when hasMore is true and isLoading is false', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource();
-      await dataSource.refresh();
+    late TestDataSource dataSource;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: PrependLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.prepend(),
-                child: const Text('Load Previous'),
-              );
-            },
-          ),
+    setUp(() {
+      dataSource = TestDataSource();
+    });
+
+    tearDown(() {
+      dataSource.dispose();
+    });
+
+    Widget createPrependLoadStateBuilder() {
+      return MaterialApp(
+        home: PrependLoadStateBuilder<int, String>(
+          dataSource: dataSource,
+          builder: (context, hasMore, isLoading) {
+            if (!hasMore) return const Text('No more prepend');
+            return ElevatedButton(
+              onPressed: isLoading ? null : () {},
+              child: Text(isLoading ? 'Loading Previous' : 'Load Previous'),
+            );
+          },
         ),
       );
+    }
 
+    testWidgets('shows load button when hasMore is true and not loading', (
+      tester,
+    ) async {
+      // Simulate initial data with prependKey
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: const ['Item 1'], prependKey: 0),
+        ],
+      );
+      await tester.pumpWidget(createPrependLoadStateBuilder());
       expect(find.text('Load Previous'), findsOneWidget);
       expect(
         tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed,
@@ -35,87 +50,89 @@ void main() {
       );
     });
 
-    testWidgets('hides button when hasMore is false', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource(prependedItems: []);
-      await dataSource.refresh();
-      await dataSource.prepend();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: PrependLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.prepend(),
-                child: const Text('Load Previous'),
-              );
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('Load Previous'), findsNothing);
-    });
-
-    testWidgets('disables button when isLoading is true', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource();
-      await dataSource.refresh();
+    testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
       dataSource.notifier.value = Paging(
-        state: LoadStateLoading(state: LoadType.prepend),
-        data: [PageData(data: [], prependKey: 0)],
+        state: const LoadStateLoading(state: LoadType.prepend),
+        data: [
+          PageData(data: const ['Item 1'], prependKey: 0),
+        ],
       );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: PrependLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.prepend(),
-                child: const Text('Load Previous'),
-              );
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('Load Previous'), findsOneWidget);
+      await tester.pumpWidget(createPrependLoadStateBuilder());
+      expect(find.text('Loading Previous'), findsOneWidget);
       expect(
         tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed,
         isNull,
       );
+    });
+
+    testWidgets('shows "No more prepend" when hasMore is false', (
+      tester,
+    ) async {
+      // Simulate no more prepend pages
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: const ['Item 1']),
+        ],
+      );
+      await tester.pumpWidget(createPrependLoadStateBuilder());
+      expect(find.text('No more prepend'), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsNothing);
+    });
+
+    testWidgets('shows shrink box when dataSource is in Warning state', (
+      tester,
+    ) async {
+      dataSource.notifier.value = Warning<int, String>(
+        error: Exception('Test Error'),
+        stackTrace: null,
+      );
+      await tester.pumpWidget(createPrependLoadStateBuilder());
+      // A SizedBox.shrink is effectively findsNothing in tests if it's the only widget.
+      // We can assert it's not the button or "No more prepend" text.
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.text('No more prepend'), findsNothing);
     });
   });
 
   group('AppendLoadStateBuilder', () {
-    testWidgets('shows button when hasMore is true and isLoading is false', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource();
-      await dataSource.refresh();
+    late TestDataSource dataSource;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AppendLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.append(),
-                child: const Text('Load More'),
-              );
-            },
-          ),
+    setUp(() {
+      dataSource = TestDataSource();
+    });
+
+    tearDown(() {
+      dataSource.dispose();
+    });
+
+    Widget createAppendLoadStateBuilder() {
+      return MaterialApp(
+        home: AppendLoadStateBuilder<int, String>(
+          dataSource: dataSource,
+          builder: (context, hasMore, isLoading) {
+            if (!hasMore) return const Text('No more append');
+            return ElevatedButton(
+              onPressed: isLoading ? null : () {},
+              child: Text(isLoading ? 'Loading More' : 'Load More'),
+            );
+          },
         ),
       );
+    }
 
+    testWidgets('shows load button when hasMore is true and not loading', (
+      tester,
+    ) async {
+      // Simulate initial data with appendKey
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: const ['Item 1'], appendKey: 1),
+        ],
+      );
+      await tester.pumpWidget(createAppendLoadStateBuilder());
       expect(find.text('Load More'), findsOneWidget);
       expect(
         tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed,
@@ -123,62 +140,45 @@ void main() {
       );
     });
 
-    testWidgets('hides button when hasMore is false', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource(appendedItems: []);
-      await dataSource.refresh();
-      await dataSource.append();
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AppendLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.append(),
-                child: const Text('Load More'),
-              );
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('Load More'), findsNothing);
-    });
-
-    testWidgets('disables button when isLoading is true', (
-      WidgetTester tester,
-    ) async {
-      final dataSource = TestDataSource();
-      await dataSource.refresh();
+    testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
       dataSource.notifier.value = Paging(
-        state: LoadStateLoading(state: LoadType.append),
-        data: [PageData(data: [], appendKey: 1)],
+        state: const LoadStateLoading(state: LoadType.append),
+        data: [
+          PageData(data: const ['Item 1'], appendKey: 1),
+        ],
       );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: AppendLoadStateBuilder<int, String>(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) {
-              if (!hasMore) return const SizedBox.shrink();
-              return ElevatedButton(
-                onPressed: isLoading ? null : () => dataSource.append(),
-                child: const Text('Load More'),
-              );
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('Load More'), findsOneWidget);
+      await tester.pumpWidget(createAppendLoadStateBuilder());
+      expect(find.text('Loading More'), findsOneWidget);
       expect(
         tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed,
         isNull,
       );
+    });
+
+    testWidgets('shows "No more append" when hasMore is false', (tester) async {
+      // Simulate no more append pages
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: [
+          PageData(data: const ['Item 1']),
+        ],
+      );
+      await tester.pumpWidget(createAppendLoadStateBuilder());
+      expect(find.text('No more append'), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsNothing);
+    });
+
+    testWidgets('shows shrink box when dataSource is in Warning state', (
+      tester,
+    ) async {
+      dataSource.notifier.value = Warning<int, String>(
+        error: Exception('Test Error'),
+        stackTrace: null,
+      );
+      await tester.pumpWidget(createAppendLoadStateBuilder());
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.text('No more append'), findsNothing);
     });
   });
 }
