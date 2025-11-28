@@ -115,10 +115,10 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// The widget to display when the list is empty.
   final Widget? emptyWidget;
 
-  /// Whether the `errorBuilder` should be constrained to fill the viewport.
+  /// Whether the [errorBuilder] should be constrained to fill the viewport.
   final bool fillRemainErrorWidget;
 
-  /// Whether the `emptyWidget` should be constrained to fill the viewport.
+  /// Whether the [emptyWidget] should be constrained to fill the viewport.
   final bool fillRemainEmptyWidget;
 
   /// The amount of space by which to inset the children.

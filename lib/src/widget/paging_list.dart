@@ -24,6 +24,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget,
     this.appendLoadingWidget,
     this.emptyWidget,
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
     this.autoLoadPrepend = true,
     this.autoLoadAppend = true,
@@ -53,6 +55,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget,
     this.appendLoadingWidget,
     this.emptyWidget,
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
     this.autoLoadPrepend = true,
     this.autoLoadAppend = true,
@@ -94,6 +98,12 @@ class PagingList<PageKey, Value> extends StatelessWidget {
 
   /// The widget to display when the list is empty.
   final Widget? emptyWidget;
+
+  /// Whether the [errorBuilder] should be constrained to fill the viewport.
+  final bool fillRemainErrorWidget;
+
+  /// Whether the [emptyWidget] should be constrained to fill the viewport.
+  final bool fillRemainEmptyWidget;
 
   /// The amount of space by which to inset the children.
   final EdgeInsets padding;
@@ -206,6 +216,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
                 prependLoadingWidget: prependLoadingWidget,
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
+                fillRemainErrorWidget: fillRemainErrorWidget,
+                fillRemainEmptyWidget: fillRemainEmptyWidget,
                 padding: padding,
                 autoLoadPrepend: autoLoadPrepend,
                 autoLoadAppend: autoLoadAppend,
@@ -220,6 +232,8 @@ class PagingList<PageKey, Value> extends StatelessWidget {
                 prependLoadingWidget: prependLoadingWidget,
                 appendLoadingWidget: appendLoadingWidget,
                 emptyWidget: emptyWidget,
+                fillRemainErrorWidget: fillRemainErrorWidget,
+                fillRemainEmptyWidget: fillRemainEmptyWidget,
                 padding: padding,
                 autoLoadPrepend: autoLoadPrepend,
                 autoLoadAppend: autoLoadAppend,

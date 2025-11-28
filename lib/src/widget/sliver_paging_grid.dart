@@ -6,9 +6,16 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
-/// A sliver that manages pages and scroll position to read more data.
-/// Display a grid list.
+/// A sliver that displays a paginated, 2D array of items (a grid).
+///
+/// This widget automatically handles loading more data when the user scrolls
+/// near the boundaries of the grid, using a [DataSource]. It can display
+/// initial loading indicators, prepend/append loading indicators, empty states,
+/// and error messages.
+///
+/// For a non-sliver version that wraps this in a [CustomScrollView], see [PagingGrid].
 class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
+  /// Creates a sliver that displays a paginated grid.
   const SliverPagingGrid({
     super.key,
     required this.gridDelegate,
@@ -29,7 +36,7 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   /// The delegate that controls the layout of the children within the grid.
   final SliverGridDelegate gridDelegate;
 
-  /// The data source that provides pages from loader.
+  /// The [DataSource] that provides the paginated data.
   final DataSource<PageKey, Value> dataSource;
 
   /// The builder that builds a widget for the given item and index.
@@ -41,19 +48,19 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   /// The widget that is shown when the data is loading for the first time.
   final Widget? initialLoadingWidget;
 
-  /// The widget that is shown when the data is loading at the beginning of the list.
+  /// The widget that is shown when the data is loading at the beginning of the grid.
   final Widget? prependLoadingWidget;
 
-  /// The widget that is shown when the data is loading at the end of the list.
+  /// The widget that is shown when the data is loading at the end of the grid.
   final Widget? appendLoadingWidget;
 
   /// The widget that is shown when the data is empty.
   final Widget? emptyWidget;
 
-  /// If true, the error widget will fill the remaining space.
+  /// If true, the error widget will fill the remaining space of the viewport.
   final bool fillRemainErrorWidget;
 
-  /// If true, the empty widget will fill the remaining space.
+  /// If true, the empty widget will fill the remaining space of the viewport.
   final bool fillRemainEmptyWidget;
 
   /// The padding around the grid.
@@ -102,7 +109,7 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
   }
 }
 
-/// Internal widget for [SliverPagingGrid].
+/// Internal widget for [SliverPagingGrid] that handles the actual sliver layout.
 class _Grid<PageKey, Value> extends StatelessWidget {
   const _Grid({
     required this.gridDelegate,
@@ -181,9 +188,9 @@ class _Grid<PageKey, Value> extends StatelessWidget {
           ),
         if (autoLoadPrepend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.prepend);
+                await dataSource.update(LoadType.prepend);
               }
             },
           ),
@@ -198,9 +205,9 @@ class _Grid<PageKey, Value> extends StatelessWidget {
         ),
         if (autoLoadAppend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.append);
+                await dataSource.update(LoadType.append);
               }
             },
           ),

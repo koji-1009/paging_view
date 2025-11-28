@@ -6,8 +6,14 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
-/// A sliver that manages pages and scroll position to read more data.
-/// Display a single-column list.
+/// A sliver that displays a paginated, linear list of items.
+///
+/// This widget automatically handles loading more data when the user scrolls
+/// near the boundaries of the list, using a [DataSource]. It can display
+/// initial loading indicators, prepend/append loading indicators, empty states,
+/// and error messages.
+///
+/// For a non-sliver version that wraps this in a [CustomScrollView], see [PagingList].
 class SliverPagingList<PageKey, Value> extends StatelessWidget {
   /// Creates a scrollable, linear array of widgets that are created on demand.
   const SliverPagingList({
@@ -45,7 +51,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     this.autoLoadPrepend = true,
   }) : _separatorBuilder = separatorBuilder;
 
-  /// The data source that provides pages from loader.
+  /// The [DataSource] that provides the paginated data.
   final DataSource<PageKey, Value> dataSource;
 
   /// The builder that builds a widget for the given item and index.
@@ -66,13 +72,13 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   /// The widget that is shown when the data is empty.
   final Widget? emptyWidget;
 
-  /// If true, the error widget will fill the remaining space.
+  /// If true, the error widget will fill the remaining space of the viewport.
   final bool fillRemainErrorWidget;
 
-  /// If true, the empty widget will fill the remaining space.
+  /// If true, the empty widget will fill the remaining space of the viewport.
   final bool fillRemainEmptyWidget;
 
-  /// Separated builder, if null, separated builder will not be used.
+  /// The separator builder for `separated` constructor.
   final IndexedWidgetBuilder? _separatorBuilder;
 
   /// The padding around the list.
@@ -137,7 +143,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   }
 }
 
-/// Internal widget for [SliverPagingList].
+/// Internal widget for [SliverPagingList] that handles the actual sliver layout.
 class _List<PageKey, Value> extends StatelessWidget {
   const _List({
     required this.state,
@@ -154,8 +160,6 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.autoLoadAppend,
   }) : _separatorBuilder = null;
 
-  /// Creates a scrollable linear array of list "items" separated
-  /// by list item "separators".
   const _List.separated({
     required this.state,
     required this.pages,
@@ -233,9 +237,9 @@ class _List<PageKey, Value> extends StatelessWidget {
           ),
         if (autoLoadPrepend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.prepend);
+                await dataSource.update(LoadType.prepend);
               }
             },
           ),
@@ -256,9 +260,9 @@ class _List<PageKey, Value> extends StatelessWidget {
         ),
         if (autoLoadAppend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.append);
+                await dataSource.update(LoadType.append);
               }
             },
           ),

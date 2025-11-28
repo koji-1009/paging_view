@@ -51,7 +51,7 @@ class PrependLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, state, child) => switch (state) {
         Paging() => builder(
@@ -116,7 +116,7 @@ class AppendLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, state, child) => switch (state) {
         Paging() => builder(
