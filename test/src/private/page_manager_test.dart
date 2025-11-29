@@ -289,6 +289,65 @@ void main() {
       });
     });
 
+    group('revertLoad()', () {
+      setUp(() {
+        manager.refresh(newPage: page1); // Initial state for revertLoad tests
+        manager.append(newPage: page2);
+      });
+
+      test('reverts from loading to loaded state preserving data', () {
+        // Given a loading state
+        manager.changeState(type: LoadType.append);
+        expect(manager.isLoading, isTrue);
+
+        // When revertLoad is called
+        manager.revertLoad();
+
+        // Then it should be loaded and data preserved
+        expect(manager.isLoading, isFalse);
+        expect(manager.value, isA<Paging<int, String>>());
+        expect((manager.value as Paging).state, isA<LoadStateLoaded>());
+        expect(manager.values, ['a', 'b', 'c', 'd']);
+      });
+
+      test('does nothing if not in a loading state (init)', () {
+        manager = PageManager<int, String>(); // Revert to init state
+        manager.revertLoad();
+
+        expect(manager.value, isA<Paging<int, String>>());
+        expect((manager.value as Paging).state, isA<LoadStateInit>());
+      });
+
+      test('does nothing if not in a loading state (loaded)', () {
+        // Already loaded from setUp, no changeState was called
+        manager.revertLoad();
+
+        expect(manager.value, isA<Paging<int, String>>());
+        expect((manager.value as Paging).state, isA<LoadStateLoaded>());
+        expect(manager.values, ['a', 'b', 'c', 'd']);
+      });
+
+      test('does nothing if in Warning state', () {
+        manager.setError(error: Exception('Test Error'), stackTrace: null);
+        final originalWarning = manager.value;
+
+        manager.revertLoad();
+
+        expect(manager.value, originalWarning);
+        expect(manager.value, isA<Warning<int, String>>());
+      });
+
+      test('does nothing if manager is disposed', () {
+        manager.changeState(type: LoadType.append);
+        manager.dispose();
+        final originalValue = manager.value;
+
+        manager.revertLoad();
+
+        expect(manager.value, originalValue);
+      });
+    });
+
     group('Listener notifications', () {
       tearDown(() {
         manager.dispose();
