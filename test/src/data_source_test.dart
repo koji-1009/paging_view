@@ -21,14 +21,14 @@ class TestDataSource extends DataSource<int, String> {
       Refresh() => const Success(
         page: PageData(data: ['0', '1', '2'], prependKey: -1, appendKey: 1),
       ),
-      Prepend(key: final key) => Success(
+      Prepend(:final key) => Success(
         page: PageData(
           data: ['p$key'],
           prependKey: key > -3 ? key - 1 : null,
           appendKey: key + 1,
         ),
       ),
-      Append(key: final key) => Success(
+      Append(:final key) => Success(
         page: PageData(
           data: ['a$key'],
           prependKey: key - 1,

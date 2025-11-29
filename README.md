@@ -68,7 +68,7 @@ class ExampleDataSource extends DataSource<int, DemoEntity> {
     // For a chat app, you might implement Prepend.
     return switch (action) {
       Refresh() => await _fetch(0),
-      Append(key: final pageKey) => await _fetch(pageKey),
+      Append(:final pageKey) => await _fetch(pageKey),
       Prepend() => const None(),
     };
   }
