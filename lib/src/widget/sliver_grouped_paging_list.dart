@@ -6,8 +6,14 @@ import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
-/// A sliver that displays items grouped by a parent element.
-/// Display a grid list.
+/// A sliver that displays a paginated, linear list of items, grouped by a parent value.
+///
+/// This widget automatically handles loading more data when the user scrolls
+/// near the boundaries of the list, using a [GroupedDataSource]. It can display
+/// initial loading indicators, prepend/append loading indicators, empty states,
+/// and error messages. Group headers can be made sticky.
+///
+/// For a non-sliver version that wraps this in a [CustomScrollView], see [GroupedPagingList].
 class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// Creates a sliver with grouped items.
   const SliverGroupedPagingList({
@@ -52,10 +58,13 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     required IndexedWidgetBuilder separatorBuilder,
   }) : _separatorBuilder = separatorBuilder;
 
-  /// The grouped data source that provides grouped pages.
+  /// The [GroupedDataSource] that provides the paginated and grouped data.
   final GroupedDataSource<PageKey, Parent, Value> dataSource;
 
   /// The builder for group headers.
+  ///
+  /// The `parent` argument is the value returned by the `groupBy` method
+  /// in your [GroupedDataSource].
   final TypedWidgetBuilder<Parent> headerBuilder;
 
   /// The builder for individual items within a group.
@@ -76,27 +85,29 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// The widget that is shown when the data is empty.
   final Widget? emptyWidget;
 
-  /// If true, the error widget will fill the remaining space.
+  /// If true, the error widget will fill the remaining space of the viewport.
   final bool fillRemainErrorWidget;
 
-  /// If true, the empty widget will fill the remaining space.
+  /// If true, the empty widget will fill the remaining space of the viewport.
   final bool fillRemainEmptyWidget;
 
   /// The padding around the list.
   final EdgeInsets padding;
 
-  /// If true, group headers will be sticky.
+  /// If true, group headers will be sticky (remain visible at the top of the viewport).
   final bool stickyHeader;
 
-  /// The prototype widget for the minimum extent of sticky headers.
-  /// see [SliverResizingHeader.minExtentPrototype]
+  /// A prototype widget for calculating the minimum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.minExtentPrototype].
   final Widget? stickyHeaderMinExtentPrototype;
 
-  /// The prototype widget for the maximum extent of sticky headers.
-  /// see [SliverResizingHeader.maxExtentPrototype]
+  /// A prototype widget for calculating the maximum extent of a sticky header.
+  ///
+  /// See [SliverResizingHeader.maxExtentPrototype].
   final Widget? stickyHeaderMaxExtentPrototype;
 
-  /// The separator builder between items.
+  /// The separator builder for `separated` constructor.
   final IndexedWidgetBuilder? _separatorBuilder;
 
   /// Automatically load more data at the beginning of the list
@@ -146,7 +157,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   }
 }
 
-/// Internal widget for [SliverGroupedPagingList].
+/// Internal widget for [SliverGroupedPagingList] that handles the actual sliver layout.
 class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
   const _GroupedList({
     required this.state,
@@ -232,9 +243,9 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
           ),
         if (autoLoadPrepend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.prepend);
+                await dataSource.update(LoadType.prepend);
               }
             },
           ),
@@ -279,9 +290,9 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
         ),
         if (autoLoadAppend)
           SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) {
+            onVisibilityChanged: (isVisible) async {
               if (isVisible) {
-                dataSource.update(LoadType.append);
+                await dataSource.update(LoadType.append);
               }
             },
           ),

@@ -3,28 +3,29 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/page_manager.dart';
 
-/// The core of the paging_view library.
+/// The core of the paging_view library, acting as the bridge between a data
+/// source (like a network API or local database) and the UI.
 ///
-/// [DataSource] is an abstract class responsible for fetching paginated data
-/// from a given source (e.g., a network API, a local database). It acts as the
-/// bridge between your data layer and the UI widgets ([PagingList], [PagingGrid], etc.).
+/// [DataSource] is an abstract class responsible for fetching paginated data,
+/// managing pagination state (keys, loading status), and notifying UI widgets
+/// of changes.
 ///
 /// To use it, you must extend this class and implement the [load] method,
-/// which contains your specific data-fetching logic. The [DataSource] will
-/// then manage the state of your data (loading, success, error) and notify
-/// the UI to update accordingly.
+/// which contains your specific data-fetching logic. The [DataSource] then
+/// handles the state of your data (loading, success, error) and provides it
+/// to `paging_view` widgets like `PagingList` or `PagingGrid`.
 abstract class DataSource<PageKey, Value> {
   /// Loads a page of data based on the specified [LoadAction].
   ///
   /// This is the central method of the `DataSource` and **must be implemented**
-  /// by your subclass. The implementation should:
+  /// by your subclass. Your implementation should:
   ///
   /// 1.  Determine the type of load action (`Refresh`, `Prepend`, `Append`).
   /// 2.  Fetch data from your source (e.g., make an API call).
-  /// 3.  Return a [LoadResult]:
-  ///     - [Success]: If the data was fetched successfully, containing a [PageData] object.
-  ///     - [Failure]: If an error occurred during fetching.
-  ///     - [None]: If no data needs to be loaded (e.g., end of list).
+  /// 3.  Return a [LoadResult] to represent the outcome:
+  ///     - [Success]: If data was fetched successfully, containing a [PageData].
+  ///     - [Failure]: If an error occurred.
+  ///     - [None]: If the load was skipped or no data was returned (e.g., end of list).
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> action);
 
@@ -32,43 +33,43 @@ abstract class DataSource<PageKey, Value> {
 
   /// The underlying state manager for the data source.
   ///
-  /// While you can use this to listen for changes, it's typically used
-  /// internally by the `paging_view` widgets.
+  /// This `ChangeNotifier` holds the current list of items, pagination state,
+  /// and loading status. It is primarily used internally by `paging_view`
+  /// widgets to listen for updates and rebuild the UI.
   PageManager<PageKey, Value> get notifier => _manager;
 
-  /// Dispose the underlying [PageManager].
+  /// Releases the resources used by this [DataSource].
   ///
-  /// You should call this when the `DataSource` is no longer needed to prevent
-  /// memory leaks.
+  /// This should be called when the `DataSource` is no longer needed (e.g., in
+  /// a `StatefulWidget`'s `dispose` method) to prevent memory leaks by
+  /// disposing of the underlying [ValueNotifier].
   @mustCallSuper
   void dispose() {
     _manager.dispose();
   }
 
-  /// Add a listener to be notified of data changes.
+  /// Registers a callback to be invoked when the data or loading state changes.
   void addListener(VoidCallback listener) {
     _manager.addListener(listener);
   }
 
-  /// Remove a previously registered listener.
+  /// Removes a previously registered callback.
   void removeListener(VoidCallback listener) {
     _manager.removeListener(listener);
   }
 
-  /// Updates a single item at the specified [index] and notifies listeners.
+  /// Updates a single item in the list at the specified [index].
   ///
-  /// The [update] function receives the current item and should return the
-  /// new, updated item.
+  /// The [update] function receives the current item and should return the new,
+  /// updated item. This method notifies listeners and is useful for localized
+  /// state changes (e.g., toggling a "favorite" status) without a full refresh.
   ///
-  /// This is useful for performing localized state changes (e.g., toggling a
-  /// "favorite" button) without a full refresh.
-  ///
-  /// If the index is out of range, an error will be set in the `PageManager`.
+  /// If the [index] is out of range, an error will be set in the `PageManager`.
   void updateItem(int index, Value Function(Value item) update) {
     _manager.updateItem(index, update);
   }
 
-  /// Updates all items in the list and notifies listeners.
+  /// Updates all items currently in the list and notifies listeners.
   ///
   /// The [update] function is called for each item, providing its `index` and
   /// current `item`, and should return the new item.
@@ -81,7 +82,7 @@ abstract class DataSource<PageKey, Value> {
 
   /// Removes a single item at the specified [index] and notifies listeners.
   ///
-  /// If the index is out of range, an error will be set in the `PageManager`.
+  /// If the [index] is out of range, an error will be set in the `PageManager`.
   void removeItem(int index) {
     _manager.removeItem(index);
   }
@@ -89,25 +90,26 @@ abstract class DataSource<PageKey, Value> {
   /// Removes all items that satisfy the given [test] and notifies listeners.
   ///
   /// The [test] function receives the `index` and `item` of each element and
-  /// should return `true` if the item should be removed.
+  /// should return `true` if the item should be removed. This is similar to
+  /// [List.removeWhere].
   ///
-  /// This is similar to [List.removeWhere] but operates on the internal state
-  /// of the data source.
-  /// If the test function throws an error, it will be caught and set in the `PageManager`.
+  /// If the test function throws an error, it will be caught and set in the
+  /// `PageManager`.
   void removeItems(bool Function(int index, Value item) test) {
     _manager.removeItems(test);
   }
 
   /// Inserts an [item] at the specified [index] and notifies listeners.
   ///
-  /// If the index is out of range, an error will be set in the `PageManager`.
+  /// If the [index] is out of range, an error will be set in the `PageManager`.
   void insertItem(int index, Value item) {
     _manager.insertItem(index, item);
   }
 
   /// Triggers a full refresh of the data, discarding the existing items.
   ///
-  /// This calls the [load] method with a [Refresh] action.
+  /// This calls the [load] method with a [Refresh] action. If a load is already
+  /// in progress, this method does nothing.
   Future<void> refresh() async {
     try {
       await _refresh();
@@ -118,7 +120,9 @@ abstract class DataSource<PageKey, Value> {
 
   /// Triggers a prepend operation to load data before the current items.
   ///
-  /// This calls the [load] method with a [Prepend] action.
+  /// This calls the [load] method with a [Prepend] action, using the current
+  /// `prependPageKey`. If the key is `null` or a load is in progress, this
+  /// method does nothing.
   Future<void> prepend() async {
     try {
       await _prepend();
@@ -129,7 +133,9 @@ abstract class DataSource<PageKey, Value> {
 
   /// Triggers an append operation to load data after the current items.
   ///
-  /// This calls the [load] method with an [Append] action.
+  /// This calls the [load] method with an [Append] action, using the current
+  /// `appendPageKey`. If the key is `null` or a load is in progress, this
+  /// method does nothing.
   Future<void> append() async {
     try {
       await _append();
@@ -140,9 +146,9 @@ abstract class DataSource<PageKey, Value> {
 
   /// Called by `paging_view` widgets to trigger a data load.
   ///
-  /// This method is intended for internal use. You should typically call
-  /// [refresh], or rely on the UI widgets to trigger `prepend` and `append`
-  /// actions automatically.
+  /// This method is intended for internal use by the library. You should
+  /// typically call [refresh] directly or rely on UI widgets to trigger
+  /// `prepend` and `append` actions automatically.
   @internal
   Future<void> update(LoadType type) async {
     try {
@@ -175,10 +181,8 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
-  /// Request a refresh via [_manager]
   Future<void> _refresh() async {
     if (_manager.isLoading) {
-      // already loading
       return;
     }
 
@@ -194,16 +198,13 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
-  /// Request a prepend via [_manager]
   Future<void> _prepend() async {
     if (_manager.isLoading) {
-      // already loading
       return;
     }
 
     final key = _manager.prependPageKey;
     if (key == null) {
-      // no more prepend data
       return;
     }
 
@@ -219,16 +220,13 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
-  /// Request an append via [_manager]
   Future<void> _append() async {
     if (_manager.isLoading) {
-      // already loading
       return;
     }
 
     final key = _manager.appendPageKey;
     if (key == null) {
-      // no more append data
       return;
     }
 

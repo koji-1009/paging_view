@@ -4,123 +4,200 @@ import 'package:paging_view/src/private/sliver_bounds_detector.dart';
 
 void main() {
   group('SliverBoundsDetector', () {
-    testWidgets('onVisibilityChanged callback is triggered by scrolling', (
-      tester,
-    ) async {
-      final visibilityNotifier = ValueNotifier<bool?>(null);
-      final scrollController = ScrollController();
+    const viewportHeight = 600.0;
+    const sliverOffset = 800.0;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: CustomScrollView(
-            cacheExtent: 0.0,
-            controller: scrollController,
-            slivers: <Widget>[
-              const SliverToBoxAdapter(child: SizedBox(height: 800)),
-              SliverBoundsDetector(
-                onVisibilityChanged: (isVisible) {
-                  visibilityNotifier.value = isVisible;
-                },
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 800)),
+    Widget buildWidget({
+      required ScrollController controller,
+      required SliverVisibilityCallback onVisibilityChanged,
+      double cacheExtent = 0.0,
+    }) {
+      return MaterialApp(
+        home: Scaffold(
+          body: CustomScrollView(
+            controller: controller,
+            cacheExtent: cacheExtent,
+            slivers: [
+              const SliverToBoxAdapter(child: SizedBox(height: sliverOffset)),
+              SliverBoundsDetector(onVisibilityChanged: onVisibilityChanged),
+              const SliverToBoxAdapter(child: SizedBox(height: sliverOffset)),
             ],
           ),
         ),
       );
+    }
 
-      // Initially, the detector is not visible, and the callback has not been called.
-      expect(visibilityNotifier.value, null);
+    testWidgets('callback is called with true when sliver becomes visible', (
+      tester,
+    ) async {
+      final visibilityLog = <bool>[];
+      final controller = ScrollController();
 
-      // Scroll down to make the detector visible.
-      scrollController.jumpTo(800);
+      await tester.pumpWidget(
+        buildWidget(
+          controller: controller,
+          onVisibilityChanged: visibilityLog.add,
+        ),
+      );
+
+      expect(visibilityLog, isEmpty);
+
+      controller.jumpTo(sliverOffset - viewportHeight + 1);
       await tester.pumpAndSettle();
 
-      // The detector is now visible.
-      expect(visibilityNotifier.value, true);
+      expect(visibilityLog, [true]);
 
-      // Scroll back to the top.
-      scrollController.jumpTo(0);
-      await tester.pumpAndSettle();
-
-      // The detector is no longer visible.
-      expect(visibilityNotifier.value, false);
-
-      // Scroll far down.
-      scrollController.jumpTo(1600);
-      await tester.pumpAndSettle();
-
-      // The detector is no longer visible.
-      expect(visibilityNotifier.value, false);
-
-      scrollController.dispose();
+      controller.dispose();
     });
 
-    testWidgets(
-      'onVisibilityChanged callback is triggered early with cacheExtent',
-      (tester) async {
-        final visibilityNotifier = ValueNotifier<bool?>(null);
-        final scrollController = ScrollController();
-        const sliverStartOffset = 800.0;
-        const cacheExtent = 200.0;
+    testWidgets('callback is called with false when sliver becomes invisible', (
+      tester,
+    ) async {
+      final visibilityLog = <bool>[];
+      final controller = ScrollController(initialScrollOffset: sliverOffset);
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: CustomScrollView(
-                cacheExtent: cacheExtent,
-                controller: scrollController,
-                slivers: <Widget>[
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: sliverStartOffset),
-                  ),
-                  SliverBoundsDetector(
-                    onVisibilityChanged: (isVisible) {
-                      visibilityNotifier.value = isVisible;
-                    },
-                  ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 800)),
-                ],
-              ),
-            ),
-          ),
-        );
+      await tester.pumpWidget(
+        buildWidget(
+          controller: controller,
+          onVisibilityChanged: visibilityLog.add,
+        ),
+      );
+      await tester.pumpAndSettle();
 
-        // The default viewport size in the test environment is 800x600.
-        final viewPortHeight =
-            tester.view.physicalSize.height / tester.view.devicePixelRatio;
+      expect(visibilityLog, [true]);
 
-        // The detector is at scroll offset 800.
-        // The viewport (without cache) initially covers scroll offsets 0 to 600.
-        // The cache area extends 200 pixels before and after the viewport.
-        // The viewport with trailing cache covers up to 600 + 200 = 800.
-        // So, the detector is exactly at the edge of the cache area.
+      controller.jumpTo(0);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true, false]);
 
-        // We need to scroll just enough for the viewport to move and the sliver
-        // at offset 800 to be inside the trailing cache area.
-        final scrollPositionToShowInCache =
-            sliverStartOffset - viewPortHeight - cacheExtent;
+      controller.jumpTo(sliverOffset);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true, false, true]);
 
-        // Scroll just past the point where it should become visible.
-        scrollController.jumpTo(scrollPositionToShowInCache + 1);
-        await tester.pumpAndSettle();
+      controller.jumpTo(sliverOffset + 1);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true, false, true, false]);
 
-        expect(
-          visibilityNotifier.value,
-          true,
-          reason: 'Should be visible when entering the bottom cache extent',
-        );
+      controller.dispose();
+    });
 
-        // Scroll back to a position where it's not in the cache extent.
-        scrollController.jumpTo(scrollPositionToShowInCache - 1);
-        await tester.pumpAndSettle();
-        expect(
-          visibilityNotifier.value,
-          false,
-          reason: 'Should become invisible when leaving the cache extent',
-        );
+    testWidgets('callback is not called if visibility does not change', (
+      tester,
+    ) async {
+      final visibilityLog = <bool>[];
+      final controller = ScrollController();
 
-        scrollController.dispose();
-      },
-    );
+      await tester.pumpWidget(
+        buildWidget(
+          controller: controller,
+          onVisibilityChanged: visibilityLog.add,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      controller.jumpTo(100);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, isEmpty);
+
+      controller.jumpTo(sliverOffset);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true]);
+
+      controller.jumpTo(sliverOffset - 100);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true]);
+
+      controller.dispose();
+    });
+
+    testWidgets('works correctly with non-zero cacheExtent', (tester) async {
+      final visibilityLog = <bool>[];
+      final controller = ScrollController();
+      const cacheExtent = 250.0;
+
+      await tester.pumpWidget(
+        buildWidget(
+          controller: controller,
+          onVisibilityChanged: visibilityLog.add,
+          cacheExtent: cacheExtent,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Becomes visible once it enters the cache extent
+      // Viewport is 0 to 600. Cache area is 0 to 850. Sliver at 800.
+      // So it is already visible at scroll 0.
+      expect(visibilityLog, [true]);
+
+      // Scroll to a point where the sliver is outside the leading cache extent
+      // Viewport ends at scrollOffset + 600.
+      // Leading cache starts at scrollOffset - 250.
+      // To make sliver at 800 invisible, we need 800 < scrollOffset - 250
+      // => scrollOffset > 1050
+      controller.jumpTo(1051);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true, false]);
+
+      controller.dispose();
+    });
+
+    testWidgets('updates callback when widget is rebuilt', (tester) async {
+      final log1 = <bool>[];
+      final log2 = <bool>[];
+      final controller = ScrollController();
+
+      await tester.pumpWidget(
+        buildWidget(controller: controller, onVisibilityChanged: log1.add),
+      );
+
+      // Trigger first callback
+      controller.jumpTo(sliverOffset);
+      await tester.pumpAndSettle();
+      expect(log1, [true]);
+      expect(log2, isEmpty);
+
+      // Rebuild with a new callback
+      await tester.pumpWidget(
+        buildWidget(controller: controller, onVisibilityChanged: log2.add),
+      );
+
+      // Trigger visibility change again
+      controller.jumpTo(0);
+      await tester.pumpAndSettle();
+
+      // Only the new callback should be called
+      expect(log1, [true]);
+      expect(log2, [false]);
+
+      controller.dispose();
+    });
+
+    testWidgets('callback is not called after widget is detached', (
+      tester,
+    ) async {
+      final visibilityLog = <bool>[];
+      final controller = ScrollController();
+
+      await tester.pumpWidget(
+        buildWidget(
+          controller: controller,
+          onVisibilityChanged: visibilityLog.add,
+        ),
+      );
+
+      // Make it visible
+      controller.jumpTo(sliverOffset);
+      await tester.pumpAndSettle();
+      expect(visibilityLog, [true]);
+
+      // Remove the widget from the tree
+      await tester.pumpWidget(MaterialApp(home: Container()));
+      await tester.pumpAndSettle();
+
+      // No new callbacks should be fired
+      expect(visibilityLog, [true]);
+
+      controller.dispose();
+    });
   });
 }

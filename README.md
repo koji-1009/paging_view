@@ -333,12 +333,6 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
             initialLoadingWidget: const Center(
               child: CircularProgressIndicator.adaptive(),
             ),
-            appendLoadingWidget: const Center(
-              child: Padding(
-                padding: .all(16.0),
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            ),
             errorBuilder: (context, error, stackTrace) => Center(
               child: Text('An error occurred: $error'),
             ),
@@ -350,20 +344,28 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
               ),
             ),
           ),
-          // Only show the "Load More" button if not currently appending
-          // and if there are more items to append.
           AppendLoadStateBuilder(
             dataSource: dataSource,
             builder: (context, hasMore, isLoading) => SliverToBoxAdapter(
-              child: !isLoading && hasMore
-                  ? Padding(
-                      padding: const .all(16),
-                      child: FilledButton(
-                        onPressed: () => dataSource.append(),
-                        child: const Text('Load More'),
-                      ),
-                    )
-                  : null,
+              child: SizedBox(
+                height: 64,
+                child: isLoading
+                    ? const Center(
+                        child: Padding(
+                          padding: .all(16),
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : hasMore
+                    ? Padding(
+                        padding: const .all(16),
+                        child: FilledButton(
+                          onPressed: () => dataSource.append(),
+                          child: const Text('Load More'),
+                        ),
+                      )
+                    : null,
+              ),
             ),
           ),
         ],

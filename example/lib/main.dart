@@ -309,12 +309,6 @@ class ManualListDemo extends ConsumerWidget {
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
-            appendLoadingWidget: const Center(
-              child: Padding(
-                padding: .all(16),
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            ),
             emptyWidget: const Center(child: Text('No Item')),
             padding: const .symmetric(horizontal: 16),
             autoLoadPrepend: false,
@@ -323,15 +317,25 @@ class ManualListDemo extends ConsumerWidget {
           AppendLoadStateBuilder(
             dataSource: dataSource,
             builder: (context, hasMore, isLoading) => SliverToBoxAdapter(
-              child: !isLoading && hasMore
-                  ? Padding(
-                      padding: const .all(16),
-                      child: FilledButton(
-                        onPressed: () => dataSource.append(),
-                        child: const Text('Load More'),
-                      ),
-                    )
-                  : null,
+              child: SizedBox(
+                height: 64,
+                child: isLoading
+                    ? const Center(
+                        child: Padding(
+                          padding: .all(16),
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : hasMore
+                    ? Padding(
+                        padding: const .all(16),
+                        child: FilledButton(
+                          onPressed: () => dataSource.append(),
+                          child: const Text('Load More'),
+                        ),
+                      )
+                    : null,
+              ),
             ),
           ),
         ],

@@ -25,6 +25,8 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
     this.prependLoadingWidget,
     this.appendLoadingWidget,
     this.emptyWidget,
+    this.fillRemainErrorWidget = true,
+    this.fillRemainEmptyWidget = true,
     this.padding = EdgeInsets.zero,
     this.autoLoadPrepend = true,
     this.autoLoadAppend = true,
@@ -42,6 +44,11 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
   });
+
+  /// A delegate that controls the layout of the children within the grid.
+  ///
+  /// See [GridView.gridDelegate].
+  final SliverGridDelegate gridDelegate;
 
   /// The [DataSource] that provides the paginated data.
   final DataSource<PageKey, Value> dataSource;
@@ -66,13 +73,14 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
   /// The widget to display when the grid is empty.
   final Widget? emptyWidget;
 
+  /// If true, the error widget will fill the remaining space of the viewport.
+  final bool fillRemainErrorWidget;
+
+  /// If true, the empty widget will fill the remaining space of the viewport.
+  final bool fillRemainEmptyWidget;
+
   /// The amount of space by which to inset the children.
   final EdgeInsets padding;
-
-  /// A delegate that controls the layout of the children within the grid.
-  ///
-  /// See [GridView.gridDelegate].
-  final SliverGridDelegate gridDelegate;
 
   /// Automatically load more data at the beginning of the list
   /// when reaching the boundary.
@@ -178,7 +186,11 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
           prependLoadingWidget: prependLoadingWidget,
           appendLoadingWidget: appendLoadingWidget,
           emptyWidget: emptyWidget,
+          fillRemainErrorWidget: fillRemainErrorWidget,
+          fillRemainEmptyWidget: fillRemainEmptyWidget,
           padding: padding,
+          autoLoadPrepend: autoLoadPrepend,
+          autoLoadAppend: autoLoadAppend,
         ),
       ],
     );
