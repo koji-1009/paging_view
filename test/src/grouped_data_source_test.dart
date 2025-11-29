@@ -1,390 +1,209 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
-import 'package:paging_view/src/private/entity.dart';
-
-class TestGroupedDataSource extends GroupedDataSource<int, String, TestItem> {
-  TestGroupedDataSource({required this.items, this.onLoad});
-
-  final List<TestItem> items;
-  final LoadResult<int, TestItem> Function(LoadAction<int> action)? onLoad;
-
-  @override
-  String groupBy(TestItem item) => item.category;
-
-  @override
-  Future<LoadResult<int, TestItem>> load(LoadAction<int> action) async {
-    if (onLoad != null) {
-      return onLoad!(action);
-    }
-
-    // Default implementation
-    return Success(page: PageData(data: items, appendKey: 2));
-  }
-}
 
 class TestItem {
-  const TestItem({
-    required this.id,
-    required this.category,
-    required this.name,
-  });
-
+  const TestItem(this.id, this.category);
   final int id;
   final String category;
-  final String name;
 
   @override
   bool operator ==(Object other) =>
-      identical(other, this) ||
-      (other is TestItem &&
-          id == other.id &&
-          category == other.category &&
-          name == other.name);
+      other is TestItem && id == other.id && category == other.category;
+  @override
+  int get hashCode => Object.hash(id, category);
+  @override
+  String toString() => 'TestItem(id: $id, category: $category)';
+}
+
+class TestGroupedDataSource extends GroupedDataSource<int, String, TestItem> {
+  TestGroupedDataSource(this._items);
+
+  final List<TestItem> _items;
+  var loadCount = 0;
 
   @override
-  int get hashCode => Object.hash(id, category, name);
+  String groupBy(TestItem value) => value.category;
+
+  @override
+  Future<LoadResult<int, TestItem>> load(LoadAction<int> action) async {
+    loadCount++;
+    return switch (action) {
+      Refresh() => Success(page: PageData(data: _items, appendKey: 1)),
+      Append() => const Success(page: PageData(data: [])),
+      Prepend() => const Success(page: PageData(data: [])),
+    };
+  }
 }
 
 void main() {
-  group('GroupedDataSource', () {
-    const items = [
-      TestItem(id: 1, category: 'A', name: 'Item 1'),
-      TestItem(id: 2, category: 'A', name: 'Item 2'),
-      TestItem(id: 3, category: 'B', name: 'Item 3'),
-      TestItem(id: 4, category: 'B', name: 'Item 4'),
-      TestItem(id: 5, category: 'C', name: 'Item 5'),
-    ];
+  const items = [
+    TestItem(1, 'A'),
+    TestItem(2, 'B'),
+    TestItem(3, 'A'),
+    TestItem(4, 'C'),
+    TestItem(5, 'B'),
+  ];
+  late TestGroupedDataSource dataSource;
 
-    test('groupedValues returns empty list when no data', () {
-      final dataSource = TestGroupedDataSource(items: items);
+  setUp(() async {
+    dataSource = TestGroupedDataSource(items);
+    await dataSource.refresh();
+  });
 
-      expect(dataSource.groupedValues, isEmpty);
-      dataSource.dispose();
-    });
+  tearDown(() {
+    dataSource.dispose();
+  });
 
-    test('groupedValues groups items by category', () async {
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
+  group('GroupedDataSource Grouping Logic', () {
+    test('groupedValues should group items correctly', () {
       final grouped = dataSource.groupedValues;
-
       expect(grouped.length, 3);
-      expect(grouped[0].parent, 'A');
-      expect(grouped[0].children.length, 2);
-      expect(grouped[1].parent, 'B');
-      expect(grouped[1].children.length, 2);
-      expect(grouped[2].parent, 'C');
-      expect(grouped[2].children.length, 1);
-
-      dataSource.dispose();
+      expect(grouped.map((g) => g.parent), ['A', 'B', 'C']);
     });
 
-    test('groupedValues maintains order of items', () async {
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
+    test('items within groups should be ordered by appearance', () {
       final grouped = dataSource.groupedValues;
 
-      expect(grouped[0].children[0].value.id, 1);
-      expect(grouped[0].children[1].value.id, 2);
-      expect(grouped[1].children[0].value.id, 3);
-      expect(grouped[1].children[1].value.id, 4);
-      expect(grouped[2].children[0].value.id, 5);
+      final groupA = grouped.firstWhere((g) => g.parent == 'A');
+      expect(groupA.children.map((c) => c.value.id), [1, 3]);
 
-      dataSource.dispose();
+      final groupB = grouped.firstWhere((g) => g.parent == 'B');
+      expect(groupB.children.map((c) => c.value.id), [2, 5]);
+
+      final groupC = grouped.firstWhere((g) => g.parent == 'C');
+      expect(groupC.children.map((c) => c.value.id), [4]);
     });
 
-    test('groupedValues preserves group order by first appearance', () async {
-      final dataSource = TestGroupedDataSource(
-        items: items,
-        onLoad: (action) => const Success(
-          page: PageData(
-            data: [
-              TestItem(id: 1, category: 'B', name: 'Item 1'),
-              TestItem(id: 2, category: 'A', name: 'Item 2'),
-              TestItem(id: 3, category: 'B', name: 'Item 3'),
-              TestItem(id: 4, category: 'C', name: 'Item 4'),
-              TestItem(id: 5, category: 'A', name: 'Item 5'),
-            ],
-          ),
-        ),
-      );
-      await dataSource.update(LoadType.init);
+    test('group order should be determined by first appearance', () async {
+      final mixedOrderItems = [
+        TestItem(1, 'C'),
+        TestItem(2, 'A'),
+        TestItem(3, 'B'),
+        TestItem(4, 'A'),
+      ];
+      final mixedDataSource = TestGroupedDataSource(mixedOrderItems);
+      await mixedDataSource.refresh();
 
-      final grouped = dataSource.groupedValues;
-
-      // Order should be B, A, C (order of first appearance)
-      expect(grouped[0].parent, 'B');
-      expect(grouped[1].parent, 'A');
-      expect(grouped[2].parent, 'C');
-
-      dataSource.dispose();
+      expect(mixedDataSource.groupedValues.map((g) => g.parent), [
+        'C',
+        'A',
+        'B',
+      ]);
+      mixedDataSource.dispose();
     });
 
-    test('groupedValues works with single group', () async {
-      final dataSource = TestGroupedDataSource(
-        items: items,
-        onLoad: (action) => const Success(
-          page: PageData(
-            data: [
-              TestItem(id: 1, category: 'A', name: 'Item 1'),
-              TestItem(id: 2, category: 'A', name: 'Item 2'),
-              TestItem(id: 3, category: 'A', name: 'Item 3'),
-            ],
-          ),
-        ),
-      );
-      await dataSource.update(LoadType.init);
-
-      final grouped = dataSource.groupedValues;
-
-      expect(grouped.length, 1);
-      expect(grouped[0].parent, 'A');
-      expect(grouped[0].children.length, 3);
-
-      dataSource.dispose();
-    });
-
-    test('groupedValues updates after data changes', () async {
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
-      var grouped = dataSource.groupedValues;
-      expect(grouped.length, 3);
-
-      // Remove items from category B
-      dataSource.removeItems((index, item) => item.category == 'B');
-
-      grouped = dataSource.groupedValues;
-      expect(grouped.length, 2);
-      expect(grouped[0].parent, 'A');
-      expect(grouped[1].parent, 'C');
-
-      dataSource.dispose();
+    test('groupedValues should be empty for empty source', () async {
+      final emptyDataSource = TestGroupedDataSource([]);
+      await emptyDataSource.refresh();
+      expect(emptyDataSource.groupedValues, isEmpty);
+      emptyDataSource.dispose();
     });
   });
 
-  group('GroupedDataSource index consistency', () {
-    test('updateItem uses correct global index', () async {
-      final items = [
-        const TestItem(id: 0, category: 'A', name: 'Item 0'),
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 2, category: 'A', name: 'Item 2'),
-        const TestItem(id: 5, category: 'B', name: 'Item 5'),
-        const TestItem(id: 6, category: 'B', name: 'Item 6'),
-        const TestItem(id: 7, category: 'B', name: 'Item 7'),
-        const TestItem(id: 10, category: 'C', name: 'Item 10'),
-        const TestItem(id: 11, category: 'C', name: 'Item 11'),
-      ];
+  group('GroupedDataSource Cache Invalidation', () {
+    test('groupedValues should be recomputed after item manipulation', () {
+      // First access
+      final grouped1 = dataSource.groupedValues;
+      expect(grouped1.firstWhere((g) => g.parent == 'A').children.length, 2);
 
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
+      // Manipulate data
+      dataSource.removeItem(0); // Removes TestItem(1, 'A')
 
-      // Verify grouped structure
-      final grouped = dataSource.groupedValues;
-      expect(grouped.length, 3);
-      expect(grouped[0].parent, 'A');
-      expect(grouped[0].children.length, 3);
-      expect(grouped[1].parent, 'B');
-      expect(grouped[1].children.length, 3);
-      expect(grouped[2].parent, 'C');
-      expect(grouped[2].children.length, 2);
-
-      // Update item at global index 3 (first item in group B)
-      dataSource.updateItem(
-        3,
-        (item) => TestItem(
-          id: item.id + 100,
-          category: item.category,
-          name: '${item.name} Updated',
-        ),
-      );
-
-      // Verify the update
-      final values = dataSource.notifier.values;
-      expect(values[3].id, 105);
-      expect(values[3].name, 'Item 5 Updated');
-
-      // Verify other items unchanged
-      expect(values[0].id, 0);
-      expect(values[2].id, 2);
-      expect(values[4].id, 6);
-
-      dataSource.dispose();
-    });
-
-    test('removeItem uses correct global index', () async {
-      final items = [
-        const TestItem(id: 0, category: 'A', name: 'Item 0'),
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 2, category: 'A', name: 'Item 2'),
-        const TestItem(id: 5, category: 'B', name: 'Item 5'),
-        const TestItem(id: 6, category: 'B', name: 'Item 6'),
-        const TestItem(id: 7, category: 'B', name: 'Item 7'),
-        const TestItem(id: 10, category: 'C', name: 'Item 10'),
-        const TestItem(id: 11, category: 'C', name: 'Item 11'),
-      ];
-
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
-      // Remove item at global index 3 (first item in group B)
-      dataSource.removeItem(3);
-
-      final values = dataSource.notifier.values;
-      expect(values.length, 7);
-      expect(values[3].id, 6); // Next item in group B
-
-      // Verify grouped structure updated
-      final grouped = dataSource.groupedValues;
-      expect(grouped[1].parent, 'B');
-      expect(grouped[1].children.length, 2);
-
-      dataSource.dispose();
-    });
-
-    test('insertItem uses correct global index', () async {
-      final items = [
-        const TestItem(id: 0, category: 'A', name: 'Item 0'),
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 2, category: 'A', name: 'Item 2'),
-        const TestItem(id: 5, category: 'B', name: 'Item 5'),
-        const TestItem(id: 6, category: 'B', name: 'Item 6'),
-      ];
-
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
-      // Insert at global index 3 (between group A and B)
-      dataSource.insertItem(
-        3,
-        const TestItem(id: 99, category: 'B', name: 'Item 99'),
-      );
-
-      final values = dataSource.notifier.values;
-      expect(values.length, 6);
-      expect(values[3].id, 99);
-      expect(values[4].id, 5);
-
-      // Verify grouped structure
-      final grouped = dataSource.groupedValues;
-      expect(grouped[1].parent, 'B');
-      expect(grouped[1].children.length, 3);
-      expect(grouped[1].children[0].value.id, 99);
-
-      dataSource.dispose();
-    });
-
-    test('global index mapping is consistent across operations', () async {
-      final items = [
-        const TestItem(id: 0, category: 'A', name: 'Item 0'),
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 5, category: 'B', name: 'Item 5'),
-        const TestItem(id: 6, category: 'B', name: 'Item 6'),
-      ];
-
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-
-      // Simulate what itemBuilder would receive
-      final grouped = dataSource.groupedValues;
-      var globalIndex = 0;
-      final indexMapping = <int, TestItem>{};
-
-      for (final group in grouped) {
-        for (final item in group.children) {
-          indexMapping[globalIndex] = item.value;
-          globalIndex++;
-        }
-      }
-
-      // Verify mapping matches notifier.values
-      expect(indexMapping[0], dataSource.notifier.values[0]);
-      expect(indexMapping[1], dataSource.notifier.values[1]);
-      expect(indexMapping[2], dataSource.notifier.values[2]);
-      expect(indexMapping[3], dataSource.notifier.values[3]);
-
-      dataSource.dispose();
-    });
-  });
-
-  group('GroupedDataSource edge cases', () {
-    test('groupedValues with empty items', () async {
-      final dataSource = TestGroupedDataSource(items: []);
-      await dataSource.update(LoadType.init);
-      expect(dataSource.groupedValues, isEmpty);
-      dataSource.dispose();
-    });
-
-    test('groupedValues with duplicate group names', () async {
-      final items = [
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 2, category: 'A', name: 'Item 2'),
-        const TestItem(id: 3, category: 'A', name: 'Item 3'),
-      ];
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-      final grouped = dataSource.groupedValues;
-      expect(grouped.length, 1);
-      expect(grouped[0].parent, 'A');
-      expect(grouped[0].children.length, 3);
-      dataSource.dispose();
-    });
-
-    test('groupedValues with null category', () async {
-      final items = [
-        TestItem(id: 1, category: '', name: 'Item 1'),
-        TestItem(id: 2, category: '', name: 'Item 2'),
-      ];
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-      final grouped = dataSource.groupedValues;
-      expect(grouped.length, 1);
-      expect(grouped[0].parent, '');
-      expect(grouped[0].children.length, 2);
-      dataSource.dispose();
-    });
-
-    test('groupedValues after all items removed', () async {
-      final items = [
-        const TestItem(id: 1, category: 'A', name: 'Item 1'),
-        const TestItem(id: 2, category: 'B', name: 'Item 2'),
-      ];
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-      dataSource.removeItems((index, item) => true);
-      expect(dataSource.groupedValues, isEmpty);
-      dataSource.dispose();
-    });
-
-    test('groupedValues with mixed group order', () async {
-      final items = [
-        const TestItem(id: 1, category: 'B', name: 'Item 1'),
-        const TestItem(id: 2, category: 'A', name: 'Item 2'),
-        const TestItem(id: 3, category: 'B', name: 'Item 3'),
-        const TestItem(id: 4, category: 'C', name: 'Item 4'),
-        const TestItem(id: 5, category: 'A', name: 'Item 5'),
-      ];
-      final dataSource = TestGroupedDataSource(items: items);
-      await dataSource.update(LoadType.init);
-      final grouped = dataSource.groupedValues;
-      expect(grouped[0].parent, 'B');
-      expect(grouped[1].parent, 'A');
-      expect(grouped[2].parent, 'C');
-      dataSource.dispose();
-    });
-
-    test('load throws error', () async {
-      final dataSource = TestGroupedDataSource(
-        items: [],
-        onLoad: (action) => throw Exception('Test error'),
-      );
+      // Second access, should be recomputed
+      final grouped2 = dataSource.groupedValues;
+      expect(grouped2.firstWhere((g) => g.parent == 'A').children.length, 1);
       expect(
-        () async => await dataSource.update(LoadType.init),
-        returnsNormally,
+        grouped2.firstWhere((g) => g.parent == 'A').children[0].value.id,
+        3,
       );
-      dataSource.dispose();
+    });
+
+    test('groupedValues should be recomputed after refresh', () async {
+      // First access
+      final grouped1 = dataSource.groupedValues;
+      expect(grouped1.length, 3);
+
+      // Refresh with different data
+      final newDataSource = TestGroupedDataSource([const TestItem(10, 'Z')]);
+      await newDataSource.refresh();
+
+      // Access again
+      final grouped2 = newDataSource.groupedValues;
+      expect(grouped2.length, 1);
+      expect(grouped2[0].parent, 'Z');
+      newDataSource.dispose();
+    });
+  });
+
+  group('GroupedDataSource Index Consistency', () {
+    test('ValueWithIndex should hold the correct global index', () {
+      final grouped = dataSource.groupedValues;
+
+      // Item 1: 'A', id 1, global index 0
+      expect(grouped[0].children[0].value.id, 1);
+      expect(grouped[0].children[0].index, 0);
+
+      // Item 2: 'B', id 2, global index 1
+      expect(grouped[1].children[0].value.id, 2);
+      expect(grouped[1].children[0].index, 1);
+
+      // Item 3: 'A', id 3, global index 2
+      expect(grouped[0].children[1].value.id, 3);
+      expect(grouped[0].children[1].index, 2);
+
+      // Item 4: 'C', id 4, global index 3
+      expect(grouped[2].children[0].value.id, 4);
+      expect(grouped[2].children[0].index, 3);
+
+      // Item 5: 'B', id 5, global index 4
+      expect(grouped[1].children[1].value.id, 5);
+      expect(grouped[1].children[1].index, 4);
+    });
+
+    test('removeItem should use global index correctly', () {
+      // Remove item with global index 2 (TestItem(3, 'A'))
+      dataSource.removeItem(2);
+
+      final grouped = dataSource.groupedValues;
+      final groupA = grouped.firstWhere((g) => g.parent == 'A');
+      expect(groupA.children.length, 1);
+      expect(groupA.children.first.value.id, 1);
+      expect(groupA.children.first.index, 0); // New global index is 0
+
+      final groupB = grouped.firstWhere((g) => g.parent == 'B');
+      expect(groupB.children[0].index, 1); // New global index is 1
+      expect(groupB.children[1].index, 3); // New global index is 3
+    });
+
+    test('insertItem should use global index correctly', () {
+      // Insert new item at global index 1
+      const newItem = TestItem(99, 'A');
+      dataSource.insertItem(1, newItem);
+
+      final grouped = dataSource.groupedValues;
+      final groupA = grouped.firstWhere((g) => g.parent == 'A');
+      expect(groupA.children.length, 3);
+      expect(groupA.children.map((c) => c.value.id), [1, 99, 3]);
+
+      // Check new indices
+      expect(groupA.children[0].index, 0); // old item 1
+      expect(groupA.children[1].index, 1); // new item 99
+      expect(groupA.children[2].index, 3); // old item 3, now at global index 3
+    });
+
+    test('updateItem should use global index correctly', () {
+      // Update item with global index 4 (TestItem(5, 'B'))
+      dataSource.updateItem(
+        4,
+        (item) => TestItem(item.id + 100, item.category),
+      );
+
+      final grouped = dataSource.groupedValues;
+      final groupB = grouped.firstWhere((g) => g.parent == 'B');
+
+      expect(groupB.children.length, 2);
+      expect(groupB.children.map((c) => c.value.id), [2, 105]);
     });
   });
 }

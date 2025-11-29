@@ -2,135 +2,142 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/src/entity.dart';
 
 void main() {
-  group('PageData', () {
-    test('creates empty PageData with default values', () {
-      const pageData = PageData<int, String>();
-
-      expect(pageData.data, isEmpty);
-      expect(pageData.prependKey, isNull);
-      expect(pageData.appendKey, isNull);
+  group('LoadAction', () {
+    test('Refresh action should be correctly identified', () {
+      const action = Refresh<int>();
+      expect(action, isA<LoadAction<int>>());
+      expect(action, isA<Refresh<int>>());
     });
 
-    test('creates PageData with data', () {
-      const pageData = PageData<int, String>(
-        data: ['a', 'b', 'c'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-
-      expect(pageData.data, ['a', 'b', 'c']);
-      expect(pageData.prependKey, 1);
-      expect(pageData.appendKey, 2);
+    test('Prepend action should hold the correct key', () {
+      const action = Prepend<int>(key: 1);
+      expect(action, isA<LoadAction<int>>());
+      expect(action, isA<Prepend<int>>());
+      expect(action.key, 1);
     });
 
-    test('equality works correctly', () {
-      const pageData1 = PageData<int, String>(
-        data: ['a', 'b'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-      const pageData2 = PageData<int, String>(
-        data: ['a', 'b'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-      const pageData3 = PageData<int, String>(
-        data: ['a', 'b', 'c'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-
-      expect(pageData1, equals(pageData2));
-      expect(pageData1, isNot(equals(pageData3)));
-    });
-
-    test('hashCode works correctly', () {
-      const pageData1 = PageData<int, String>(
-        data: ['a', 'b'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-      const pageData2 = PageData<int, String>(
-        data: ['a', 'b'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-
-      expect(pageData1.hashCode, equals(pageData2.hashCode));
-    });
-
-    test('toString returns correct string representation', () {
-      const pageData = PageData<int, String>(
-        data: ['a', 'b'],
-        prependKey: 1,
-        appendKey: 2,
-      );
-
-      expect(
-        pageData.toString(),
-        "PageData(data: [a, b], prependKey: 1, appendKey: 2)",
-      );
+    test('Append action should hold the correct key', () {
+      const action = Append<int>(key: 10);
+      expect(action, isA<LoadAction<int>>());
+      expect(action, isA<Append<int>>());
+      expect(action.key, 10);
     });
   });
 
-  group('LoadAction', () {
-    test('Refresh is created correctly', () {
-      const refresh = Refresh<int>();
-      expect(refresh, isA<LoadAction<int>>());
-      expect(refresh, isA<Refresh<int>>());
+  group('PageData', () {
+    test('should be created with default empty list and null keys', () {
+      const page = PageData<int, String>();
+      expect(page.data, isEmpty);
+      expect(page.prependKey, isNull);
+      expect(page.appendKey, isNull);
     });
 
-    test('Prepend is created with key', () {
-      const prepend = Prepend<int>(key: 42);
-      expect(prepend, isA<LoadAction<int>>());
-      expect(prepend, isA<Prepend<int>>());
-      expect(prepend.key, 42);
+    test('should hold provided data and keys', () {
+      const page = PageData<int, String>(
+        data: ['item1', 'item2'],
+        prependKey: 1,
+        appendKey: 3,
+      );
+      expect(page.data, ['item1', 'item2']);
+      expect(page.prependKey, 1);
+      expect(page.appendKey, 3);
     });
 
-    test('Append is created with key', () {
-      const append = Append<int>(key: 99);
-      expect(append, isA<LoadAction<int>>());
-      expect(append, isA<Append<int>>());
-      expect(append.key, 99);
+    test('== operator should compare value equality', () {
+      const page1 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      const page2 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      const page3 = PageData<int, String>(
+        data: ['item2'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      const page4 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 0,
+        appendKey: 2,
+      );
+      const page5 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 1,
+        appendKey: 3,
+      );
+
+      expect(page1 == page2, isTrue);
+      expect(page1 == page3, isFalse);
+      expect(page1 == page4, isFalse);
+      expect(page1 == page5, isFalse);
+    });
+
+    test('hashCode should be consistent with == operator', () {
+      const page1 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      const page2 = PageData<int, String>(
+        data: ['item1'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      const page3 = PageData<int, String>(
+        data: ['item2'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+
+      expect(page1.hashCode, page2.hashCode);
+      expect(page1.hashCode, isNot(page3.hashCode));
+    });
+
+    test('toString should return a readable string representation', () {
+      const page = PageData<int, String>(
+        data: ['a'],
+        prependKey: 1,
+        appendKey: 2,
+      );
+      expect(
+        page.toString(),
+        'PageData(data: [a], prependKey: 1, appendKey: 2)',
+      );
     });
   });
 
   group('LoadResult', () {
-    test('Success is created with page data', () {
-      const page = PageData<int, String>(data: ['a', 'b']);
-      const success = Success<int, String>(page: page);
-
-      expect(success, isA<LoadResult<int, String>>());
-      expect(success, isA<Success<int, String>>());
-      expect(success.page, page);
+    test('Success should contain page data', () {
+      const page = PageData<int, String>(data: ['item']);
+      const result = Success<int, String>(page: page);
+      expect(result, isA<LoadResult<int, String>>());
+      expect(result, isA<Success<int, String>>());
+      expect(result.page, page);
     });
 
-    test('Failure is created with error', () {
-      final error = Exception('Test error');
+    test('Failure should contain error and optional stackTrace', () {
+      final error = Exception('Network error');
       final stackTrace = StackTrace.current;
-      final failure = Failure<int, String>(
-        error: error,
-        stackTrace: stackTrace,
-      );
+      final resultWithStackTrace =
+          Failure<int, String>(error: error, stackTrace: stackTrace);
+      final resultWithoutStackTrace = Failure<int, String>(error: error);
 
-      expect(failure, isA<LoadResult<int, String>>());
-      expect(failure, isA<Failure<int, String>>());
-      expect(failure.error, error);
-      expect(failure.stackTrace, stackTrace);
+      expect(resultWithStackTrace, isA<LoadResult<int, String>>());
+      expect(resultWithStackTrace, isA<Failure<int, String>>());
+      expect(resultWithStackTrace.error, error);
+      expect(resultWithStackTrace.stackTrace, stackTrace);
+
+      expect(resultWithoutStackTrace.stackTrace, isNull);
     });
 
-    test('Failure can be created without stackTrace', () {
-      final error = Exception('Test error');
-      final failure = Failure<int, String>(error: error);
-
-      expect(failure.error, error);
-      expect(failure.stackTrace, isNull);
-    });
-
-    test('None is created correctly', () {
-      const none = None<int, String>();
-      expect(none, isA<LoadResult<int, String>>());
-      expect(none, isA<None<int, String>>());
+    test('None should represent an empty or unnecessary result', () {
+      const result = None<int, String>();
+      expect(result, isA<LoadResult<int, String>>());
+      expect(result, isA<None<int, String>>());
     });
   });
 }
