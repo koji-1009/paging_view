@@ -14,27 +14,6 @@ import 'package:paging_view/src/private/page_manager.dart';
 /// which contains your specific data-fetching logic. The [DataSource] then
 /// handles the state of your data (loading, success, error) and provides it
 /// to `paging_view` widgets like `PagingList` or `PagingGrid`.
-///
-/// Example:
-/// ```dart
-/// class MyApiDataSource extends DataSource<int, String> {
-///   @override
-///   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
-///     try {
-///       final page = action is Refresh ? 1 : action.key;
-///       final response = await myApi.getItems(page: page);
-///       return Success(
-///         page: PageData(
-///           data: response.items,
-///           appendKey: response.hasNextPage ? page + 1 : null,
-///         ),
-///       );
-///     } catch (e) {
-///       return Failure(error: e);
-///     }
-///   }
-/// }
-/// ```
 abstract class DataSource<PageKey, Value> {
   /// Loads a page of data based on the specified [LoadAction].
   ///

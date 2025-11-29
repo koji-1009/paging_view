@@ -12,22 +12,6 @@ import 'package:paging_view/src/grouped_entity.dart';
 /// The [GroupedDataSource] listens for changes to the underlying flat list of
 /// items from [DataSource] and re-computes the grouped structure on demand,
 /// caching the result for efficiency.
-///
-/// Example:
-/// ```dart
-/// class ContactDataSource extends GroupedDataSource<int, String, Contact> {
-///   @override
-///   String groupBy(Contact value) {
-///     // Group contacts by the first letter of their name.
-///     return value.name.substring(0, 1).toUpperCase();
-///   }
-///
-///   @override
-///   Future<LoadResult<int, Contact>> load(LoadAction<int> action) {
-///     // Your data loading logic here...
-///   }
-/// }
-/// ```
 abstract class GroupedDataSource<PageKey, Parent, Value>
     extends DataSource<PageKey, Value> {
   /// Creates a [GroupedDataSource] and sets up a listener to invalidate the
