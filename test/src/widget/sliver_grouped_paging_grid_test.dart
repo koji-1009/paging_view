@@ -27,8 +27,7 @@ void main() {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),
-                headerBuilder: (context, group, index) =>
-                    Text('Group $group'),
+                headerBuilder: (context, group, index) => Text('Group $group'),
                 itemBuilder: (context, item, itemIndex, groupIndex) =>
                     SizedBox(height: 50, child: Text(item)),
                 errorBuilder: (context, error, stackTrace) =>
@@ -49,15 +48,17 @@ void main() {
       );
     }
 
-    testWidgets('displays initial loading, then items and headers',
-        (tester) async {
+    testWidgets('displays initial loading, then items and headers', (
+      tester,
+    ) async {
       final dataSource = TestGroupedDataSource(
         refreshDelay: const Duration(milliseconds: 100),
       );
       addTearDown(dataSource.dispose);
 
-      await tester
-          .pumpWidget(createSliverGroupedPagingGrid(dataSource: dataSource));
+      await tester.pumpWidget(
+        createSliverGroupedPagingGrid(dataSource: dataSource),
+      );
       await tester.pump();
       expect(find.text('Initial Loading'), findsOneWidget);
 
@@ -74,8 +75,9 @@ void main() {
       final dataSource = TestGroupedDataSource(initialItems: []);
       addTearDown(dataSource.dispose);
 
-      await tester
-          .pumpWidget(createSliverGroupedPagingGrid(dataSource: dataSource));
+      await tester.pumpWidget(
+        createSliverGroupedPagingGrid(dataSource: dataSource),
+      );
       await tester.pumpAndSettle();
       expect(find.text('No Data'), findsOneWidget);
     });
@@ -84,8 +86,9 @@ void main() {
       final dataSource = TestGroupedDataSource(hasErrorOnRefresh: true);
       addTearDown(dataSource.dispose);
 
-      await tester
-          .pumpWidget(createSliverGroupedPagingGrid(dataSource: dataSource));
+      await tester.pumpWidget(
+        createSliverGroupedPagingGrid(dataSource: dataSource),
+      );
       await tester.pumpAndSettle();
       expect(find.text('Error'), findsOneWidget);
     });

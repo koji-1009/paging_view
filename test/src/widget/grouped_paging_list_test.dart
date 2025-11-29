@@ -71,8 +71,9 @@ void main() {
       );
     }
 
-    testWidgets('displays initial loading, then items and headers',
-        (tester) async {
+    testWidgets('displays initial loading, then items and headers', (
+      tester,
+    ) async {
       final dataSource = TestGroupedDataSource(
         refreshDelay: const Duration(milliseconds: 100),
       );
@@ -95,8 +96,7 @@ void main() {
       final dataSource = TestGroupedDataSource(initialItems: []);
       addTearDown(dataSource.dispose);
 
-      await tester
-          .pumpWidget(createGroupedPagingList(dataSource: dataSource));
+      await tester.pumpWidget(createGroupedPagingList(dataSource: dataSource));
       await tester.pumpAndSettle();
       expect(find.text('No Data'), findsOneWidget);
     });
@@ -105,14 +105,14 @@ void main() {
       final dataSource = TestGroupedDataSource(hasErrorOnRefresh: true);
       addTearDown(dataSource.dispose);
 
-      await tester
-          .pumpWidget(createGroupedPagingList(dataSource: dataSource));
+      await tester.pumpWidget(createGroupedPagingList(dataSource: dataSource));
       await tester.pumpAndSettle();
       expect(find.text('Error'), findsOneWidget);
     });
 
-    testWidgets('displays separators when using .separated constructor',
-        (tester) async {
+    testWidgets('displays separators when using .separated constructor', (
+      tester,
+    ) async {
       final dataSource = TestGroupedDataSource();
       addTearDown(dataSource.dispose);
 

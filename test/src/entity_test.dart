@@ -122,8 +122,10 @@ void main() {
     test('Failure should contain error and optional stackTrace', () {
       final error = Exception('Network error');
       final stackTrace = StackTrace.current;
-      final resultWithStackTrace =
-          Failure<int, String>(error: error, stackTrace: stackTrace);
+      final resultWithStackTrace = Failure<int, String>(
+        error: error,
+        stackTrace: stackTrace,
+      );
       final resultWithoutStackTrace = Failure<int, String>(error: error);
 
       expect(resultWithStackTrace, isA<LoadResult<int, String>>());

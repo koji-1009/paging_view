@@ -70,7 +70,8 @@ abstract class GroupedDataSource<PageKey, Parent, Value>
 
     return groupOrder
         .map(
-          (parent) => GroupedPageData(parent: parent, children: groups[parent]!),
+          (parent) =>
+              GroupedPageData(parent: parent, children: groups[parent]!),
         )
         .toList();
   }

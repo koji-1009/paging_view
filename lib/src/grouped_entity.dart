@@ -29,10 +29,8 @@ class GroupedPageData<Parent, Value> {
           const DeepCollectionEquality().equals(children, other.children));
 
   @override
-  int get hashCode => Object.hash(
-        parent,
-        const DeepCollectionEquality().hash(children),
-      );
+  int get hashCode =>
+      Object.hash(parent, const DeepCollectionEquality().hash(children));
 }
 
 /// A data structure that wraps a `value` with its original `index` from a
