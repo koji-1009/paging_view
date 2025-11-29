@@ -7,7 +7,7 @@ import 'package:paging_view/src/private/entity.dart';
 
 // A flexible TestDataSource to mock different load scenarios.
 class TestDataSource extends DataSource<int, String> {
-  TestDataSource({this.onLoad});
+  TestDataSource({this.onLoad, super.errorRecovery, super.onLoadFinished});
 
   Future<LoadResult<int, String>> Function(LoadAction<int> action)? onLoad;
 
@@ -282,6 +282,110 @@ void main() {
       final state = dataSource.notifier.value;
       expect(state, isA<Warning>());
       expect((state as Warning).error, isA<RangeError>());
+    });
+  });
+
+  group('Error Recovery', () {
+    test(
+      'append with allowRetry reverts to loaded state on exception',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource(
+          errorRecovery: ErrorRecovery.allowRetry,
+          onLoadFinished: (action, result) {
+            capturedAction = action;
+            capturedResult = result;
+          },
+        );
+        dataSource.onLoad = (action) async {
+          if (action is Append) {
+            throw Exception('Append failed');
+          }
+          return const Success(page: PageData(data: ['0'], appendKey: 1));
+        };
+
+        await dataSource.refresh();
+        await dataSource.append();
+
+        // Check that the callback was called with a Failure
+        expect(capturedResult, isA<Failure>());
+        expect((capturedResult as Failure).error, isA<Exception>());
+        expect(capturedAction, isA<Append>());
+
+        // Check that the state reverted to Loaded, not Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.isLoading, isFalse);
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'prepend with allowRetry reverts to loaded state on exception',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource(
+          errorRecovery: ErrorRecovery.allowRetry,
+          onLoadFinished: (action, result) {
+            capturedAction = action;
+            capturedResult = result;
+          },
+        );
+        dataSource.onLoad = (action) async {
+          if (action is Prepend) {
+            throw Exception('Prepend failed');
+          }
+          return const Success(page: PageData(data: ['0'], prependKey: -1));
+        };
+
+        await dataSource.refresh();
+        await dataSource.prepend();
+
+        expect(capturedResult, isA<Failure>());
+        expect((capturedResult as Failure).error, isA<Exception>());
+        expect(capturedAction, isA<Prepend>());
+
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.isLoading, isFalse);
+
+        dataSource.dispose();
+      },
+    );
+
+    test('default forceRefresh mode sets Warning state on failure', () async {
+      LoadResult<int, String>? capturedResult;
+      LoadAction<int>? capturedAction;
+      final dataSource = TestDataSource(
+        errorRecovery: ErrorRecovery.forceRefresh, // Default
+        onLoadFinished: (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        },
+      );
+      dataSource.onLoad = (action) async {
+        if (action is Append) {
+          throw Exception('Append failed');
+        }
+        return const Success(page: PageData(data: ['0'], appendKey: 1));
+      };
+
+      await dataSource.refresh();
+      await dataSource.append();
+
+      // Check that the state is Warning
+      final state = dataSource.notifier.value;
+      expect(state, isA<Warning>());
+      expect((state as Warning).error, isA<Exception>());
+      expect(capturedResult, isA<Failure>());
+      expect(capturedAction, isA<Append>());
+
+      dataSource.dispose();
     });
   });
 }

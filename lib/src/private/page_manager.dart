@@ -52,6 +52,22 @@ class PageManager<PageKey, Value>
     value = Warning(error: error, stackTrace: stackTrace);
   }
 
+  /// Reverts a loading state back to a loaded state without changing the data.
+  ///
+  /// This is used in [ErrorRecovery.allowRetry] mode to allow another
+  /// attempt at loading after a failure.
+  void revertLoad() {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is Paging<PageKey, Value> &&
+        currentVal.state is LoadStateLoading) {
+      value = Paging(state: const LoadStateLoaded(), data: currentVal.data);
+    }
+  }
+
   /// Replaces all existing pages with a new single [newPage].
   ///
   /// If [newPage] is null, all pages are cleared.

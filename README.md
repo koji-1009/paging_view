@@ -259,8 +259,6 @@ class _PagingGridDemoState extends State<PagingGridDemo> {
 }
 ```
 
-Similarly, `SliverPagingGrid` can be used within a `CustomScrollView` for grid layouts with custom scroll effects.
-
 ## Advanced Usage
 
 ### Sliver Support
@@ -345,7 +343,7 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
             ),
           ),
           AppendLoadStateBuilder(
-            dataSource: dataSource,
+            dataSource: _dataSource,
             builder: (context, hasMore, isLoading) => SliverToBoxAdapter(
               child: SizedBox(
                 height: 64,
@@ -360,7 +358,7 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
                     ? Padding(
                         padding: const .all(16),
                         child: FilledButton(
-                          onPressed: () => dataSource.append(),
+                          onPressed: () => _dataSource.append(),
                           child: const Text('Load More'),
                         ),
                       )
@@ -373,23 +371,134 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
     );
   }
 }
-```
 
-### Grouped Data
+### Custom Error Recovery & Load Callbacks
 
-Easily handle sectioned lists (e.g., contacts grouped by initial, transaction history by date) using `GroupedPagingList`. You'll need to use a `GroupedDataSource`.
+`DataSource` now offers fine-grained control over how `prepend` and `append` operation errors are handled, and provides a callback to observe the outcome of every load.
+
+- **`ErrorRecovery` Enum**: Configure how the `DataSource` reacts to errors during `prepend` or `append`.
+  - `ErrorRecovery.forceRefresh` (Default): Upon error, the `DataSource` transitions to a fatal `Warning` state, typically displaying an error widget. Recovery requires a full `refresh()`.
+  - `ErrorRecovery.allowRetry`: Upon error, the `DataSource` reverts its loading state, effectively becoming idle. This prevents displaying a persistent error widget and allows the user to manually trigger the `append()` or `prepend()` operation again (e.g., via a "Retry" button).
+
+- **`onLoadFinished` Callback**: A callback function defined in the `DataSource` constructor, invoked after every `load()` operation (whether successful, failed, or none). Its signature is `void Function(LoadAction action, LoadResult result)`.
+  - **Purpose**: Useful for logging, analytics, displaying transient error messages (e.g., a `SnackBar`), or building custom retry mechanisms.
+
+**Example: Implementing a Retry Button with `allowRetry`**
+
+First, configure your `DataSource` with `ErrorRecovery.allowRetry` and provide an `onLoadFinished` callback to manage a custom error state.
 
 ```dart
-GroupedPagingList(
-  dataSource: groupedDataSource,
-  // Define how to group your items
-  headerBuilder: (context, groupKey, index) => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Text('Group: $groupKey', style: Theme.of(context).textTheme.titleLarge),
-  ),
-  // Builder for each item in the group
-  itemBuilder: (context, item, globalIndex, localIndex) => ListTile(title: Text(item.word)),
-)
+class MyRetryableDataSource extends DataSource<int, String> {
+  // Use ErrorRecovery.allowRetry to enable manual retries for append/prepend errors.
+  // And provide a callback to react to load outcomes.
+  MyRetryableDataSource({
+    required super.onLoadFinished,
+  }) : super(errorRecovery: ErrorRecovery.allowRetry);
+}
+```
+
+Then, in your UI, you can use `AppendLoadStateBuilder` (or `PrependLoadStateBuilder`) to check for an error via the `onLoadFinished` callback and display a retry button.
+
+```dart
+class RetryableLoadDemo extends StatefulWidget {
+  const RetryableLoadDemo({super.key});
+
+  @override
+  State<RetryableLoadDemo> createState() => _RetryableLoadDemoState();
+}
+
+class _RetryableLoadDemoState extends State<RetryableLoadDemo> {
+  Object? _appendError;
+  StackTrace? _appendStackTrace;
+  Object? _prependError;
+  StackTrace? _prependStackTrace;
+
+  late final MyRetryableDataSource _dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = MyRetryableDataSource(
+      onLoadFinished: (action, result) {
+        if (result is Failure) {
+          if (action is Append) {
+            setState(() {
+              _appendError = result.error;
+              _appendStackTrace = result.stackTrace;
+            });
+          }
+        } else {
+          // Clear any previous error on successful load
+          if (action is Append && _appendError != null) {
+            setState(() {
+              _appendError = null;
+              _appendStackTrace = null;
+            });
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _dataSource.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async => _dataSource.refresh(),
+      child: CustomScrollView(
+        slivers: [
+          SliverPagingList(
+            dataSource: _dataSource,
+            builder: (context, entity, index) => Card(
+              child: ListTile(
+                title: Text(entity.word),
+                subtitle: Text(entity.description),
+              ),
+            ),
+            autoLoadAppend: false,
+          ),
+          // Append Retry UI
+          AppendLoadStateBuilder(
+            dataSource: _dataSource,
+            builder: (context, hasMore, isLoading) => SliverToBoxAdapter(
+              child: SizedBox(
+                height: 64,
+                child: isLoading
+                    ? const Center(
+                        child: Padding(
+                          padding: .all(16),
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : hasMore
+                    ? Padding(
+                        padding: const .all(16),
+                        child: FilledButton(
+                          onPressed: () {
+                            if (_appendError != null) {
+                              setState(() {
+                                _appendError = null;
+                              });
+                            }
+                            _dataSource.append();
+                          },
+                          child: Text(_appendError != null ? 'Retry Append' : 'Load More'),
+                        ),
+                      )
+                    : null,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 ```
 
 ## API Reference
