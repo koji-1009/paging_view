@@ -1,7 +1,6 @@
+import 'package:example/model/demo_entity.dart';
 import 'package:paging_view/paging_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'entity/demo_entity.dart';
 
 part 'data_source_grouped_repositories.g.dart';
 

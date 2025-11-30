@@ -1,4 +1,4 @@
-import 'package:example/model/entity/demo_entity.dart';
+import 'package:example/model/demo_entity.dart';
 import 'package:paging_view/paging_view.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

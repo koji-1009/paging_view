@@ -1,6 +1,6 @@
 import 'package:example/model/data_source_grouped_repositories.dart';
 import 'package:example/model/data_source_list_repositories.dart';
-import 'package:example/model/entity/demo_entity.dart';
+import 'package:example/model/demo_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:paging_view/paging_view.dart';
