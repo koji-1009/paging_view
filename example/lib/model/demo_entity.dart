@@ -1,20 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'demo_entity.freezed.dart';
-
-@freezed
-abstract class DemoEntity with _$DemoEntity {
-  const factory DemoEntity({
-    required String word,
-    required String description,
-    required String category,
-  }) = _DemoEntity;
-}
+typedef DemoEntity = ({String word, String description, String category});
 
 final List<DemoEntity> allItems = wordsByCategory
     .mapIndexed(
-      (index, word) => DemoEntity(
+      (index, word) => (
         word: word,
         description: 'Index $index',
         category: word.substring(0, 1),
