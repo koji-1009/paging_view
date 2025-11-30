@@ -14,6 +14,10 @@ void main() {
         expect(state.isPrependLoading, isFalse);
         expect(state.isAppendLoading, isFalse);
       });
+
+      test('should have correct toString() representation', () {
+        expect(state.toString(), 'LoadStateInit()');
+      });
     });
 
     group('LoadStateLoaded', () {
@@ -26,6 +30,10 @@ void main() {
         expect(state.isPrependLoading, isFalse);
         expect(state.isAppendLoading, isFalse);
       });
+
+      test('should have correct toString() representation', () {
+        expect(state.toString(), 'LoadStateLoaded()');
+      });
     });
 
     group('LoadStateLoading', () {
@@ -37,6 +45,7 @@ void main() {
         expect(state.isRefreshLoading, isFalse);
         expect(state.isPrependLoading, isFalse);
         expect(state.isAppendLoading, isFalse);
+        expect(state.toString(), 'LoadStateLoading(state: LoadType.init)');
       });
 
       test('with LoadType.refresh should have correct properties', () {
@@ -45,6 +54,7 @@ void main() {
         expect(state.isRefreshLoading, isTrue);
         expect(state.isPrependLoading, isFalse);
         expect(state.isAppendLoading, isFalse);
+        expect(state.toString(), 'LoadStateLoading(state: LoadType.refresh)');
       });
 
       test('with LoadType.prepend should have correct properties', () {
@@ -53,6 +63,7 @@ void main() {
         expect(state.isRefreshLoading, isFalse);
         expect(state.isPrependLoading, isTrue);
         expect(state.isAppendLoading, isFalse);
+        expect(state.toString(), 'LoadStateLoading(state: LoadType.prepend)');
       });
 
       test('with LoadType.append should have correct properties', () {
@@ -61,6 +72,7 @@ void main() {
         expect(state.isRefreshLoading, isFalse);
         expect(state.isPrependLoading, isFalse);
         expect(state.isAppendLoading, isTrue);
+        expect(state.toString(), 'LoadStateLoading(state: LoadType.append)');
       });
     });
   });

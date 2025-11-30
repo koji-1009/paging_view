@@ -58,6 +58,47 @@ void main() {
       expect(dataSource.notifier.values, isEmpty);
     });
 
+    test('update(LoadType.init) should populate data on success', () async {
+      await dataSource.update(LoadType.init);
+      final state = dataSource.notifier.value;
+      expect(state, isA<Paging>());
+      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(dataSource.notifier.values, ['0', '1', '2']);
+    });
+
+    test(
+      'update(LoadType.init) with None should result in empty list',
+      () async {
+        dataSource.onLoad = (_) async => const None();
+        await dataSource.update(LoadType.init);
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.values, isEmpty);
+      },
+    );
+
+    test('update(LoadType.init) with Failure should set error state', () async {
+      final error = Exception('Init Failure');
+      dataSource.onLoad = (_) async => Failure(error: error);
+      await dataSource.update(LoadType.init);
+      final state = dataSource.notifier.value;
+      expect(state, isA<Warning>());
+      expect((state as Warning).error, error);
+    });
+
+    test(
+      'update(LoadType.init) with exception should set error state',
+      () async {
+        final error = Exception('Init Thrown');
+        dataSource.onLoad = (_) => throw error;
+        await dataSource.update(LoadType.init);
+        final state = dataSource.notifier.value;
+        expect(state, isA<Warning>());
+        expect((state as Warning).error, error);
+      },
+    );
+
     test('dispose should work correctly', () {
       final localDataSource = TestDataSource();
       // Simply check that it doesn't throw
@@ -66,7 +107,7 @@ void main() {
 
     test('listeners should be added and removed', () {
       var callCount = 0;
-      int listener() => callCount++;
+      void listener() => callCount++;
 
       dataSource.addListener(listener);
       // Directly trigger a change in the underlying notifier to test the listener
@@ -78,6 +119,25 @@ void main() {
       dataSource.removeListener(listener);
       dataSource.refresh();
       expect(callCount, lastCount);
+    });
+  });
+
+  group('update method', () {
+    test('should call _refresh on LoadType.refresh', () async {
+      await dataSource.update(LoadType.refresh);
+      expect(dataSource.notifier.values, ['0', '1', '2']);
+    });
+
+    test('should call _prepend on LoadType.prepend', () async {
+      await dataSource.refresh();
+      await dataSource.update(LoadType.prepend);
+      expect(dataSource.notifier.values, ['p-1', '0', '1', '2']);
+    });
+
+    test('should call _append on LoadType.append', () async {
+      await dataSource.refresh();
+      await dataSource.update(LoadType.append);
+      expect(dataSource.notifier.values, ['0', '1', '2', 'a1']);
     });
   });
 
@@ -199,6 +259,30 @@ void main() {
       expect(state, isA<Warning>());
       expect((state as Warning).error, error);
     });
+
+    test('calling append while loading should be a no-op', () async {
+      final completer = Completer<LoadResult<int, String>>();
+      dataSource.onLoad = (action) {
+        if (action is Append) {
+          return completer.future;
+        }
+        return Future.value(
+          const Success(page: PageData(data: ['0'], appendKey: 1)),
+        );
+      };
+      await dataSource.refresh();
+
+      // Do not await
+      final future = dataSource.append();
+      expect(dataSource.notifier.isLoading, isTrue);
+
+      // This call should do nothing
+      await dataSource.append();
+
+      completer.complete(const None());
+      await future;
+      expect(dataSource.notifier.isLoading, isFalse);
+    });
   });
 
   group('Data Loading: Prepend', () {
@@ -245,6 +329,46 @@ void main() {
       await dataSource.prepend();
       expect(loadCalled, isFalse);
     });
+
+    test('failed prepend should set error state', () async {
+      final error = Exception('Prepend failed');
+      dataSource.onLoad = (action) async {
+        if (action is Prepend) {
+          return Failure(error: error);
+        }
+        return const Success(page: PageData(data: ['0'], prependKey: -1));
+      };
+      await dataSource.refresh();
+      await dataSource.prepend();
+
+      final state = dataSource.notifier.value;
+      expect(state, isA<Warning>());
+      expect((state as Warning).error, error);
+    });
+
+    test('calling prepend while loading should be a no-op', () async {
+      final completer = Completer<LoadResult<int, String>>();
+      dataSource.onLoad = (action) {
+        if (action is Prepend) {
+          return completer.future;
+        }
+        return Future.value(
+          const Success(page: PageData(data: ['0'], prependKey: -1)),
+        );
+      };
+      await dataSource.refresh();
+
+      // Do not await
+      final future = dataSource.prepend();
+      expect(dataSource.notifier.isLoading, isTrue);
+
+      // This call should do nothing
+      await dataSource.prepend();
+
+      completer.complete(const None());
+      await future;
+      expect(dataSource.notifier.isLoading, isFalse);
+    });
   });
 
   group('Item Manipulation', () {
@@ -283,6 +407,32 @@ void main() {
       expect(state, isA<Warning>());
       expect((state as Warning).error, isA<RangeError>());
     });
+
+    test('updateItems throwing an error should set error state', () {
+      final error = Exception('Update failed');
+      dataSource.updateItems((index, item) {
+        if (index == 1) {
+          throw error;
+        }
+        return item;
+      });
+      final state = dataSource.notifier.value;
+      expect(state, isA<Warning>());
+      expect((state as Warning).error, error);
+    });
+
+    test('removeItems throwing an error should set error state', () {
+      final error = Exception('Remove failed');
+      dataSource.removeItems((index, item) {
+        if (index == 1) {
+          throw error;
+        }
+        return false;
+      });
+      final state = dataSource.notifier.value;
+      expect(state, isA<Warning>());
+      expect((state as Warning).error, error);
+    });
   });
 
   group('Error Recovery', () {
@@ -312,6 +462,30 @@ void main() {
         dataSource.dispose();
       },
     );
+
+    test('fetch with .ignoreRefresh keeps previous data on Failure', () async {
+      final dataSource = TestDataSource(
+        errorPolicy: {LoadErrorPolicy.ignoreRefresh},
+      );
+      await dataSource.refresh(); // Initial load
+
+      dataSource.onLoad = (action) async {
+        if (action is Refresh) {
+          return Failure(error: Exception('Refresh failed'));
+        }
+        return const Success(page: PageData(data: ['0'], appendKey: 1));
+      };
+
+      await dataSource.refresh();
+
+      // Check that the state is still Loaded with previous data
+      final state = dataSource.notifier.value;
+      expect(state, isA<Paging>());
+      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(dataSource.notifier.values, ['0', '1', '2']);
+
+      dataSource.dispose();
+    });
 
     test(
       'append with .ignoreAppend reverts to loaded state on exception',
@@ -351,6 +525,32 @@ void main() {
     );
 
     test(
+      'append with .ignoreAppend reverts to loaded state on Failure',
+      () async {
+        final dataSource = TestDataSource(
+          errorPolicy: {LoadErrorPolicy.ignoreAppend},
+        );
+        dataSource.onLoad = (action) async {
+          if (action is Append) {
+            return Failure(error: Exception('Append failed'));
+          }
+          return const Success(page: PageData(data: ['0'], appendKey: 1));
+        };
+
+        await dataSource.refresh();
+        await dataSource.append();
+
+        // Check that the state reverted to Loaded, not Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.isLoading, isFalse);
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
       'prepend with .ignorePrepend reverts to loaded state on exception',
       () async {
         LoadResult<int, String>? capturedResult;
@@ -375,6 +575,31 @@ void main() {
         expect(capturedResult, isA<Failure>());
         expect((capturedResult as Failure).error, isA<Exception>());
         expect(capturedAction, isA<Prepend>());
+
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.isLoading, isFalse);
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'prepend with .ignorePrepend reverts to loaded state on Failure',
+      () async {
+        final dataSource = TestDataSource(
+          errorPolicy: {LoadErrorPolicy.ignorePrepend},
+        );
+        dataSource.onLoad = (action) async {
+          if (action is Prepend) {
+            return Failure(error: Exception('Prepend failed'));
+          }
+          return const Success(page: PageData(data: ['0'], prependKey: -1));
+        };
+
+        await dataSource.refresh();
+        await dataSource.prepend();
 
         final state = dataSource.notifier.value;
         expect(state, isA<Paging>());

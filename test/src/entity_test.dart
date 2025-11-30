@@ -144,5 +144,19 @@ void main() {
       expect(result, isA<LoadResult<int, String>>());
       expect(result, isA<None<int, String>>());
     });
+
+    test('toString should return readable string representations', () {
+      const page = PageData<int, String>(data: ['item']);
+      const success = Success<int, String>(page: page);
+      final failure = Failure<int, String>(error: 'error');
+      const none = None<int, String>();
+
+      expect(
+        success.toString(),
+        'Success(page: PageData(data: [item], prependKey: null, appendKey: null))',
+      );
+      expect(failure.toString(), 'Failure(error: error, stackTrace: null)');
+      expect(none.toString(), 'None()');
+    });
   });
 }
