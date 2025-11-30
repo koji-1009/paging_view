@@ -141,11 +141,7 @@ abstract class DataSource<PageKey, Value> {
   /// This calls the [load] method with a [Refresh] action. If a load is already
   /// in progress, this method does nothing.
   Future<void> refresh() async {
-    try {
-      await _refresh();
-    } catch (error, stackTrace) {
-      _manager.setError(error: error, stackTrace: stackTrace);
-    }
+    await _refresh();
   }
 
   /// Triggers a prepend operation to load data before the current items.
@@ -154,11 +150,7 @@ abstract class DataSource<PageKey, Value> {
   /// `prependPageKey`. If the key is `null` or a load is in progress, this
   /// method does nothing.
   Future<void> prepend() async {
-    try {
-      await _prepend();
-    } catch (error, stackTrace) {
-      _manager.setError(error: error, stackTrace: stackTrace);
-    }
+    await _prepend();
   }
 
   /// Triggers an append operation to load data after the current items.
@@ -167,11 +159,7 @@ abstract class DataSource<PageKey, Value> {
   /// `appendPageKey`. If the key is `null` or a load is in progress, this
   /// method does nothing.
   Future<void> append() async {
-    try {
-      await _append();
-    } catch (error, stackTrace) {
-      _manager.setError(error: error, stackTrace: stackTrace);
-    }
+    await _append();
   }
 
   /// Called by `paging_view` widgets to trigger a data load.
