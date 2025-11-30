@@ -7,6 +7,7 @@ void main() {
       const action = Refresh<int>();
       expect(action, isA<LoadAction<int>>());
       expect(action, isA<Refresh<int>>());
+      expect(action.toString(), 'Refresh()');
     });
 
     test('Prepend action should hold the correct key', () {
@@ -14,6 +15,7 @@ void main() {
       expect(action, isA<LoadAction<int>>());
       expect(action, isA<Prepend<int>>());
       expect(action.key, 1);
+      expect(action.toString(), 'Prepend(key: 1)');
     });
 
     test('Append action should hold the correct key', () {
@@ -21,6 +23,7 @@ void main() {
       expect(action, isA<LoadAction<int>>());
       expect(action, isA<Append<int>>());
       expect(action.key, 10);
+      expect(action.toString(), 'Append(key: 10)');
     });
   });
 

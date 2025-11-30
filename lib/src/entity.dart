@@ -17,6 +17,9 @@ sealed class LoadAction<PageKey> {
 class Refresh<PageKey> implements LoadAction<PageKey> {
   /// Creates a [Refresh] action.
   const Refresh();
+
+  @override
+  String toString() => 'Refresh()';
 }
 
 /// A [LoadAction] that signals a request to load data to be inserted at the
@@ -27,6 +30,9 @@ class Prepend<PageKey> implements LoadAction<PageKey> {
 
   /// The key for the page to be prepended.
   final PageKey key;
+
+  @override
+  String toString() => 'Prepend(key: $key)';
 }
 
 /// A [LoadAction] that signals a request to load data to be added at the end
@@ -37,6 +43,9 @@ class Append<PageKey> implements LoadAction<PageKey> {
 
   /// The key for the page to be appended.
   final PageKey key;
+
+  @override
+  String toString() => 'Append(key: $key)';
 }
 
 /// Represents the result of a data loading operation initiated by a [LoadAction].
@@ -57,6 +66,9 @@ class Success<PageKey, Value> implements LoadResult<PageKey, Value> {
 
   /// The [PageData] containing the loaded data and new pagination keys.
   final PageData<PageKey, Value> page;
+
+  @override
+  String toString() => 'Success(page: $page)';
 }
 
 /// A [LoadResult] that indicates a failed data loading operation.
@@ -69,6 +81,9 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 
   /// The stack trace associated with the error, if available.
   final StackTrace? stackTrace;
+
+  @override
+  String toString() => 'Failure(error: $error, stackTrace: $stackTrace)';
 }
 
 /// A [LoadResult] that indicates no data was loaded and no further action
@@ -79,6 +94,9 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 class None<PageKey, Value> implements LoadResult<PageKey, Value> {
   /// Creates a [None] result.
   const None();
+
+  @override
+  String toString() => 'None()';
 }
 
 /// A container for a single "page" of data loaded by a data source.
