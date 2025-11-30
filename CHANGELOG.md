@@ -1,3 +1,12 @@
+## 2.5.0
+
+* Add `PrependLoadStateBuilder` and `AppendLoadStateBuilder`.
+* Add `LoadErrorPolicy` and `errorPolicy` to `DataSource`.
+* Add `onLoadFinished` callback to `DataSource`.
+* Update example project.
+* Update documentation.
+* Add many unit tests and widget tests.
+
 ## 2.4.5
 
 * Made optional widgets nullable.
