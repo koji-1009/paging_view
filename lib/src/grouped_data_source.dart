@@ -16,7 +16,7 @@ abstract class GroupedDataSource<PageKey, Parent, Value>
     extends DataSource<PageKey, Value> {
   /// Creates a [GroupedDataSource] and sets up a listener to invalidate the
   /// group cache when the underlying data changes.
-  GroupedDataSource({super.errorRecovery, super.onLoadFinished}) {
+  GroupedDataSource({super.errorPolicy}) {
     notifier.addListener(_invalidateCache);
   }
 

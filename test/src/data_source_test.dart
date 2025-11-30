@@ -7,7 +7,7 @@ import 'package:paging_view/src/private/entity.dart';
 
 // A flexible TestDataSource to mock different load scenarios.
 class TestDataSource extends DataSource<int, String> {
-  TestDataSource({this.onLoad, super.errorRecovery, super.onLoadFinished});
+  TestDataSource({this.onLoad, super.errorPolicy});
 
   Future<LoadResult<int, String>> Function(LoadAction<int> action)? onLoad;
 
@@ -287,17 +287,44 @@ void main() {
 
   group('Error Recovery', () {
     test(
-      'append with allowRetry reverts to loaded state on exception',
+      'fetch with .ignoreRefresh keeps previous data on exception',
+      () async {
+        final dataSource = TestDataSource(
+          errorPolicy: {LoadErrorPolicy.ignoreRefresh},
+        );
+        await dataSource.refresh(); // Initial load
+
+        dataSource.onLoad = (action) async {
+          if (action is Refresh) {
+            throw Exception('Refresh failed');
+          }
+          return const Success(page: PageData(data: ['0'], appendKey: 1));
+        };
+
+        await dataSource.refresh();
+
+        // Check that the state is still Loaded with previous data
+        final state = dataSource.notifier.value;
+        expect(state, isA<Paging>());
+        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(dataSource.notifier.values, ['0', '1', '2']);
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'append with .ignoreAppend reverts to loaded state on exception',
       () async {
         LoadResult<int, String>? capturedResult;
         LoadAction<int>? capturedAction;
         final dataSource = TestDataSource(
-          errorRecovery: ErrorRecovery.allowRetry,
-          onLoadFinished: (action, result) {
-            capturedAction = action;
-            capturedResult = result;
-          },
+          errorPolicy: {LoadErrorPolicy.ignoreAppend},
         );
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
         dataSource.onLoad = (action) async {
           if (action is Append) {
             throw Exception('Append failed');
@@ -324,17 +351,17 @@ void main() {
     );
 
     test(
-      'prepend with allowRetry reverts to loaded state on exception',
+      'prepend with .ignorePrepend reverts to loaded state on exception',
       () async {
         LoadResult<int, String>? capturedResult;
         LoadAction<int>? capturedAction;
         final dataSource = TestDataSource(
-          errorRecovery: ErrorRecovery.allowRetry,
-          onLoadFinished: (action, result) {
-            capturedAction = action;
-            capturedResult = result;
-          },
+          errorPolicy: {LoadErrorPolicy.ignorePrepend},
         );
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
         dataSource.onLoad = (action) async {
           if (action is Prepend) {
             throw Exception('Prepend failed');
@@ -358,16 +385,14 @@ void main() {
       },
     );
 
-    test('default forceRefresh mode sets Warning state on failure', () async {
+    test('default errorPolicy mode sets Warning state on failure', () async {
       LoadResult<int, String>? capturedResult;
       LoadAction<int>? capturedAction;
-      final dataSource = TestDataSource(
-        errorRecovery: ErrorRecovery.forceRefresh, // Default
-        onLoadFinished: (action, result) {
-          capturedAction = action;
-          capturedResult = result;
-        },
-      );
+      final dataSource = TestDataSource();
+      dataSource.onLoadFinished = (action, result) {
+        capturedAction = action;
+        capturedResult = result;
+      };
       dataSource.onLoad = (action) async {
         if (action is Append) {
           throw Exception('Append failed');

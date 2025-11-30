@@ -3,17 +3,20 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/private/page_manager.dart';
 
-/// Defines how the [DataSource] should recover from a non-critical error
-/// during a `prepend` or `append` operation.
-enum ErrorRecovery {
-  /// Transitions the entire view into an error state, requiring a `refresh`
-  /// to recover. This is the default behavior.
-  forceRefresh,
+/// Defines the policy when a data load fails.
+///
+/// By default, an error triggers an error state in the `PageManager`.
+/// Adding these values allows you to ignore errors for specific actions,
+/// reverting to the previous valid state instead of showing an error.
+enum LoadErrorPolicy {
+  /// Ignores errors during a refresh operation. The list retains its current items.
+  ignoreRefresh,
 
-  /// Reverts the loading state to allow for another attempt. The error is
-  /// reported via the `onLoadFinished` callback, allowing the UI to show a
-  /// "retry" button.
-  allowRetry,
+  /// Ignores errors when prepending items.
+  ignorePrepend,
+
+  /// Ignores errors when appending items.
+  ignoreAppend,
 }
 
 /// The core of the paging_view library, acting as the bridge between a data
@@ -29,20 +32,16 @@ enum ErrorRecovery {
 /// to `paging_view` widgets like `PagingList` or `PagingGrid`.
 abstract class DataSource<PageKey, Value> {
   /// Creates a [DataSource].
-  DataSource({
-    this.errorRecovery = ErrorRecovery.forceRefresh,
-    this.onLoadFinished,
-  });
+  /// Use [errorPolicy] to define which errors should be ignored visually.
+  DataSource({this.errorPolicy = const {}});
 
-  /// The strategy for recovering from `prepend` or `append` errors.
-  final ErrorRecovery errorRecovery;
+  /// Defines the error handling policy for load operations.
+  /// By default, all errors are shown in the UI.
+  final Set<LoadErrorPolicy> errorPolicy;
 
   /// A callback invoked after every `load` operation completes, providing the
   /// [LoadResult]. Useful for analytics or showing temporary error messages.
-  final void Function(
-    LoadAction<PageKey> action,
-    LoadResult<PageKey, Value> result,
-  )?
+  void Function(LoadAction<PageKey> action, LoadResult<PageKey, Value> result)?
   onLoadFinished;
 
   /// Loads a page of data based on the specified [LoadAction].
@@ -75,6 +74,7 @@ abstract class DataSource<PageKey, Value> {
   /// disposing of the underlying [ValueNotifier].
   @mustCallSuper
   void dispose() {
+    onLoadFinished = null;
     _manager.dispose();
   }
 
@@ -193,6 +193,18 @@ abstract class DataSource<PageKey, Value> {
     }
   }
 
+  /// Whether to skip showing errors during refresh operations.
+  bool get _skipRefreshWhenError =>
+      errorPolicy.contains(LoadErrorPolicy.ignoreRefresh);
+
+  /// Whether to skip showing errors during prepend operations.
+  bool get _skipPrependWhenError =>
+      errorPolicy.contains(LoadErrorPolicy.ignorePrepend);
+
+  /// Whether to skip showing errors during append operations.
+  bool get _skipAppendWhenError =>
+      errorPolicy.contains(LoadErrorPolicy.ignoreAppend);
+
   Future<void> _init() async {
     _manager.changeState(type: LoadType.init);
 
@@ -229,7 +241,11 @@ abstract class DataSource<PageKey, Value> {
         case Success(:final page):
           _manager.refresh(newPage: page);
         case Failure(:final error, :final stackTrace):
-          _manager.setError(error: error, stackTrace: stackTrace);
+          if (_skipRefreshWhenError) {
+            _manager.revertLoad();
+          } else {
+            _manager.setError(error: error, stackTrace: stackTrace);
+          }
         case None():
           _manager.refresh(newPage: null);
       }
@@ -238,7 +254,11 @@ abstract class DataSource<PageKey, Value> {
         const Refresh(),
         Failure(error: error, stackTrace: stackTrace),
       );
-      _manager.setError(error: error, stackTrace: stackTrace);
+      if (_skipRefreshWhenError) {
+        _manager.revertLoad();
+      } else {
+        _manager.setError(error: error, stackTrace: stackTrace);
+      }
     }
   }
 
@@ -260,11 +280,10 @@ abstract class DataSource<PageKey, Value> {
         case Success(:final page):
           _manager.prepend(newPage: page);
         case Failure(:final error, :final stackTrace):
-          switch (errorRecovery) {
-            case ErrorRecovery.forceRefresh:
-              _manager.setError(error: error, stackTrace: stackTrace);
-            case ErrorRecovery.allowRetry:
-              _manager.revertLoad();
+          if (_skipPrependWhenError) {
+            _manager.revertLoad();
+          } else {
+            _manager.setError(error: error, stackTrace: stackTrace);
           }
         case None():
           _manager.prepend(newPage: null);
@@ -274,11 +293,10 @@ abstract class DataSource<PageKey, Value> {
         Prepend(key: key),
         Failure(error: error, stackTrace: stackTrace),
       );
-      switch (errorRecovery) {
-        case ErrorRecovery.forceRefresh:
-          _manager.setError(error: error, stackTrace: stackTrace);
-        case ErrorRecovery.allowRetry:
-          _manager.revertLoad();
+      if (_skipPrependWhenError) {
+        _manager.revertLoad();
+      } else {
+        _manager.setError(error: error, stackTrace: stackTrace);
       }
     }
   }
@@ -301,11 +319,10 @@ abstract class DataSource<PageKey, Value> {
         case Success(:final page):
           _manager.append(newPage: page);
         case Failure(:final error, :final stackTrace):
-          switch (errorRecovery) {
-            case ErrorRecovery.forceRefresh:
-              _manager.setError(error: error, stackTrace: stackTrace);
-            case ErrorRecovery.allowRetry:
-              _manager.revertLoad();
+          if (_skipAppendWhenError) {
+            _manager.revertLoad();
+          } else {
+            _manager.setError(error: error, stackTrace: stackTrace);
           }
         case None():
           _manager.append(newPage: null);
@@ -315,11 +332,10 @@ abstract class DataSource<PageKey, Value> {
         Append(key: key),
         Failure(error: error, stackTrace: stackTrace),
       );
-      switch (errorRecovery) {
-        case ErrorRecovery.forceRefresh:
-          _manager.setError(error: error, stackTrace: stackTrace);
-        case ErrorRecovery.allowRetry:
-          _manager.revertLoad();
+      if (_skipAppendWhenError) {
+        _manager.revertLoad();
+      } else {
+        _manager.setError(error: error, stackTrace: stackTrace);
       }
     }
   }
