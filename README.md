@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/paging_view.svg)](https://pub.dev/packages/paging_view)
 [![GitHub license](https://img.shields.io/github/license/koji-1009/paging_view)](https://github.com/koji-1009/paging_view/blob/main/LICENSE)
 [![CI](https://github.com/koji-1009/paging_view/actions/workflows/analyze.yaml/badge.svg)](https://github.com/koji-1009/paging_view/actions/workflows/analyze.yaml)
+[![codecov](https://codecov.io/gh/koji-1009/paging_view/branch/main/graph/badge.svg)](https://codecov.io/gh/koji-1009/paging_view)
 
 **paging_view** is a robust Flutter library for managing and displaying paginated data. Inspired by Android Jetpack's Paging library, it adopts a **DataSource-driven architecture**, enabling a clear separation between your data loading logic and the UI.
 
