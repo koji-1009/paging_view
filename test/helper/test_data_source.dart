@@ -11,8 +11,6 @@ class TestDataSource extends DataSource<int, String> {
     this.refreshDelay = Duration.zero,
     this.prependDelay = Duration.zero,
     this.appendDelay = Duration.zero,
-    this.prependItemBuilder,
-    this.appendItemBuilder,
   });
 
   final List<String> initialItems;
@@ -24,8 +22,6 @@ class TestDataSource extends DataSource<int, String> {
   final Duration refreshDelay;
   final Duration prependDelay;
   final Duration appendDelay;
-  final List<String> Function(int key)? prependItemBuilder;
-  final List<String> Function(int key)? appendItemBuilder;
 
   @override
   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
@@ -60,7 +56,7 @@ class TestDataSource extends DataSource<int, String> {
     }
     return Success(
       page: PageData(
-        data: prependItemBuilder?.call(key) ?? ['Prepended Item $key'],
+        data: ['Prepended Item $key'],
         prependKey: key - 1 >= -maxPrependPages ? key - 1 : null,
       ),
     );
@@ -76,7 +72,7 @@ class TestDataSource extends DataSource<int, String> {
     }
     return Success(
       page: PageData(
-        data: appendItemBuilder?.call(key) ?? ['Appended Item $key'],
+        data: ['Appended Item $key'],
         appendKey: key + 1 <= maxAppendPages ? key + 1 : null,
       ),
     );
@@ -94,8 +90,6 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
     this.refreshDelay = Duration.zero,
     this.prependDelay = Duration.zero,
     this.appendDelay = Duration.zero,
-    this.prependItemBuilder,
-    this.appendItemBuilder,
   });
 
   final List<String> initialItems;
@@ -107,8 +101,6 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
   final Duration refreshDelay;
   final Duration prependDelay;
   final Duration appendDelay;
-  final List<String> Function(int key)? prependItemBuilder;
-  final List<String> Function(int key)? appendItemBuilder;
 
   @override
   Future<LoadResult<int, String>> load(LoadAction<int> action) async {
@@ -143,7 +135,7 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
     }
     return Success(
       page: PageData(
-        data: prependItemBuilder?.call(key) ?? ['Grouped Prepended Item $key'],
+        data: ['Grouped Prepended Item $key'],
         prependKey: key - 1 >= -maxPrependPages ? key - 1 : null,
       ),
     );
@@ -159,7 +151,7 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, String> {
     }
     return Success(
       page: PageData(
-        data: appendItemBuilder?.call(key) ?? ['Grouped Appended Item $key'],
+        data: ['Grouped Appended Item $key'],
         appendKey: key + 1 <= maxAppendPages ? key + 1 : null,
       ),
     );

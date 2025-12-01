@@ -439,11 +439,16 @@ void main() {
     test(
       'fetch with .ignoreRefresh keeps previous data on exception',
       () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
         final dataSource = TestDataSource(
           errorPolicy: {LoadErrorPolicy.ignoreRefresh},
         );
         await dataSource.refresh(); // Initial load
-
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
         dataSource.onLoad = (action) async {
           if (action is Refresh) {
             throw Exception('Refresh failed');
@@ -452,6 +457,11 @@ void main() {
         };
 
         await dataSource.refresh();
+
+        // Check that the callback was called with a Failure
+        expect(capturedResult, isA<Failure>());
+        expect((capturedResult as Failure).error, isA<Exception>());
+        expect(capturedAction, isA<Refresh>());
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
@@ -572,6 +582,7 @@ void main() {
         await dataSource.refresh();
         await dataSource.prepend();
 
+        // Check that the callback was called with a Failure
         expect(capturedResult, isA<Failure>());
         expect((capturedResult as Failure).error, isA<Exception>());
         expect(capturedAction, isA<Prepend>());
@@ -610,32 +621,126 @@ void main() {
       },
     );
 
-    test('default errorPolicy mode sets Warning state on failure', () async {
-      LoadResult<int, String>? capturedResult;
-      LoadAction<int>? capturedAction;
-      final dataSource = TestDataSource();
-      dataSource.onLoadFinished = (action, result) {
-        capturedAction = action;
-        capturedResult = result;
-      };
-      dataSource.onLoad = (action) async {
-        if (action is Append) {
-          throw Exception('Append failed');
-        }
-        return const Success(page: PageData(data: ['0'], appendKey: 1));
-      };
+    test(
+      'default errorPolicy mode sets Warning state on failure (init)',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource();
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
+        dataSource.onLoad = (action) async {
+          if (action is Refresh) {
+            throw Exception('Refresh failed');
+          }
+          return const Success(page: PageData(data: ['0']));
+        };
 
-      await dataSource.refresh();
-      await dataSource.append();
+        await dataSource.update(LoadType.init);
 
-      // Check that the state is Warning
-      final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, isA<Exception>());
-      expect(capturedResult, isA<Failure>());
-      expect(capturedAction, isA<Append>());
+        // Check that the state is Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Warning>());
+        expect((state as Warning).error, isA<Exception>());
+        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Refresh>());
 
-      dataSource.dispose();
-    });
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'default errorPolicy mode sets Warning state on failure (refresh)',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource();
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
+        dataSource.onLoad = (action) async {
+          if (action is Refresh) {
+            throw Exception('Refresh failed');
+          }
+          return const Success(page: PageData(data: ['0']));
+        };
+
+        await dataSource.update(LoadType.refresh);
+
+        // Check that the state is Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Warning>());
+        expect((state as Warning).error, isA<Exception>());
+        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Refresh>());
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'default errorPolicy mode sets Warning state on failure (append)',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource();
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
+        dataSource.onLoad = (action) async {
+          if (action is Append) {
+            throw Exception('Append failed');
+          }
+          return const Success(page: PageData(data: ['0'], appendKey: 1));
+        };
+
+        await dataSource.update(LoadType.refresh);
+        await dataSource.update(LoadType.append);
+
+        // Check that the state is Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Warning>());
+        expect((state as Warning).error, isA<Exception>());
+        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Append>());
+
+        dataSource.dispose();
+      },
+    );
+
+    test(
+      'default errorPolicy mode sets Warning state on failure (prepend)',
+      () async {
+        LoadResult<int, String>? capturedResult;
+        LoadAction<int>? capturedAction;
+        final dataSource = TestDataSource();
+        dataSource.onLoadFinished = (action, result) {
+          capturedAction = action;
+          capturedResult = result;
+        };
+        dataSource.onLoad = (action) async {
+          if (action is Prepend) {
+            throw Exception('Prepend failed');
+          }
+          return const Success(page: PageData(data: ['0'], prependKey: -1));
+        };
+
+        await dataSource.update(LoadType.refresh);
+        await dataSource.update(LoadType.prepend);
+
+        // Check that the state is Warning
+        final state = dataSource.notifier.value;
+        expect(state, isA<Warning>());
+        expect((state as Warning).error, isA<Exception>());
+        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Prepend>());
+
+        dataSource.dispose();
+      },
+    );
   });
 }

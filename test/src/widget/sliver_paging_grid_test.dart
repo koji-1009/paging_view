@@ -13,14 +13,12 @@ void main() {
       EdgeInsets padding = EdgeInsets.zero,
       bool autoLoadPrepend = true,
       bool autoLoadAppend = true,
-      bool reverse = false,
       ScrollController? controller,
     }) {
       return MaterialApp(
         home: Scaffold(
           body: CustomScrollView(
             controller: controller,
-            reverse: reverse,
             slivers: [
               SliverPagingGrid<int, String>(
                 dataSource: dataSource,
@@ -46,22 +44,6 @@ void main() {
         ),
       );
     }
-
-    testWidgets('renders items in reverse when reverse is true', (
-      tester,
-    ) async {
-      final dataSource = TestDataSource(maxAppendPages: 0, maxPrependPages: 0);
-      addTearDown(dataSource.dispose);
-
-      await tester.pumpWidget(
-        createSliverPagingGrid(dataSource: dataSource, reverse: true),
-      );
-      await tester.pumpAndSettle();
-
-      final item1Pos = tester.getTopLeft(find.text('Item 1'));
-      final item2Pos = tester.getTopLeft(find.text('Item 3'));
-      expect(item1Pos.dy, greaterThan(item2Pos.dy));
-    });
 
     testWidgets('displays initial loading, then items', (tester) async {
       final dataSource = TestDataSource(
