@@ -37,7 +37,7 @@ abstract class DataSource<PageKey, Value> {
 
   /// Defines the error handling policy for load operations.
   /// By default, all errors are shown in the UI.
-  final Set<LoadErrorPolicy> errorPolicy;
+  Set<LoadErrorPolicy> errorPolicy;
 
   /// A callback invoked after every `load` operation completes, providing the
   /// [LoadResult]. Useful for analytics or showing temporary error messages.

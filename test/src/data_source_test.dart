@@ -743,4 +743,144 @@ void main() {
       },
     );
   });
+
+  group('Runtime errorPolicy Mutation', () {
+    test('add ignoreRefresh prevents Warning on subsequent failure', () async {
+      final dataSource = TestDataSource();
+      // Initial successful load
+      await dataSource.refresh();
+      expect(dataSource.notifier.values, isNotEmpty);
+
+      // Fail refresh without policy -> Warning
+      dataSource.onLoad = (action) async {
+        if (action is Refresh) {
+          return Failure(error: Exception('Refresh failed'));
+        }
+        return const Success(page: PageData(data: ['X'], appendKey: 1));
+      };
+      await dataSource.refresh();
+      expect(dataSource.notifier.value, isA<Warning>());
+
+      // Recover with a successful refresh so we have a loaded state again
+      dataSource.onLoad = (action) async => const Success(
+        page: PageData(data: ['0', '1'], prependKey: -1, appendKey: 1),
+      );
+      await dataSource.refresh();
+      final loadedState = dataSource.notifier.value;
+      expect(loadedState, isA<Paging>());
+      expect((loadedState as Paging).state, isA<LoadStateLoaded>());
+
+      // Mutate errorPolicy at runtime to ignore refresh failures
+      dataSource.errorPolicy = {LoadErrorPolicy.ignoreRefresh};
+      // Cause a refresh failure again
+      dataSource.onLoad = (action) async {
+        if (action is Refresh) {
+          return Failure(error: Exception('Refresh failed again'));
+        }
+        return const Success(page: PageData(data: ['unused']));
+      };
+      await dataSource.refresh();
+
+      // Should remain loaded with previous data, not Warning
+      final stateAfterFailure = dataSource.notifier.value;
+      expect(stateAfterFailure, isA<Paging>());
+      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(dataSource.notifier.values, ['0', '1']);
+      dataSource.dispose();
+    });
+
+    test('toggle ignoreAppend affects failure handling', () async {
+      final dataSource = TestDataSource();
+      // Initial load
+      dataSource.onLoad = (action) async =>
+          const Success(page: PageData(data: ['0'], appendKey: 1));
+      await dataSource.refresh();
+
+      // Failure without ignoreAppend -> Warning
+      dataSource.onLoad = (action) async {
+        if (action is Append) {
+          return Failure(error: Exception('Append failed'));
+        }
+        return const Success(page: PageData(data: ['0'], appendKey: 1));
+      };
+      await dataSource.append();
+      expect(dataSource.notifier.value, isA<Warning>());
+
+      // Recover to loaded state
+      dataSource.onLoad = (action) async =>
+          const Success(page: PageData(data: ['0', 'a1'], appendKey: 2));
+      await dataSource.refresh();
+      expect(dataSource.notifier.values, ['0', 'a1']);
+
+      // Enable ignoreAppend
+      dataSource.errorPolicy = {LoadErrorPolicy.ignoreAppend};
+      // Trigger append failure again
+      dataSource.onLoad = (action) async {
+        if (action is Append) {
+          return Failure(error: Exception('Append failed again'));
+        }
+        return const Success(page: PageData(data: ['dummy'], appendKey: 3));
+      };
+      await dataSource.append();
+
+      // Should stay loaded with previous values
+      final stateAfterFailure = dataSource.notifier.value;
+      expect(stateAfterFailure, isA<Paging>());
+      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(dataSource.notifier.values, ['0', 'a1']);
+
+      // Disable ignoreAppend and fail again -> Warning
+      dataSource.errorPolicy = {};
+      await dataSource.append();
+      expect(dataSource.notifier.value, isA<Warning>());
+      dataSource.dispose();
+    });
+
+    test('toggle ignorePrepend affects failure handling', () async {
+      final dataSource = TestDataSource();
+      // Initial load
+      dataSource.onLoad = (action) async =>
+          const Success(page: PageData(data: ['0'], prependKey: -1));
+      await dataSource.refresh();
+
+      // Failure without ignorePrepend -> Warning
+      dataSource.onLoad = (action) async {
+        if (action is Prepend) {
+          return Failure(error: Exception('Prepend failed'));
+        }
+        return const Success(page: PageData(data: ['0'], prependKey: -1));
+      };
+      await dataSource.prepend();
+      expect(dataSource.notifier.value, isA<Warning>());
+
+      // Recover to loaded state
+      dataSource.onLoad = (action) async =>
+          const Success(page: PageData(data: ['p-1', '0'], prependKey: -2));
+      await dataSource.refresh();
+      expect(dataSource.notifier.values, ['p-1', '0']);
+
+      // Enable ignorePrepend
+      dataSource.errorPolicy = {LoadErrorPolicy.ignorePrepend};
+      // Trigger prepend failure again
+      dataSource.onLoad = (action) async {
+        if (action is Prepend) {
+          return Failure(error: Exception('Prepend failed again'));
+        }
+        return const Success(page: PageData(data: ['dummy'], prependKey: -2));
+      };
+      await dataSource.prepend();
+
+      // Should stay loaded with previous values
+      final stateAfterFailure = dataSource.notifier.value;
+      expect(stateAfterFailure, isA<Paging>());
+      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(dataSource.notifier.values, ['p-1', '0']);
+
+      // Disable ignorePrepend and fail again -> Warning
+      dataSource.errorPolicy = {};
+      await dataSource.prepend();
+      expect(dataSource.notifier.value, isA<Warning>());
+      dataSource.dispose();
+    });
+  });
 }
