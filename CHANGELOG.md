@@ -1,3 +1,8 @@
+## 2.5.1
+
+* Improve code coverage.
+* Update README.
+
 ## 2.5.0
 
 * Add `PrependLoadStateBuilder` and `AppendLoadStateBuilder`.
