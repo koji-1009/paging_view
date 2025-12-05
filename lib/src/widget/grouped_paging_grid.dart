@@ -37,8 +37,6 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
     this.primary,
     this.physics,
     this.scrollBehavior,
-    this.center,
-    this.anchor = 0.0,
     this.shrinkWrap = false,
     this.cacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -153,16 +151,6 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   /// See [GridView.shrinkWrap].
   final bool shrinkWrap;
 
-  /// The key of the sliver that should be centered in the viewport.
-  ///
-  /// See [CustomScrollView.center].
-  final Key? center;
-
-  /// The relative position of the center sliver.
-  ///
-  /// See [ScrollView.anchor].
-  final double anchor;
-
   /// The cache extent of the scroll view.
   ///
   /// See [ScrollView.cacheExtent].
@@ -194,8 +182,6 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
       primary: primary,
       physics: physics,
       scrollBehavior: scrollBehavior,
-      center: center,
-      anchor: anchor,
       shrinkWrap: shrinkWrap,
       cacheExtent: cacheExtent,
       dragStartBehavior: dragStartBehavior,
