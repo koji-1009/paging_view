@@ -1,3 +1,7 @@
+## 2.5.2
+
+* Remove `center` and `anchor` parameters from Widgets.
+
 ## 2.5.1
 
 * Improve code coverage.
