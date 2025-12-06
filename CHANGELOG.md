@@ -1,3 +1,8 @@
+## 2.6.0
+
+* Add `CenterPagingList` to support prepend and append with center items.
+* Fix performance in `SliverPagingList` and `SliverPagingGrid`.
+
 ## 2.5.2
 
 * Remove `center` and `anchor` parameters from Widgets.
