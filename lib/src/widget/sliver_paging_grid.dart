@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/entity.dart';
@@ -163,7 +162,7 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    final items = [...pages.map((e) => e.data).flattened];
+    final items = dataSource.notifier.values;
     if (state.isLoaded && items.isEmpty) {
       if (fillEmptyWidget) {
         return SliverPadding(
