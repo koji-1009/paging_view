@@ -185,11 +185,11 @@ abstract class DataSource<PageKey, Value> {
       onLoadFinished?.call(const Refresh(), result);
       switch (result) {
         case Success(:final page):
-          _manager.append(newPage: page);
+          _manager.refresh(newPage: page);
         case Failure(:final error, :final stackTrace):
           _manager.setError(error: error, stackTrace: stackTrace);
         case None():
-          _manager.append(newPage: null);
+          _manager.refresh(newPage: null);
       }
     } catch (error, stackTrace) {
       onLoadFinished?.call(
