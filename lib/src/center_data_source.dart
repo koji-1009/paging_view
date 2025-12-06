@@ -1,23 +1,23 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/entity.dart';
+import 'package:paging_view/src/private/center_page_manager.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:paging_view/src/private/page_manager.dart';
 
-/// The core of the paging_view library, acting as the bridge between a data
-/// source (like a network API or local database) and the UI.
+/// A [DataSource] specifically designed for [CenterPagingList].
 ///
-/// [DataSource] is an abstract class responsible for fetching paginated data,
-/// managing pagination state (keys, loading status), and notifying UI widgets
-/// of changes.
+/// Unlike the standard [DataSource], this manages three separate segments
+/// of data: Prepend, Center, and Append. This allows for seamless bi-directional
+/// scrolling using [CustomScrollView]'s `center` key feature.
 ///
-/// To use it, you must extend this class and implement the [load] method,
-/// which contains your specific data-fetching logic. The [DataSource] then
-/// handles the state of your data (loading, success, error) and provides it
-/// to `paging_view` widgets like `PagingList` or `PagingGrid`.
-abstract class DataSource<PageKey, Value> {
-  /// Creates a [DataSource].
+/// The Center segment is the initial anchor point of the list, and:
+/// - Prepend segment items appear above the Center (in reverse scroll direction)
+/// - Append segment items appear below the Center
+abstract class CenterDataSource<PageKey, Value> {
+  /// Creates a [CenterDataSource].
   /// Use [errorPolicy] to define which errors should be ignored visually.
-  DataSource({this.errorPolicy = const {}});
+  CenterDataSource({this.errorPolicy = const {}});
 
   /// Defines the error handling policy for load operations.
   /// By default, all errors are shown in the UI.
@@ -28,34 +28,32 @@ abstract class DataSource<PageKey, Value> {
   void Function(LoadAction<PageKey> action, LoadResult<PageKey, Value> result)?
   onLoadFinished;
 
+  /// The key used to anchor the [CustomScrollView] at the Center segment.
+  ///
+  /// This key is assigned to the Center sliver, making it the origin point
+  /// of the scroll view. Slivers before the center will be laid out in
+  /// reverse order (growing upward).
+  final GlobalKey centerKey = GlobalKey();
+
   /// Loads a page of data based on the specified [LoadAction].
   ///
-  /// This is the central method of the `DataSource` and **must be implemented**
-  /// by your subclass. Your implementation should:
+  /// Your implementation should:
+  /// 1. Determine the type of load action (`Refresh`, `Prepend`, `Append`).
+  /// 2. Fetch data from your source (e.g., make an API call).
+  /// 3. Return a [LoadResult] to represent the outcome.
   ///
-  /// 1.  Determine the type of load action (`Refresh`, `Prepend`, `Append`).
-  /// 2.  Fetch data from your source (e.g., make an API call).
-  /// 3.  Return a [LoadResult] to represent the outcome:
-  ///     - [Success]: If data was fetched successfully, containing a [PageData].
-  ///     - [Failure]: If an error occurred.
-  ///     - [None]: If the load was skipped or no data was returned (e.g., end of list).
+  /// For `Refresh`, the returned data becomes the Center segment.
+  /// For `Prepend`, the data is added to the Prepend segment.
+  /// For `Append`, the data is added to the Append segment.
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> action);
 
-  final _manager = PageManager<PageKey, Value>();
+  final _manager = CenterPageManager<PageKey, Value>();
 
   /// The underlying state manager for the data source.
-  ///
-  /// This `ChangeNotifier` holds the current list of items, pagination state,
-  /// and loading status. It is primarily used internally by `paging_view`
-  /// widgets to listen for updates and rebuild the UI.
-  PageManager<PageKey, Value> get notifier => _manager;
+  CenterPageManager<PageKey, Value> get notifier => _manager;
 
-  /// Releases the resources used by this [DataSource].
-  ///
-  /// This should be called when the `DataSource` is no longer needed (e.g., in
-  /// a `StatefulWidget`'s `dispose` method) to prevent memory leaks by
-  /// disposing of the underlying [ValueNotifier].
+  /// Releases the resources used by this [CenterDataSource].
   @mustCallSuper
   void dispose() {
     onLoadFinished = null;
@@ -72,85 +70,24 @@ abstract class DataSource<PageKey, Value> {
     _manager.removeListener(listener);
   }
 
-  /// Updates a single item in the list at the specified [index].
+  /// Triggers a full refresh of the data, discarding all segments.
   ///
-  /// The [update] function receives the current item and should return the new,
-  /// updated item. This method notifies listeners and is useful for localized
-  /// state changes (e.g., toggling a "favorite" status) without a full refresh.
-  ///
-  /// If the [index] is out of range, an error will be set in the `PageManager`.
-  void updateItem(int index, Value Function(Value item) update) {
-    _manager.updateItem(index, update);
-  }
-
-  /// Updates all items currently in the list and notifies listeners.
-  ///
-  /// The [update] function is called for each item, providing its `index` and
-  /// current `item`, and should return the new item.
-  ///
-  /// If the update function throws an error, it will be caught and set in the
-  /// `PageManager`.
-  void updateItems(Value Function(int index, Value item) update) {
-    _manager.updateItems(update);
-  }
-
-  /// Removes a single item at the specified [index] and notifies listeners.
-  ///
-  /// If the [index] is out of range, an error will be set in the `PageManager`.
-  void removeItem(int index) {
-    _manager.removeItem(index);
-  }
-
-  /// Removes all items that satisfy the given [test] and notifies listeners.
-  ///
-  /// The [test] function receives the `index` and `item` of each element and
-  /// should return `true` if the item should be removed. This is similar to
-  /// [List.removeWhere].
-  ///
-  /// If the test function throws an error, it will be caught and set in the
-  /// `PageManager`.
-  void removeItems(bool Function(int index, Value item) test) {
-    _manager.removeItems(test);
-  }
-
-  /// Inserts an [item] at the specified [index] and notifies listeners.
-  ///
-  /// If the [index] is out of range, an error will be set in the `PageManager`.
-  void insertItem(int index, Value item) {
-    _manager.insertItem(index, item);
-  }
-
-  /// Triggers a full refresh of the data, discarding the existing items.
-  ///
-  /// This calls the [load] method with a [Refresh] action. If a load is already
-  /// in progress, this method does nothing.
+  /// The result becomes the new Center segment.
   Future<void> refresh() async {
     await _refresh();
   }
 
   /// Triggers a prepend operation to load data before the current items.
-  ///
-  /// This calls the [load] method with a [Prepend] action, using the current
-  /// `prependPageKey`. If the key is `null` or a load is in progress, this
-  /// method does nothing.
   Future<void> prepend() async {
     await _prepend();
   }
 
   /// Triggers an append operation to load data after the current items.
-  ///
-  /// This calls the [load] method with an [Append] action, using the current
-  /// `appendPageKey`. If the key is `null` or a load is in progress, this
-  /// method does nothing.
   Future<void> append() async {
     await _append();
   }
 
-  /// Called by `paging_view` widgets to trigger a data load.
-  ///
-  /// This method is intended for internal use by the library. You should
-  /// typically call [refresh] directly or rely on UI widgets to trigger
-  /// `prepend` and `append` actions automatically.
+  /// Called internally to trigger a data load.
   @internal
   Future<void> update(LoadType type) async {
     switch (type) {
@@ -185,11 +122,11 @@ abstract class DataSource<PageKey, Value> {
       onLoadFinished?.call(const Refresh(), result);
       switch (result) {
         case Success(:final page):
-          _manager.append(newPage: page);
+          _manager.setCenter(newPage: page);
         case Failure(:final error, :final stackTrace):
           _manager.setError(error: error, stackTrace: stackTrace);
         case None():
-          _manager.append(newPage: null);
+          _manager.setCenter(newPage: null);
       }
     } catch (error, stackTrace) {
       onLoadFinished?.call(

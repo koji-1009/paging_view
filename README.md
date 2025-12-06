@@ -476,6 +476,121 @@ class _RetryableLoadDemoState extends State<RetryableLoadDemo> {
 }
 ```
 
+## CenterPagingList: Bidirectional Pagination with Center Anchor
+
+`CenterPagingList` provides advanced bidirectional pagination using `CustomScrollView`'s center key mechanism. This widget is ideal for scenarios where you need to load data in both directions while maintaining a stable scroll anchor point.
+
+### Key Concepts
+
+Unlike the standard `DataSource` which manages a single list of pages, `CenterDataSource` manages three separate segments:
+
+- **Prepend Pages**: Pages loaded via `prepend()` (displayed above the center)
+- **Center Pages**: The initial page(s) loaded via `refresh()` (the anchor point)
+- **Append Pages**: Pages loaded via `append()` (displayed below the center)
+
+The center segment uses a `GlobalKey` to mark its position in the `CustomScrollView`. When new prepend pages are loaded, existing prepend content moves to the center segment, ensuring the scroll position remains stable.
+
+### When to Use CenterPagingList
+
+- **Chat applications**: Load older messages (prepend) and newer messages (append) around the current view
+- **Timeline feeds**: Browse content in both directions with stable scroll position
+- **Infinite scrolling with history**: Load past and future data dynamically
+
+**Example: Implementing a CenterPagingList**
+
+```dart
+class CenterPagingListDemo extends StatefulWidget {
+  const CenterPagingListDemo({super.key});
+
+  @override
+  State<CenterPagingListDemo> createState() => _CenterPagingListDemoState();
+}
+
+class _CenterPagingListDemoState extends State<CenterPagingListDemo> {
+  late final MyCenterDataSource _dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = MyCenterDataSource();
+  }
+
+  @override
+  void dispose() {
+    _dataSource.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CenterPagingList(
+      dataSource: _dataSource,
+      initialLoadingWidget: const Center(
+        child: CircularProgressIndicator.adaptive(),
+      ),
+      errorBuilder: (context, error, stackTrace) => Center(
+        child: Text('Error: $error'),
+      ),
+      emptyWidget: const Center(child: Text('No items')),
+      builder: (context, item, index) => ListTile(
+        title: Text(item),
+      ),
+      prependLoadStateBuilder: (context, hasMore, isLoading) {
+        if (isLoading) {
+          return SizedBox(
+            height: 64,
+            child: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+          );
+        }
+        if (!hasMore) {
+          return SizedBox(
+            height: 64,
+            child: Padding(
+              padding: const .all(16),
+              child: FilledButton(
+                onPressed: () => dataSource.prepend(),
+                child: const Text('Load Previous'),
+              ),
+            ),
+          );
+        }
+        return null;
+      },
+      appendLoadStateBuilder: (context, hasMore, isLoading) {
+        if (isLoading) {
+          return SizedBox(
+            height: 64,
+            child: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+          );
+        }
+        if (hasMore) {
+          return SizedBox(
+            height: 64,
+            child: Padding(
+              padding: const .all(16),
+              child: FilledButton(
+                onPressed: () => dataSource.append(),
+                child: const Text('Load More'),
+              ),
+            ),
+          );
+        }
+        return null;
+    );
+  }
+}
+```
+
 ## API Reference
 
 See the [API documentation](https://pub.dev/documentation/paging_view/latest/) for more details on all the available classes and widgets.
