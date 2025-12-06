@@ -1,3 +1,4 @@
+import 'package:example/model/data_source_center_repositories.dart';
 import 'package:example/model/data_source_grouped_repositories.dart';
 import 'package:example/model/data_source_list_repositories.dart';
 import 'package:example/model/demo_entity.dart';
@@ -23,7 +24,7 @@ class App extends StatelessWidget {
   }
 }
 
-enum DemoType { list, grid, groupedList, groupedGrid, manual }
+enum DemoType { list, grid, groupedList, manual, centeredList }
 
 class DemoPage extends StatefulWidget {
   const DemoPage({super.key});
@@ -43,8 +44,8 @@ class _DemoPageState extends State<DemoPage> {
         .list => const PagingListDemo(),
         .grid => const PagingGridDemo(),
         .groupedList => const GroupedPagingListDemo(),
-        .groupedGrid => const GroupedPagingGridDemo(),
         .manual => const ManualListDemo(),
+        .centeredList => const CenteredPagingListDemo(),
       },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected.index,
@@ -64,18 +65,18 @@ class _DemoPageState extends State<DemoPage> {
           ),
           NavigationDestination(
             icon: Icon(Icons.group),
-            label: 'Grouped List',
+            label: 'Grouped',
             tooltip: 'Grouped Paging List',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.group_work),
-            label: 'Grouped Grid',
-            tooltip: 'Grouped Paging Grid',
           ),
           NavigationDestination(
             icon: Icon(Icons.handshake),
             label: 'Manual',
             tooltip: 'Manual Paging List',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.center_focus_strong),
+            label: 'Centered',
+            tooltip: 'Centered Paging List',
           ),
         ],
       ),
@@ -223,66 +224,6 @@ class GroupedPagingListDemo extends ConsumerWidget {
   }
 }
 
-class GroupedPagingGridDemo extends ConsumerWidget {
-  const GroupedPagingGridDemo({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dataSource = ref.watch(groupedDataSourceProvider);
-
-    return RefreshIndicator(
-      onRefresh: () async => dataSource.refresh(),
-      child: GroupedPagingGrid(
-        dataSource: dataSource,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.5,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-        ),
-        headerBuilder: (context, element, index) => Padding(
-          padding: const .symmetric(vertical: 8),
-          child: Material(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            clipBehavior: .antiAlias,
-            borderRadius: .circular(8),
-            child: Center(
-              child: Text(
-                'category: $element, index: $index',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-          ),
-        ),
-        itemBuilder: (context, entity, globalIndex, localIndex) => Card(
-          child: ListTile(
-            title: Text(entity.word),
-            subtitle: Text(entity.description),
-          ),
-        ),
-        errorBuilder: (context, error, stackTrace) =>
-            Center(child: Text('$error')),
-        initialLoadingWidget: const Center(
-          child: Padding(
-            padding: .all(16),
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        ),
-        appendLoadingWidget: const Center(
-          child: Padding(
-            padding: .all(16),
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        ),
-        emptyWidget: const Center(child: Text('No Item')),
-        padding: const .all(16),
-        stickyHeader: true,
-        stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
-      ),
-    );
-  }
-}
-
 class ManualListDemo extends ConsumerWidget {
   const ManualListDemo({super.key});
 
@@ -345,6 +286,102 @@ class ManualListDemo extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CenteredPagingListDemo extends ConsumerWidget {
+  const CenteredPagingListDemo({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dataSource = ref.watch(centerDataSourceProvider);
+
+    return CenterPagingList(
+      dataSource: dataSource,
+      autoLoadPrepend: false,
+      autoLoadAppend: false,
+      builder: (context, entity, index) => Card(
+        child: ListTile(
+          leading: CircleAvatar(child: Text('$index')),
+          title: Text(entity.word),
+          subtitle: Text(entity.description),
+        ),
+      ),
+      errorBuilder: (context, error, stackTrace) =>
+          Center(child: Text('$error')),
+      initialLoadingWidget: const Center(
+        child: Padding(
+          padding: .all(16),
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      ),
+      emptyWidget: const Center(child: Text('No Item')),
+      prependLoadStateBuilder: (context, hasMore, isLoading) {
+        if (isLoading) {
+          return SizedBox(
+            height: 64,
+            child: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+          );
+        }
+        if (!hasMore) {
+          return SizedBox(
+            height: 64,
+            child: const Padding(
+              padding: .all(16),
+              child: Center(child: Text('--- Beginning of list ---')),
+            ),
+          );
+        }
+        return SizedBox(
+          height: 64,
+          child: Padding(
+            padding: const .all(16),
+            child: FilledButton(
+              onPressed: () => dataSource.prepend(),
+              child: const Text('Load Previous'),
+            ),
+          ),
+        );
+      },
+      appendLoadStateBuilder: (context, hasMore, isLoading) {
+        if (isLoading) {
+          return SizedBox(
+            height: 64,
+            child: const Center(
+              child: Padding(
+                padding: .all(16),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ),
+          );
+        }
+        if (!hasMore) {
+          return SizedBox(
+            height: 64,
+            child: const Padding(
+              padding: .all(16),
+              child: Center(child: Text('--- End of list ---')),
+            ),
+          );
+        }
+        return SizedBox(
+          height: 64,
+          child: Padding(
+            padding: const .all(16),
+            child: FilledButton(
+              onPressed: () => dataSource.append(),
+              child: const Text('Load More'),
+            ),
+          ),
+        );
+      },
+      padding: const .symmetric(horizontal: 16),
     );
   }
 }

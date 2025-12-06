@@ -145,3 +145,19 @@ class PageData<PageKey, Value> {
     appendKey,
   );
 }
+
+/// Defines the policy when a data load fails.
+///
+/// By default, an error triggers an error state in the `PageManager`.
+/// Adding these values allows you to ignore errors for specific actions,
+/// reverting to the previous valid state instead of showing an error.
+enum LoadErrorPolicy {
+  /// Ignores errors during a refresh operation. The list retains its current items.
+  ignoreRefresh,
+
+  /// Ignores errors when prepending items.
+  ignorePrepend,
+
+  /// Ignores errors when appending items.
+  ignoreAppend,
+}
