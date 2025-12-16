@@ -1,3 +1,7 @@
+## 2.6.1
+
+* Export `SliverBoundsDetector`.
+
 ## 2.6.0
 
 * Add `CenterPagingList` to support prepend and append with center items.
