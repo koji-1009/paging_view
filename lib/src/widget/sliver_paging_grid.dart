@@ -3,7 +3,7 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:paging_view/src/private/sliver_bounds_detector.dart';
+import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, 2D array of items (a grid).
 ///

@@ -12,6 +12,7 @@ export 'src/widget/grouped_paging_list.dart';
 export 'src/widget/load_state_builder.dart';
 export 'src/widget/paging_grid.dart';
 export 'src/widget/paging_list.dart';
+export 'src/widget/sliver_bounds_detector.dart';
 export 'src/widget/sliver_grouped_paging_grid.dart';
 export 'src/widget/sliver_grouped_paging_list.dart';
 export 'src/widget/sliver_paging_grid.dart';

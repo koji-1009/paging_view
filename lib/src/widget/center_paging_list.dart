@@ -4,7 +4,7 @@ import 'package:paging_view/src/center_data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/center_page_manager.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:paging_view/src/private/sliver_bounds_detector.dart';
+import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A widget that displays a paginated list with a center anchor point.
 ///

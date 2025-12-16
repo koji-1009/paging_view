@@ -4,7 +4,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:paging_view/src/private/sliver_bounds_detector.dart';
+import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, linear list of items, grouped by a parent value.
 ///

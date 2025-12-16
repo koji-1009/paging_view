@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:paging_view/src/private/sliver_bounds_detector.dart';
+import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 void main() {
   group('SliverBoundsDetector', () {
