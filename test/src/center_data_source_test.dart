@@ -1198,4 +1198,79 @@ void main() {
       expect(testDataSource.onLoadFinished, isNull);
     });
   });
+
+  group('onLoadStarted callback', () {
+    test('onLoadStarted should be called on successful refresh', () async {
+      var callCount = 0;
+      LoadAction<int>? capturedAction;
+      dataSource.onLoadStarted = (action) {
+        callCount++;
+        capturedAction = action;
+      };
+
+      await dataSource.refresh();
+
+      expect(callCount, 1);
+      expect(capturedAction, isA<Refresh>());
+    });
+
+    test('onLoadStarted should be called on refresh failure', () async {
+      dataSource.onLoad = (_) async => Failure(error: Exception('Failure'));
+
+      var callCount = 0;
+      LoadAction<int>? capturedAction;
+      dataSource.onLoadStarted = (action) {
+        callCount++;
+        capturedAction = action;
+      };
+
+      await dataSource.refresh();
+
+      expect(callCount, 1);
+      expect(capturedAction, isA<Refresh>());
+    });
+
+    test('onLoadStarted should be called on prepend', () async {
+      await dataSource.refresh();
+
+      var callCount = 0;
+      LoadAction<int>? capturedAction;
+      dataSource.onLoadStarted = (action) {
+        callCount++;
+        capturedAction = action;
+      };
+
+      await dataSource.prepend();
+
+      expect(callCount, 1);
+      expect(capturedAction, isA<Prepend>());
+      expect((capturedAction as Prepend).key, -1);
+    });
+
+    test('onLoadStarted should be called on append', () async {
+      await dataSource.refresh();
+
+      var callCount = 0;
+      LoadAction<int>? capturedAction;
+      dataSource.onLoadStarted = (action) {
+        callCount++;
+        capturedAction = action;
+      };
+
+      await dataSource.append();
+
+      expect(callCount, 1);
+      expect(capturedAction, isA<Append>());
+      expect((capturedAction as Append).key, 1);
+    });
+
+    test('onLoadStarted should be cleared on dispose', () {
+      final testDataSource = TestCenterDataSource();
+      var callCount = 0;
+      testDataSource.onLoadStarted = (_) => callCount++;
+      expect(testDataSource.onLoadStarted, isNotNull);
+      testDataSource.dispose();
+      expect(testDataSource.onLoadStarted, isNull);
+    });
+  });
 }
