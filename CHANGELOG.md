@@ -1,3 +1,7 @@
+## 2.6.2
+
+* Add `onLoadStarted` callback.
+
 ## 2.6.1
 
 * Export `SliverBoundsDetector`.
