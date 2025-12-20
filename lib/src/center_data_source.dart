@@ -23,6 +23,10 @@ abstract class CenterDataSource<PageKey, Value> {
   /// By default, all errors are shown in the UI.
   Set<LoadErrorPolicy> errorPolicy;
 
+  /// A callback that is invoked just before a `load` operation begins. It
+  /// provides the [LoadAction] that is about to be executed.
+  void Function(LoadAction<PageKey> action)? onLoadStarted;
+
   /// A callback invoked after every `load` operation completes, providing the
   /// [LoadResult]. Useful for analytics or showing temporary error messages.
   void Function(LoadAction<PageKey> action, LoadResult<PageKey, Value> result)?
@@ -56,6 +60,7 @@ abstract class CenterDataSource<PageKey, Value> {
   /// Releases the resources used by this [CenterDataSource].
   @mustCallSuper
   void dispose() {
+    onLoadStarted = null;
     onLoadFinished = null;
     _manager.dispose();
   }
@@ -116,6 +121,7 @@ abstract class CenterDataSource<PageKey, Value> {
 
   Future<void> _init() async {
     _manager.changeState(type: LoadType.init);
+    onLoadStarted?.call(const Refresh());
 
     try {
       final result = await load(const Refresh());
@@ -143,6 +149,7 @@ abstract class CenterDataSource<PageKey, Value> {
     }
 
     _manager.changeState(type: LoadType.refresh);
+    onLoadStarted?.call(const Refresh());
     try {
       final result = await load(const Refresh());
       onLoadFinished?.call(const Refresh(), result);
@@ -182,6 +189,7 @@ abstract class CenterDataSource<PageKey, Value> {
     }
 
     _manager.changeState(type: LoadType.prepend);
+    onLoadStarted?.call(Prepend(key: key));
     try {
       final result = await load(Prepend(key: key));
       onLoadFinished?.call(Prepend(key: key), result);
@@ -221,6 +229,7 @@ abstract class CenterDataSource<PageKey, Value> {
     }
 
     _manager.changeState(type: LoadType.append);
+    onLoadStarted?.call(Append(key: key));
     try {
       final result = await load(Append(key: key));
       onLoadFinished?.call(Append(key: key), result);
