@@ -30,12 +30,7 @@ https://koji-1009.github.io/paging_view/
 
 ### 1. Installation
 
-Add `paging_view` to your `pubspec.yaml` file:
-
-```yaml
-dependencies:
-  paging_view: ^2.4.0 # Use the latest version
-```
+`dart pub add paging_view` or `flutter pub add paging_view`.
 
 ### 2. Define a DataSource
 
