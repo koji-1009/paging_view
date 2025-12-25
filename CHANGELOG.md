@@ -1,3 +1,8 @@
+## 2.6.3
+
+* Update README.
+* Update pubspec.yaml.
+
 ## 2.6.2
 
 * Add `onLoadStarted` callback.
