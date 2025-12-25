@@ -69,8 +69,9 @@ class RenderSliverBoundsDetector extends RenderSliver {
 
     // `constraints.remainingCacheExtent` is the distance from the leading edge
     // of this sliver to the trailing edge of the cache area. If this value is
-    // positive, it means this sliver's leading edge is inside the cache area.
-    final hasReachedSliverStart = constraints.remainingCacheExtent > 0;
+    // positive (or zero), it means this sliver's leading edge is inside or
+    // touching the cache area.
+    final hasReachedSliverStart = constraints.remainingCacheExtent >= 0;
 
     // `constraints.scrollOffset` is the distance from the leading edge of the
     // viewport to the leading edge of this sliver. Since this sliver has a
