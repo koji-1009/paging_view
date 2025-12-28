@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
 
-/// A [ValueNotifier] that manages the [PageManagerState] of a paging view.
+/// A [ValueNotifier] that manages the `PageManagerState` of a paging view.
 ///
 /// This class handles the state for data loading, page management, and item
 /// manipulations (add, update, remove).
@@ -31,7 +31,7 @@ class PageManager<PageKey, Value>
     super.dispose();
   }
 
-  /// Transitions the manager to a loading state for the given [type].
+  /// Transitions the manager to a loading state for the given `LoadType`.
   void changeState({required LoadType type}) {
     if (_disposed) {
       return;
@@ -54,8 +54,8 @@ class PageManager<PageKey, Value>
 
   /// Reverts a loading state back to a loaded state without changing the data.
   ///
-  /// This is used in [ErrorRecovery.allowRetry] mode to allow another
-  /// attempt at loading after a failure.
+  /// This is used when an error policy is active to revert to the loaded state
+  /// instead of showing an error.
   void revertLoad() {
     if (_disposed) {
       return;
@@ -124,9 +124,9 @@ class PageManager<PageKey, Value>
 
   /// Updates a single item at the specified [index].
   ///
-  /// The [update] function provides the current item and should return the
+  /// The `update` function provides the current item and should return the
   /// updated item.
-  /// If [index] is out of bounds or an error occurs in [update], the manager
+  /// If [index] is out of bounds or an error occurs in `update`, the manager
   /// will transition to a [Warning] state.
   void updateItem(int index, Value Function(Value item) update) {
     if (_disposed) {
@@ -183,9 +183,9 @@ class PageManager<PageKey, Value>
 
   /// Updates all items currently in the list.
   ///
-  /// The [update] function provides the global index and the current item,
+  /// The `update` function provides the global index and the current item,
   /// and should return the updated item.
-  /// If an error occurs in [update], the manager transitions to a [Warning] state.
+  /// If an error occurs in `update`, the manager transitions to a [Warning] state.
   void updateItems(Value Function(int index, Value item) update) {
     if (_disposed) {
       return;

@@ -1,4 +1,15 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  language:
+    strict-raw-types: true
+
+linter:
+  rules:
+    avoid_equals_and_hash_code_on_mutable_classes: true
+    type_annotate_public_apis: true
+    comment_references: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true

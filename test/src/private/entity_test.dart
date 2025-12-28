@@ -79,12 +79,12 @@ void main() {
 
   group('PageManagerState', () {
     group('Paging', () {
-      final page1 = PageData<int, String>(
+      const page1 = PageData<int, String>(
         data: ['a', 'b'],
         prependKey: 0,
         appendKey: 2,
       );
-      final page2 = PageData<int, String>(
+      const page2 = PageData<int, String>(
         data: ['c', 'd'],
         prependKey: 1,
         appendKey: 3,
@@ -97,7 +97,7 @@ void main() {
       });
 
       test('should have correct toString() representation', () {
-        final paging = Paging(state: const LoadStateLoaded(), data: [page1]);
+        const paging = Paging(state: LoadStateLoaded(), data: [page1]);
         expect(
           paging.toString(),
           'Paging(state: $LoadStateLoaded(), data: [$page1])',
@@ -105,35 +105,29 @@ void main() {
       });
 
       test('should be equal if state and data are equal', () {
-        final paging1 = Paging(state: const LoadStateLoaded(), data: [page1]);
-        final paging2 = Paging(state: const LoadStateLoaded(), data: [page1]);
+        const paging1 = Paging(state: LoadStateLoaded(), data: [page1]);
+        const paging2 = Paging(state: LoadStateLoaded(), data: [page1]);
         expect(paging1, equals(paging2));
         expect(paging1.hashCode, equals(paging2.hashCode));
       });
 
       test('should not be equal if state is different', () {
-        final paging1 = Paging(state: const LoadStateLoaded(), data: [page1]);
-        final paging2 = Paging(state: const LoadStateInit(), data: [page1]);
+        const paging1 = Paging(state: LoadStateLoaded(), data: [page1]);
+        const paging2 = Paging(state: LoadStateInit(), data: [page1]);
         expect(paging1, isNot(equals(paging2)));
         expect(paging1.hashCode, isNot(equals(paging2.hashCode)));
       });
 
       test('should not be equal if data is different', () {
-        final paging1 = Paging(state: const LoadStateLoaded(), data: [page1]);
-        final paging2 = Paging(state: const LoadStateLoaded(), data: [page2]);
+        const paging1 = Paging(state: LoadStateLoaded(), data: [page1]);
+        const paging2 = Paging(state: LoadStateLoaded(), data: [page2]);
         expect(paging1, isNot(equals(paging2)));
         expect(paging1.hashCode, isNot(equals(paging2.hashCode)));
       });
 
       test('should not be equal if data order is different', () {
-        final paging1 = Paging(
-          state: const LoadStateLoaded(),
-          data: [page1, page2],
-        );
-        final paging2 = Paging(
-          state: const LoadStateLoaded(),
-          data: [page2, page1],
-        );
+        const paging1 = Paging(state: LoadStateLoaded(), data: [page1, page2]);
+        const paging2 = Paging(state: LoadStateLoaded(), data: [page2, page1]);
         expect(paging1, isNot(equals(paging2)));
         expect(paging1.hashCode, isNot(equals(paging2.hashCode)));
       });
@@ -191,12 +185,12 @@ void main() {
   });
 
   group('PagingStateExt', () {
-    final page1 = PageData<int, String>(
+    const page1 = PageData<int, String>(
       data: ['a', 'b'],
       prependKey: 0,
       appendKey: 2,
     );
-    final page2 = PageData<int, String>(
+    const page2 = PageData<int, String>(
       data: ['c', 'd'],
       prependKey: 1,
       appendKey: 3,
@@ -205,29 +199,29 @@ void main() {
 
     test('isLoading should be true for any loading state', () {
       expect(
-        Paging<int, String>(
-          state: const LoadStateLoading(state: LoadType.init),
+        const Paging<int, String>(
+          state: LoadStateLoading(state: LoadType.init),
           data: [],
         ).isLoading,
         isTrue,
       );
       expect(
-        Paging<int, String>(
-          state: const LoadStateLoading(state: LoadType.refresh),
+        const Paging<int, String>(
+          state: LoadStateLoading(state: LoadType.refresh),
           data: [],
         ).isLoading,
         isTrue,
       );
       expect(
-        Paging<int, String>(
-          state: const LoadStateLoading(state: LoadType.prepend),
+        const Paging<int, String>(
+          state: LoadStateLoading(state: LoadType.prepend),
           data: [],
         ).isLoading,
         isTrue,
       );
       expect(
-        Paging<int, String>(
-          state: const LoadStateLoading(state: LoadType.append),
+        const Paging<int, String>(
+          state: LoadStateLoading(state: LoadType.append),
           data: [],
         ).isLoading,
         isTrue,
@@ -236,11 +230,11 @@ void main() {
 
     test('isLoading should be false for non-loading states', () {
       expect(
-        Paging<int, String>(state: const LoadStateInit(), data: []).isLoading,
+        const Paging<int, String>(state: LoadStateInit(), data: []).isLoading,
         isFalse,
       );
       expect(
-        Paging<int, String>(state: const LoadStateLoaded(), data: []).isLoading,
+        const Paging<int, String>(state: LoadStateLoaded(), data: []).isLoading,
         isFalse,
       );
       expect(
@@ -250,8 +244,8 @@ void main() {
     });
 
     test('prependPageKey should return the prependKey of the first page', () {
-      final state = Paging<int, String>(
-        state: const LoadStateLoaded(),
+      const state = Paging<int, String>(
+        state: LoadStateLoaded(),
         data: [page1, page2],
       );
       expect(state.prependPageKey, 0);
@@ -263,8 +257,8 @@ void main() {
     });
 
     test('appendPageKey should return the appendKey of the last page', () {
-      final state = Paging<int, String>(
-        state: const LoadStateLoaded(),
+      const state = Paging<int, String>(
+        state: LoadStateLoaded(),
         data: [page1, page2],
       );
       expect(state.appendPageKey, 3);
@@ -276,8 +270,8 @@ void main() {
     });
 
     test('pages should return the list of pages for Paging state', () {
-      final state = Paging<int, String>(
-        state: const LoadStateLoaded(),
+      const state = Paging<int, String>(
+        state: LoadStateLoaded(),
         data: [page1, page2],
       );
       expect(state.pages, [page1, page2]);
@@ -289,8 +283,8 @@ void main() {
     });
 
     test('items should return a flattened list of all items in pages', () {
-      final state = Paging<int, String>(
-        state: const LoadStateLoaded(),
+      const state = Paging<int, String>(
+        state: LoadStateLoaded(),
         data: [page1, page2],
       );
       expect(state.items, ['a', 'b', 'c', 'd']);

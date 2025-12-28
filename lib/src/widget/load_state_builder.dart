@@ -5,9 +5,9 @@ import 'package:paging_view/src/private/entity.dart';
 /// A widget that builds a custom UI at the start of the list (prepend)
 /// based on the [DataSource]'s loading state.
 ///
-/// It provides [hasMore] and [isLoading] states to the builder, allowing you to:
-/// * Show a button only when [hasMore] is true.
-/// * Disable the button when [isLoading] is true.
+/// It provides `hasMore` and `isLoading` states to the builder, allowing you to:
+/// * Show a button only when `hasMore` is true.
+/// * Disable the button when `isLoading` is true.
 ///
 /// Example:
 /// ```dart
@@ -41,11 +41,11 @@ class PrependLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 
   /// A builder function that constructs the widget based on the current state.
   ///
-  /// - [context]: The build context.
-  /// - [hasMore]: True if a [PageKey] for prepending is available (not null).
+  /// - `context`: The build context.
+  /// - `hasMore`: True if a `PageKey` for prepending is available (not null).
   ///   Use this to decide whether to show the trigger button.
-  /// - [isLoading]: True if a prepend operation is currently in progress.
-  ///   Use this to disable the button interaction (visual loading is handled by [SliverPagingList]).
+  /// - `isLoading`: True if a prepend operation is currently in progress.
+  ///   Use this to disable the button interaction (visual loading is handled by `SliverPagingList`).
   final Widget Function(BuildContext context, bool hasMore, bool isLoading)
   builder;
 
@@ -68,9 +68,9 @@ class PrependLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 /// A widget that builds a custom UI at the end of the list (append)
 /// based on the [DataSource]'s loading state.
 ///
-/// It provides [hasMore] and [isLoading] states to the builder, allowing you to:
-/// * Show a button only when [hasMore] is true.
-/// * Disable the button when [isLoading] is true.
+/// It provides `hasMore` and `isLoading` states to the builder, allowing you to:
+/// * Show a button only when `hasMore` is true.
+/// * Disable the button when `isLoading` is true.
 ///
 /// Example:
 /// ```dart
@@ -106,11 +106,11 @@ class AppendLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 
   /// A builder function that constructs the widget based on the current state.
   ///
-  /// - [context]: The build context.
-  /// - [hasMore]: True if a [PageKey] for appending is available (not null).
+  /// - `context`: The build context.
+  /// - `hasMore`: True if a `PageKey` for appending is available (not null).
   ///   Use this to decide whether to show the trigger button.
-  /// - [isLoading]: True if an append operation is currently in progress.
-  ///   Use this to disable the button interaction (visual loading is handled by [SliverPagingList]).
+  /// - `isLoading`: True if an append operation is currently in progress.
+  ///   Use this to disable the button interaction (visual loading is handled by `SliverPagingList`).
   final Widget Function(BuildContext context, bool hasMore, bool isLoading)
   builder;
 

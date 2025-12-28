@@ -6,8 +6,8 @@ import 'package:paging_view/src/widget/sliver_grouped_paging_list.dart';
 
 /// A high-level widget that displays a scrollable, paginated list with grouped items.
 ///
-/// [GroupedPagingList] is a convenient wrapper around [SliverGroupedPagingList]
-/// that handles creating the [CustomScrollView] for you. It's the easiest way
+/// `GroupedPagingList` is a convenient wrapper around [SliverGroupedPagingList]
+/// that handles creating the `CustomScrollView` for you. It's the easiest way
 /// to display a list with sections and headers (e.g., a contact list grouped
 /// by the first letter of the name).
 ///
@@ -15,7 +15,7 @@ import 'package:paging_view/src/widget/sliver_grouped_paging_list.dart';
 ///
 /// For more complex layouts, such as those with a `SliverAppBar` or multiple
 /// slivers, consider using [SliverGroupedPagingList] directly inside a
-/// [CustomScrollView].
+/// `CustomScrollView`.
 class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// Creates a scrollable list with grouped items.
   const GroupedPagingList({

@@ -24,7 +24,7 @@ void main() {
             slivers: [
               SliverGroupedPagingGrid<int, String, String>(
                 dataSource: dataSource,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),
                 headerBuilder: (context, group, index) => Text(group),

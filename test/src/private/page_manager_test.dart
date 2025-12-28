@@ -187,14 +187,17 @@ void main() {
 
       test('updateItem() with invalid index throws and sets Warning', () {
         manager.updateItem(10, (_) => 'z');
-        expect(manager.value, isA<Warning>());
-        expect((manager.value as Warning).error, isA<RangeError>());
+        expect(manager.value, isA<Warning<int, String>>());
+        expect(
+          (manager.value as Warning<int, String>).error,
+          isA<RangeError>(),
+        );
       });
 
       test('updateItem() when not in Paging state does nothing', () {
         manager.setError(error: 'e', stackTrace: null);
         manager.updateItem(0, (_) => 'z');
-        expect(manager.value, isA<Warning>());
+        expect(manager.value, isA<Warning<int, String>>());
       });
 
       // --- updateItems ---
@@ -208,7 +211,7 @@ void main() {
           if (index == 3) throw 'Error';
           return item;
         });
-        expect(manager.value, isA<Warning>());
+        expect(manager.value, isA<Warning<int, String>>());
       });
 
       // --- removeItem ---
@@ -228,8 +231,11 @@ void main() {
 
       test('removeItem() with invalid index throws and sets Warning', () {
         manager.removeItem(-1);
-        expect(manager.value, isA<Warning>());
-        expect((manager.value as Warning).error, isA<RangeError>());
+        expect(manager.value, isA<Warning<int, String>>());
+        expect(
+          (manager.value as Warning<int, String>).error,
+          isA<RangeError>(),
+        );
       });
 
       // --- removeItems ---
@@ -252,7 +258,7 @@ void main() {
           if (item == 'd') throw 'Error';
           return false;
         });
-        expect(manager.value, isA<Warning>());
+        expect(manager.value, isA<Warning<int, String>>());
       });
 
       // --- insertItem ---
@@ -284,8 +290,11 @@ void main() {
 
       test('insertItem() with invalid index throws and sets Warning', () {
         manager.insertItem(10, 'z');
-        expect(manager.value, isA<Warning>());
-        expect((manager.value as Warning).error, isA<RangeError>());
+        expect(manager.value, isA<Warning<int, String>>());
+        expect(
+          (manager.value as Warning<int, String>).error,
+          isA<RangeError>(),
+        );
       });
     });
 
@@ -306,7 +315,10 @@ void main() {
         // Then it should be loaded and data preserved
         expect(manager.isLoading, isFalse);
         expect(manager.value, isA<Paging<int, String>>());
-        expect((manager.value as Paging).state, isA<LoadStateLoaded>());
+        expect(
+          (manager.value as Paging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(manager.values, ['a', 'b', 'c', 'd']);
       });
 
@@ -315,7 +327,10 @@ void main() {
         manager.revertLoad();
 
         expect(manager.value, isA<Paging<int, String>>());
-        expect((manager.value as Paging).state, isA<LoadStateInit>());
+        expect(
+          (manager.value as Paging<int, String>).state,
+          isA<LoadStateInit>(),
+        );
       });
 
       test('does nothing if not in a loading state (loaded)', () {
@@ -323,7 +338,10 @@ void main() {
         manager.revertLoad();
 
         expect(manager.value, isA<Paging<int, String>>());
-        expect((manager.value as Paging).state, isA<LoadStateLoaded>());
+        expect(
+          (manager.value as Paging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(manager.values, ['a', 'b', 'c', 'd']);
       });
 

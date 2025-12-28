@@ -6,13 +6,13 @@ import 'package:paging_view/src/widget/sliver_paging_grid.dart';
 
 /// A high-level widget that displays a scrollable, paginated grid of items.
 ///
-/// [PagingGrid] is a convenient wrapper around [SliverPagingGrid] that
-/// handles creating the [CustomScrollView] for you. It's the easiest way to
+/// `PagingGrid` is a convenient wrapper around [SliverPagingGrid] that
+/// handles creating the `CustomScrollView` for you. It's the easiest way to
 /// get started with displaying a paginated grid.
 ///
 /// For more complex layouts, such as those with a `SliverAppBar` or multiple
 /// slivers, consider using [SliverPagingGrid] directly inside a
-/// [CustomScrollView].
+/// `CustomScrollView`.
 class PagingGrid<PageKey, Value> extends StatelessWidget {
   /// Creates a scrollable, 2D array of widgets that are created on demand.
   const PagingGrid({

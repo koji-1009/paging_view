@@ -8,7 +8,7 @@ import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A widget that displays a paginated list with a center anchor point.
 ///
-/// Unlike [PagingList], this widget uses [CustomScrollView]'s `center` key
+/// Unlike `PagingList`, this widget uses `CustomScrollView`'s `center` key
 /// feature to anchor the initial content at a specific position. This allows
 /// for seamless bi-directional infinite scrolling:
 ///
@@ -90,15 +90,15 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
 
   /// A builder for the prepend loading state widget.
   ///
-  /// - [hasMore]: True if there are more items to prepend.
-  /// - [isLoading]: True if a prepend operation is in progress.
+  /// - `hasMore`: True if there are more items to prepend.
+  /// - `isLoading`: True if a prepend operation is in progress.
   final Widget Function(BuildContext context, bool hasMore, bool isLoading)
   prependLoadStateBuilder;
 
   /// A builder for the append loading state widget.
   ///
-  /// - [hasMore]: True if there are more items to append.
-  /// - [isLoading]: True if an append operation is in progress.
+  /// - `hasMore`: True if there are more items to append.
+  /// - `isLoading`: True if an append operation is in progress.
   final Widget Function(BuildContext context, bool hasMore, bool isLoading)
   appendLoadStateBuilder;
 
@@ -355,8 +355,6 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    // Calculate global index offset for items
-    final prependOffset = 0;
     final centerOffset = prependItems.length;
     final appendOffset = prependItems.length + centerItems.length;
 
@@ -407,7 +405,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
                 ? SliverList.separated(
                     itemBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return builder(
                         context,
                         prependItems[reversedIndex],
@@ -417,14 +415,14 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
                     itemCount: prependItems.length,
                     separatorBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index - 1;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return separatorBuilder!(context, globalIndex);
                     },
                   )
                 : SliverList.builder(
                     itemBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return builder(
                         context,
                         prependItems[reversedIndex],

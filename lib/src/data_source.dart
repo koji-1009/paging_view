@@ -79,7 +79,7 @@ abstract class DataSource<PageKey, Value> {
 
   /// Updates a single item in the list at the specified [index].
   ///
-  /// The [update] function receives the current item and should return the new,
+  /// The `update` function receives the current item and should return the new,
   /// updated item. This method notifies listeners and is useful for localized
   /// state changes (e.g., toggling a "favorite" status) without a full refresh.
   ///
@@ -90,7 +90,7 @@ abstract class DataSource<PageKey, Value> {
 
   /// Updates all items currently in the list and notifies listeners.
   ///
-  /// The [update] function is called for each item, providing its `index` and
+  /// The `update` function is called for each item, providing its `index` and
   /// current `item`, and should return the new item.
   ///
   /// If the update function throws an error, it will be caught and set in the

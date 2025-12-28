@@ -13,7 +13,7 @@ import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 /// initial loading indicators, prepend/append loading indicators, empty states,
 /// and error messages. Group headers can be made sticky.
 ///
-/// For a non-sliver version that wraps this in a [CustomScrollView], see [GroupedPagingList].
+/// For a non-sliver version that wraps this in a `CustomScrollView`, see `GroupedPagingList`.
 class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// Creates a sliver with grouped items.
   const SliverGroupedPagingList({

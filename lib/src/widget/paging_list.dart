@@ -6,13 +6,13 @@ import 'package:paging_view/src/widget/sliver_paging_list.dart';
 
 /// A high-level widget that displays a scrollable, paginated list of items.
 ///
-/// [PagingList] is a convenient wrapper around [SliverPagingList] that
-/// handles creating the [CustomScrollView] for you. It's the easiest way to
+/// `PagingList` is a convenient wrapper around `SliverPagingList` that
+/// handles creating the `CustomScrollView` for you. It's the easiest way to
 /// get started with displaying a simple, paginated list.
 ///
 /// For more complex layouts, such as those with a `SliverAppBar` or multiple
-/// slivers, consider using [SliverPagingList] directly inside a
-/// [CustomScrollView].
+/// slivers, consider using `SliverPagingList` directly inside a
+/// `CustomScrollView`.
 class PagingList<PageKey, Value> extends StatelessWidget {
   /// Creates a scrollable, linear array of widgets that are created on demand.
   const PagingList({

@@ -11,6 +11,7 @@ sealed class CenterPageManagerState<PageKey, Value> {
 }
 
 /// A state representing successfully loaded pages of data for center paging.
+@immutable
 class CenterPaging<PageKey, Value>
     extends CenterPageManagerState<PageKey, Value> {
   /// Creates a [CenterPaging] state.
@@ -76,6 +77,7 @@ class CenterPaging<PageKey, Value>
 }
 
 /// A state representing an error that occurred during data processing.
+@immutable
 class CenterWarning<PageKey, Value>
     extends CenterPageManagerState<PageKey, Value> {
   /// Creates a [CenterWarning] state.
@@ -209,8 +211,8 @@ class CenterPageManager<PageKey, Value>
 
   /// Transitions the manager to a loading state for the given [type].
   ///
-  /// For [LoadType.prepend], this also moves any existing [prependPages] to
-  /// the beginning of [centerPages]. This leverages [CustomScrollView]'s
+  /// For `LoadType.prepend`, this also moves any existing `prependPages` to
+  /// the beginning of `centerPages`. This leverages `CustomScrollView`'s
   /// center key behavior: by clearing prependPages at the start of loading,
   /// the centerKey sliver becomes the topmost content, and when the new
   /// prepend data arrives, it will appear above without causing scroll jumps.
@@ -331,8 +333,8 @@ class CenterPageManager<PageKey, Value>
   /// Adds a [newPage] to the prepend segment.
   ///
   /// This method is called after the prepend request completes. The existing
-  /// [prependPages] were already moved to [centerPages] when [changeState]
-  /// was called with [LoadType.prepend].
+  /// `prependPages` were already moved to `centerPages` when `changeState`
+  /// was called with `LoadType.prepend`.
   ///
   /// If [newPage] is null, the state remains unchanged but loading ends.
   void prepend({required PageData<PageKey, Value>? newPage}) {
@@ -365,7 +367,7 @@ class CenterPageManager<PageKey, Value>
 
   /// Adds a [newPage] to the append segment.
   ///
-  /// Appended pages are simply added to the end of [appendPages].
+  /// Appended pages are simply added to the end of `appendPages`.
   /// If [newPage] is null, the state remains unchanged but loading ends.
   void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
