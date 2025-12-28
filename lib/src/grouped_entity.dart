@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 /// Represents a single group in a sectioned list, composed of a parent
 /// and its associated child items.
@@ -7,6 +8,7 @@ import 'package:collection/collection.dart';
 /// and a list of its `children` (the items within that group), where each child
 /// is wrapped in a [ValueWithIndex] to preserve its original index from the
 /// flat list.
+@immutable
 class GroupedPageData<Parent, Value> {
   /// Creates a [GroupedPageData] instance.
   const GroupedPageData({required this.parent, required this.children});
@@ -39,6 +41,7 @@ class GroupedPageData<Parent, Value> {
 /// This is useful in grouped lists to maintain a reference to the item's
 /// position in the complete, ungrouped dataset, enabling operations like
 /// updating or removing the item from the original source.
+@immutable
 class ValueWithIndex<Value> {
   /// Creates a [ValueWithIndex] instance.
   const ValueWithIndex({required this.value, required this.index});

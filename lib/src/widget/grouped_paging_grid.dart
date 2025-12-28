@@ -6,15 +6,15 @@ import 'package:paging_view/src/widget/sliver_grouped_paging_grid.dart';
 
 /// A high-level widget that displays a scrollable, paginated grid with grouped items.
 ///
-/// [GroupedPagingGrid] is a convenient wrapper around [SliverGroupedPagingGrid]
-/// that handles creating the [CustomScrollView] for you. It's the easiest way
+/// `GroupedPagingGrid` is a convenient wrapper around [SliverGroupedPagingGrid]
+/// that handles creating the `CustomScrollView` for you. It's the easiest way
 /// to display a grid with sections and headers.
 ///
 /// It requires a [GroupedDataSource] to provide the data and grouping logic.
 ///
 /// For more complex layouts, such as those with a `SliverAppBar` or multiple
 /// slivers, consider using [SliverGroupedPagingGrid] directly inside a
-/// [CustomScrollView].
+/// `CustomScrollView`.
 class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   /// Creates a scrollable, 2D array of widgets that are created on demand.
   const GroupedPagingGrid({

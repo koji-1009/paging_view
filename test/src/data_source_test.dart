@@ -53,16 +53,16 @@ void main() {
   group('DataSource Initialization and State', () {
     test('should start with LoadStateInit', () {
       final state = dataSource.notifier.value;
-      expect(state, isA<Paging>());
-      expect((state as Paging).state, isA<LoadStateInit>());
+      expect(state, isA<Paging<int, String>>());
+      expect((state as Paging<int, String>).state, isA<LoadStateInit>());
       expect(dataSource.notifier.values, isEmpty);
     });
 
     test('update(LoadType.init) should populate data on success', () async {
       await dataSource.update(LoadType.init);
       final state = dataSource.notifier.value;
-      expect(state, isA<Paging>());
-      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(state, isA<Paging<int, String>>());
+      expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
       expect(dataSource.notifier.values, ['0', '1', '2']);
     });
 
@@ -72,8 +72,8 @@ void main() {
         dataSource.onLoad = (_) async => const None();
         await dataSource.update(LoadType.init);
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.values, isEmpty);
       },
     );
@@ -83,8 +83,8 @@ void main() {
       dataSource.onLoad = (_) async => Failure(error: error);
       await dataSource.update(LoadType.init);
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test(
@@ -94,8 +94,8 @@ void main() {
         dataSource.onLoad = (_) => throw error;
         await dataSource.update(LoadType.init);
         final state = dataSource.notifier.value;
-        expect(state, isA<Warning>());
-        expect((state as Warning).error, error);
+        expect(state, isA<Warning<int, String>>());
+        expect((state as Warning<int, String>).error, error);
       },
     );
 
@@ -145,8 +145,8 @@ void main() {
     test('successful refresh should populate data and set keys', () async {
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<Paging>());
-      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(state, isA<Paging<int, String>>());
+      expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
       expect(dataSource.notifier.values, ['0', '1', '2']);
       expect(dataSource.notifier.prependPageKey, -1);
       expect(dataSource.notifier.appendPageKey, 1);
@@ -156,8 +156,8 @@ void main() {
       dataSource.onLoad = (_) async => const None();
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<Paging>());
-      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(state, isA<Paging<int, String>>());
+      expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
       expect(dataSource.notifier.values, isEmpty);
       expect(dataSource.notifier.prependPageKey, isNull);
       expect(dataSource.notifier.appendPageKey, isNull);
@@ -168,8 +168,8 @@ void main() {
       dataSource.onLoad = (_) async => Failure(error: error);
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test('refresh throwing exception should set error state', () async {
@@ -177,8 +177,8 @@ void main() {
       dataSource.onLoad = (_) => throw error;
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test('calling refresh while loading should be a no-op', () async {
@@ -256,8 +256,8 @@ void main() {
       await dataSource.append();
 
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test('calling append while loading should be a no-op', () async {
@@ -342,8 +342,8 @@ void main() {
       await dataSource.prepend();
 
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test('calling prepend while loading should be a no-op', () async {
@@ -404,8 +404,8 @@ void main() {
     test('manipulation with out-of-bounds index should set error', () {
       dataSource.updateItem(99, (_) => 'X');
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, isA<RangeError>());
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, isA<RangeError>());
     });
 
     test('updateItems throwing an error should set error state', () {
@@ -417,8 +417,8 @@ void main() {
         return item;
       });
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
 
     test('removeItems throwing an error should set error state', () {
@@ -430,8 +430,8 @@ void main() {
         return false;
       });
       final state = dataSource.notifier.value;
-      expect(state, isA<Warning>());
-      expect((state as Warning).error, error);
+      expect(state, isA<Warning<int, String>>());
+      expect((state as Warning<int, String>).error, error);
     });
   });
 
@@ -459,14 +459,17 @@ void main() {
         await dataSource.refresh();
 
         // Check that the callback was called with a Failure
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, isA<Exception>());
-        expect(capturedAction, isA<Refresh>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(
+          (capturedResult as Failure<int, String>).error,
+          isA<Exception>(),
+        );
+        expect(capturedAction, isA<Refresh<int>>());
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.values, ['0', '1', '2']);
 
         dataSource.dispose();
@@ -490,8 +493,8 @@ void main() {
 
       // Check that the state is still Loaded with previous data
       final state = dataSource.notifier.value;
-      expect(state, isA<Paging>());
-      expect((state as Paging).state, isA<LoadStateLoaded>());
+      expect(state, isA<Paging<int, String>>());
+      expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
       expect(dataSource.notifier.values, ['0', '1', '2']);
 
       dataSource.dispose();
@@ -520,14 +523,17 @@ void main() {
         await dataSource.append();
 
         // Check that the callback was called with a Failure
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, isA<Exception>());
-        expect(capturedAction, isA<Append>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(
+          (capturedResult as Failure<int, String>).error,
+          isA<Exception>(),
+        );
+        expect(capturedAction, isA<Append<int>>());
 
         // Check that the state reverted to Loaded, not Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.isLoading, isFalse);
 
         dataSource.dispose();
@@ -552,8 +558,8 @@ void main() {
 
         // Check that the state reverted to Loaded, not Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.isLoading, isFalse);
 
         dataSource.dispose();
@@ -583,13 +589,16 @@ void main() {
         await dataSource.prepend();
 
         // Check that the callback was called with a Failure
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, isA<Exception>());
-        expect(capturedAction, isA<Prepend>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(
+          (capturedResult as Failure<int, String>).error,
+          isA<Exception>(),
+        );
+        expect(capturedAction, isA<Prepend<int>>());
 
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.isLoading, isFalse);
 
         dataSource.dispose();
@@ -613,8 +622,8 @@ void main() {
         await dataSource.prepend();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<Paging>());
-        expect((state as Paging).state, isA<LoadStateLoaded>());
+        expect(state, isA<Paging<int, String>>());
+        expect((state as Paging<int, String>).state, isA<LoadStateLoaded>());
         expect(dataSource.notifier.isLoading, isFalse);
 
         dataSource.dispose();
@@ -642,10 +651,10 @@ void main() {
 
         // Check that the state is Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Warning>());
-        expect((state as Warning).error, isA<Exception>());
-        expect(capturedResult, isA<Failure>());
-        expect(capturedAction, isA<Refresh>());
+        expect(state, isA<Warning<int, String>>());
+        expect((state as Warning<int, String>).error, isA<Exception>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(capturedAction, isA<Refresh<int>>());
 
         dataSource.dispose();
       },
@@ -672,10 +681,10 @@ void main() {
 
         // Check that the state is Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Warning>());
-        expect((state as Warning).error, isA<Exception>());
-        expect(capturedResult, isA<Failure>());
-        expect(capturedAction, isA<Refresh>());
+        expect(state, isA<Warning<int, String>>());
+        expect((state as Warning<int, String>).error, isA<Exception>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(capturedAction, isA<Refresh<int>>());
 
         dataSource.dispose();
       },
@@ -703,10 +712,10 @@ void main() {
 
         // Check that the state is Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Warning>());
-        expect((state as Warning).error, isA<Exception>());
-        expect(capturedResult, isA<Failure>());
-        expect(capturedAction, isA<Append>());
+        expect(state, isA<Warning<int, String>>());
+        expect((state as Warning<int, String>).error, isA<Exception>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(capturedAction, isA<Append<int>>());
 
         dataSource.dispose();
       },
@@ -734,10 +743,10 @@ void main() {
 
         // Check that the state is Warning
         final state = dataSource.notifier.value;
-        expect(state, isA<Warning>());
-        expect((state as Warning).error, isA<Exception>());
-        expect(capturedResult, isA<Failure>());
-        expect(capturedAction, isA<Prepend>());
+        expect(state, isA<Warning<int, String>>());
+        expect((state as Warning<int, String>).error, isA<Exception>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect(capturedAction, isA<Prepend<int>>());
 
         dataSource.dispose();
       },
@@ -756,7 +765,7 @@ void main() {
       await dataSource.refresh();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Refresh>());
+      expect(capturedAction, isA<Refresh<int>>());
     });
 
     test('onLoadStarted should be called on refresh failure', () async {
@@ -772,7 +781,7 @@ void main() {
       await dataSource.refresh();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Refresh>());
+      expect(capturedAction, isA<Refresh<int>>());
     });
 
     test('onLoadStarted should be called on prepend', () async {
@@ -788,8 +797,8 @@ void main() {
       await dataSource.prepend();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Prepend>());
-      expect((capturedAction as Prepend).key, -1);
+      expect(capturedAction, isA<Prepend<int>>());
+      expect((capturedAction as Prepend<int>).key, -1);
     });
 
     test('onLoadStarted should be called on append', () async {
@@ -805,8 +814,8 @@ void main() {
       await dataSource.append();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Append>());
-      expect((capturedAction as Append).key, 1);
+      expect(capturedAction, isA<Append<int>>());
+      expect((capturedAction as Append<int>).key, 1);
     });
 
     test('onLoadStarted should be cleared on dispose', () {
@@ -834,7 +843,7 @@ void main() {
         return const Success(page: PageData(data: ['X'], appendKey: 1));
       };
       await dataSource.refresh();
-      expect(dataSource.notifier.value, isA<Warning>());
+      expect(dataSource.notifier.value, isA<Warning<int, String>>());
 
       // Recover with a successful refresh so we have a loaded state again
       dataSource.onLoad = (action) async => const Success(
@@ -842,8 +851,11 @@ void main() {
       );
       await dataSource.refresh();
       final loadedState = dataSource.notifier.value;
-      expect(loadedState, isA<Paging>());
-      expect((loadedState as Paging).state, isA<LoadStateLoaded>());
+      expect(loadedState, isA<Paging<int, String>>());
+      expect(
+        (loadedState as Paging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
 
       // Mutate errorPolicy at runtime to ignore refresh failures
       dataSource.errorPolicy = {LoadErrorPolicy.ignoreRefresh};
@@ -858,8 +870,11 @@ void main() {
 
       // Should remain loaded with previous data, not Warning
       final stateAfterFailure = dataSource.notifier.value;
-      expect(stateAfterFailure, isA<Paging>());
-      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(stateAfterFailure, isA<Paging<int, String>>());
+      expect(
+        (stateAfterFailure as Paging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(dataSource.notifier.values, ['0', '1']);
       dataSource.dispose();
     });
@@ -879,7 +894,7 @@ void main() {
         return const Success(page: PageData(data: ['0'], appendKey: 1));
       };
       await dataSource.append();
-      expect(dataSource.notifier.value, isA<Warning>());
+      expect(dataSource.notifier.value, isA<Warning<int, String>>());
 
       // Recover to loaded state
       dataSource.onLoad = (action) async =>
@@ -900,14 +915,17 @@ void main() {
 
       // Should stay loaded with previous values
       final stateAfterFailure = dataSource.notifier.value;
-      expect(stateAfterFailure, isA<Paging>());
-      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(stateAfterFailure, isA<Paging<int, String>>());
+      expect(
+        (stateAfterFailure as Paging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(dataSource.notifier.values, ['0', 'a1']);
 
       // Disable ignoreAppend and fail again -> Warning
       dataSource.errorPolicy = {};
       await dataSource.append();
-      expect(dataSource.notifier.value, isA<Warning>());
+      expect(dataSource.notifier.value, isA<Warning<int, String>>());
       dataSource.dispose();
     });
 
@@ -926,7 +944,7 @@ void main() {
         return const Success(page: PageData(data: ['0'], prependKey: -1));
       };
       await dataSource.prepend();
-      expect(dataSource.notifier.value, isA<Warning>());
+      expect(dataSource.notifier.value, isA<Warning<int, String>>());
 
       // Recover to loaded state
       dataSource.onLoad = (action) async =>
@@ -947,14 +965,17 @@ void main() {
 
       // Should stay loaded with previous values
       final stateAfterFailure = dataSource.notifier.value;
-      expect(stateAfterFailure, isA<Paging>());
-      expect((stateAfterFailure as Paging).state, isA<LoadStateLoaded>());
+      expect(stateAfterFailure, isA<Paging<int, String>>());
+      expect(
+        (stateAfterFailure as Paging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(dataSource.notifier.values, ['p-1', '0']);
 
       // Disable ignorePrepend and fail again -> Warning
       dataSource.errorPolicy = {};
       await dataSource.prepend();
-      expect(dataSource.notifier.value, isA<Warning>());
+      expect(dataSource.notifier.value, isA<Warning<int, String>>());
       dataSource.dispose();
     });
   });

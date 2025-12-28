@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 
+@immutable
 class TestItem {
   const TestItem(this.id, this.category);
   final int id;
@@ -20,7 +22,7 @@ class TestGroupedDataSource extends GroupedDataSource<int, String, TestItem> {
   TestGroupedDataSource(this._items);
 
   final List<TestItem> _items;
-  var loadCount = 0;
+  int loadCount = 0;
 
   @override
   String groupBy(TestItem value) => value.category;
@@ -77,10 +79,10 @@ void main() {
 
     test('group order should be determined by first appearance', () async {
       final mixedOrderItems = [
-        TestItem(1, 'C'),
-        TestItem(2, 'A'),
-        TestItem(3, 'B'),
-        TestItem(4, 'A'),
+        const TestItem(1, 'C'),
+        const TestItem(2, 'A'),
+        const TestItem(3, 'B'),
+        const TestItem(4, 'A'),
       ];
       final mixedDataSource = TestGroupedDataSource(mixedOrderItems);
       await mixedDataSource.refresh();

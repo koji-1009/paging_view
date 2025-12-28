@@ -12,7 +12,7 @@ import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 /// initial loading indicators, prepend/append loading indicators, empty states,
 /// and error messages.
 ///
-/// For a non-sliver version that wraps this in a [CustomScrollView], see [PagingList].
+/// For a non-sliver version that wraps this in a `CustomScrollView`, see `PagingList`.
 class SliverPagingList<PageKey, Value> extends StatelessWidget {
   /// Creates a scrollable, linear array of widgets that are created on demand.
   const SliverPagingList({
@@ -142,7 +142,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
   }
 }
 
-/// Internal widget for [SliverPagingList] that handles the actual sliver layout.
+/// Internal widget for `SliverPagingList` that handles the actual sliver layout.
 class _List<PageKey, Value> extends StatelessWidget {
   const _List({
     required this.state,

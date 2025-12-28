@@ -148,7 +148,7 @@ void main() {
     test('toString should return readable string representations', () {
       const page = PageData<int, String>(data: ['item']);
       const success = Success<int, String>(page: page);
-      final failure = Failure<int, String>(error: 'error');
+      const failure = Failure<int, String>(error: 'error');
       const none = None<int, String>();
 
       expect(

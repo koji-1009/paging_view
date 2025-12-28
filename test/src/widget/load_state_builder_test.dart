@@ -36,10 +36,10 @@ void main() {
       tester,
     ) async {
       // Simulate initial data with prependKey
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoaded(),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoaded(),
         data: [
-          PageData(data: const ['Item 1'], prependKey: 0),
+          PageData(data: ['Item 1'], prependKey: 0),
         ],
       );
       await tester.pumpWidget(createPrependLoadStateBuilder());
@@ -52,10 +52,10 @@ void main() {
 
     testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoading(state: LoadType.prepend),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoading(state: LoadType.prepend),
         data: [
-          PageData(data: const ['Item 1'], prependKey: 0),
+          PageData(data: ['Item 1'], prependKey: 0),
         ],
       );
       await tester.pumpWidget(createPrependLoadStateBuilder());
@@ -70,10 +70,10 @@ void main() {
       tester,
     ) async {
       // Simulate no more prepend pages
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoaded(),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoaded(),
         data: [
-          PageData(data: const ['Item 1']),
+          PageData(data: ['Item 1']),
         ],
       );
       await tester.pumpWidget(createPrependLoadStateBuilder());
@@ -126,10 +126,10 @@ void main() {
       tester,
     ) async {
       // Simulate initial data with appendKey
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoaded(),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoaded(),
         data: [
-          PageData(data: const ['Item 1'], appendKey: 1),
+          PageData(data: ['Item 1'], appendKey: 1),
         ],
       );
       await tester.pumpWidget(createAppendLoadStateBuilder());
@@ -142,10 +142,10 @@ void main() {
 
     testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoading(state: LoadType.append),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoading(state: LoadType.append),
         data: [
-          PageData(data: const ['Item 1'], appendKey: 1),
+          PageData(data: ['Item 1'], appendKey: 1),
         ],
       );
       await tester.pumpWidget(createAppendLoadStateBuilder());
@@ -158,10 +158,10 @@ void main() {
 
     testWidgets('shows "No more append" when hasMore is false', (tester) async {
       // Simulate no more append pages
-      dataSource.notifier.value = Paging(
-        state: const LoadStateLoaded(),
+      dataSource.notifier.value = const Paging(
+        state: LoadStateLoaded(),
         data: [
-          PageData(data: const ['Item 1']),
+          PageData(data: ['Item 1']),
         ],
       );
       await tester.pumpWidget(createAppendLoadStateBuilder());

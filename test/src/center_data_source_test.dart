@@ -58,8 +58,8 @@ void main() {
   group('CenterDataSource Initialization and State', () {
     test('should start with LoadStateInit', () {
       final state = dataSource.notifier.value;
-      expect(state, isA<CenterPaging>());
-      expect((state as CenterPaging).state, isA<LoadStateInit>());
+      expect(state, isA<CenterPaging<int, String>>());
+      expect((state as CenterPaging<int, String>).state, isA<LoadStateInit>());
       expect(state.centerItems, isEmpty);
     });
 
@@ -68,8 +68,11 @@ void main() {
       () async {
         await dataSource.update(LoadType.init);
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.centerItems, ['center1', 'center2']);
         expect(state.prependItems, isEmpty);
         expect(state.appendItems, isEmpty);
@@ -82,8 +85,11 @@ void main() {
         dataSource.onLoad = (_) async => const None();
         await dataSource.update(LoadType.init);
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.allItems, isEmpty);
       },
     );
@@ -93,8 +99,8 @@ void main() {
       dataSource.onLoad = (_) async => Failure(error: error);
       await dataSource.update(LoadType.init);
       final state = dataSource.notifier.value;
-      expect(state, isA<CenterWarning>());
-      expect((state as CenterWarning).error, error);
+      expect(state, isA<CenterWarning<int, String>>());
+      expect((state as CenterWarning<int, String>).error, error);
     });
 
     test(
@@ -111,12 +117,12 @@ void main() {
         dataSource.onLoad = (_) => throw error;
         await dataSource.update(LoadType.init);
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterWarning>());
-        expect((state as CenterWarning).error, error);
+        expect(state, isA<CenterWarning<int, String>>());
+        expect((state as CenterWarning<int, String>).error, error);
 
-        expect(capturedAction, isA<Refresh>());
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, error);
+        expect(capturedAction, isA<Refresh<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect((capturedResult as Failure<int, String>).error, error);
       },
     );
 
@@ -171,8 +177,11 @@ void main() {
       () async {
         await dataSource.refresh();
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.centerItems, ['center1', 'center2']);
         expect(dataSource.notifier.prependPageKey, -1);
         expect(dataSource.notifier.appendPageKey, 1);
@@ -183,8 +192,11 @@ void main() {
       dataSource.onLoad = (_) async => const None();
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<CenterPaging>());
-      expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+      expect(state, isA<CenterPaging<int, String>>());
+      expect(
+        (state as CenterPaging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(state.allItems, isEmpty);
       expect(dataSource.notifier.prependPageKey, isNull);
       expect(dataSource.notifier.appendPageKey, isNull);
@@ -195,8 +207,8 @@ void main() {
       dataSource.onLoad = (_) async => Failure(error: error);
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<CenterWarning>());
-      expect((state as CenterWarning).error, error);
+      expect(state, isA<CenterWarning<int, String>>());
+      expect((state as CenterWarning<int, String>).error, error);
     });
 
     test('refresh throwing exception should set error state', () async {
@@ -204,8 +216,8 @@ void main() {
       dataSource.onLoad = (_) => throw error;
       await dataSource.refresh();
       final state = dataSource.notifier.value;
-      expect(state, isA<CenterWarning>());
-      expect((state as CenterWarning).error, error);
+      expect(state, isA<CenterWarning<int, String>>());
+      expect((state as CenterWarning<int, String>).error, error);
     });
 
     test('calling refresh while loading should be a no-op', () async {
@@ -258,7 +270,7 @@ void main() {
       await dataSource.refresh();
       await dataSource.prepend();
       expect(dataSource.notifier.isLoading, isFalse);
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
     });
 
     test('prepend throwing exception should set error state', () async {
@@ -271,7 +283,7 @@ void main() {
       await dataSource.refresh();
       await dataSource.prepend();
       expect(dataSource.notifier.isLoading, isFalse);
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
     });
 
     test('prepend without prependPageKey should be a no-op', () async {
@@ -361,7 +373,7 @@ void main() {
       await dataSource.refresh();
       await dataSource.append();
       expect(dataSource.notifier.isLoading, isFalse);
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
     });
 
     test('append throwing exception should set error state', () async {
@@ -374,7 +386,7 @@ void main() {
       await dataSource.refresh();
       await dataSource.append();
       expect(dataSource.notifier.isLoading, isFalse);
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
     });
 
     test('append without appendPageKey should be a no-op', () async {
@@ -551,14 +563,17 @@ void main() {
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.centerItems, ['center1', 'center2']);
 
         // Verify callback was invoked with Failure
-        expect(capturedAction, isA<Refresh>());
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, error);
+        expect(capturedAction, isA<Refresh<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect((capturedResult as Failure<int, String>).error, error);
 
         dataSource.dispose();
       },
@@ -589,8 +604,11 @@ void main() {
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.centerItems, ['center1', 'center2']);
 
         dataSource.dispose();
@@ -631,15 +649,18 @@ void main() {
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.prependItems, isEmpty);
         expect(state.centerItems, ['center1', 'center2']);
 
         // Verify callback was invoked
-        expect(capturedAction, isA<Prepend>());
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, error);
+        expect(capturedAction, isA<Prepend<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect((capturedResult as Failure<int, String>).error, error);
 
         dataSource.dispose();
       },
@@ -669,8 +690,11 @@ void main() {
         await dataSource.prepend();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.prependItems, isEmpty);
         expect(state.centerItems, ['center1', 'center2']);
 
@@ -712,15 +736,18 @@ void main() {
 
         // Check that the state is still Loaded with previous data
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.appendItems, isEmpty);
         expect(state.centerItems, ['center1', 'center2']);
 
         // Verify callback was invoked
-        expect(capturedAction, isA<Append>());
-        expect(capturedResult, isA<Failure>());
-        expect((capturedResult as Failure).error, error);
+        expect(capturedAction, isA<Append<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
+        expect((capturedResult as Failure<int, String>).error, error);
 
         dataSource.dispose();
       },
@@ -750,8 +777,11 @@ void main() {
         await dataSource.append();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterPaging>());
-        expect((state as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(state, isA<CenterPaging<int, String>>());
+        expect(
+          (state as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
         expect(state.appendItems, isEmpty);
         expect(state.centerItems, ['center1', 'center2']);
 
@@ -776,11 +806,11 @@ void main() {
         await dataSource.update(LoadType.init);
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterWarning>());
-        expect((state as CenterWarning).error, error);
+        expect(state, isA<CenterWarning<int, String>>());
+        expect((state as CenterWarning<int, String>).error, error);
 
-        expect(capturedAction, isA<Refresh>());
-        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Refresh<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
 
         dataSource.dispose();
       },
@@ -804,11 +834,11 @@ void main() {
         await dataSource.refresh();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterWarning>());
-        expect((state as CenterWarning).error, error);
+        expect(state, isA<CenterWarning<int, String>>());
+        expect((state as CenterWarning<int, String>).error, error);
 
-        expect(capturedAction, isA<Refresh>());
-        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Refresh<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
 
         dataSource.dispose();
       },
@@ -843,11 +873,11 @@ void main() {
         await dataSource.prepend();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterWarning>());
-        expect((state as CenterWarning).error, error);
+        expect(state, isA<CenterWarning<int, String>>());
+        expect((state as CenterWarning<int, String>).error, error);
 
-        expect(capturedAction, isA<Prepend>());
-        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Prepend<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
 
         dataSource.dispose();
       },
@@ -882,11 +912,11 @@ void main() {
         await dataSource.append();
 
         final state = dataSource.notifier.value;
-        expect(state, isA<CenterWarning>());
-        expect((state as CenterWarning).error, error);
+        expect(state, isA<CenterWarning<int, String>>());
+        expect((state as CenterWarning<int, String>).error, error);
 
-        expect(capturedAction, isA<Append>());
-        expect(capturedResult, isA<Failure>());
+        expect(capturedAction, isA<Append<int>>());
+        expect(capturedResult, isA<Failure<int, String>>());
 
         dataSource.dispose();
       },
@@ -916,7 +946,7 @@ void main() {
           );
         };
         await dataSource.refresh();
-        expect(dataSource.notifier.value, isA<CenterWarning>());
+        expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
 
         // Recover with a successful refresh so we have a loaded state again
         dataSource.onLoad = (action) async => const Success(
@@ -928,8 +958,11 @@ void main() {
         );
         await dataSource.refresh();
         final loadedState = dataSource.notifier.value;
-        expect(loadedState, isA<CenterPaging>());
-        expect((loadedState as CenterPaging).state, isA<LoadStateLoaded>());
+        expect(loadedState, isA<CenterPaging<int, String>>());
+        expect(
+          (loadedState as CenterPaging<int, String>).state,
+          isA<LoadStateLoaded>(),
+        );
 
         // Mutate errorPolicy at runtime to ignore refresh failures
         dataSource.errorPolicy = {LoadErrorPolicy.ignoreRefresh};
@@ -950,9 +983,9 @@ void main() {
 
         // Should remain loaded with previous data, not CenterWarning
         final stateAfterFailure = dataSource.notifier.value;
-        expect(stateAfterFailure, isA<CenterPaging>());
+        expect(stateAfterFailure, isA<CenterPaging<int, String>>());
         expect(
-          (stateAfterFailure as CenterPaging).state,
+          (stateAfterFailure as CenterPaging<int, String>).state,
           isA<LoadStateLoaded>(),
         );
         expect(stateAfterFailure.centerItems, ['center1', 'center2']);
@@ -986,7 +1019,7 @@ void main() {
         );
       };
       await dataSource.append();
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
 
       // Recover to loaded state
       dataSource.onLoad = (action) async => const Success(
@@ -1018,14 +1051,17 @@ void main() {
 
       // Should stay loaded with previous values
       final stateAfterFailure = dataSource.notifier.value;
-      expect(stateAfterFailure, isA<CenterPaging>());
-      expect((stateAfterFailure as CenterPaging).state, isA<LoadStateLoaded>());
+      expect(stateAfterFailure, isA<CenterPaging<int, String>>());
+      expect(
+        (stateAfterFailure as CenterPaging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(stateAfterFailure.centerItems, ['center1', 'center2']);
 
       // Disable ignoreAppend and fail again -> CenterWarning
       dataSource.errorPolicy = {};
       await dataSource.append();
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
       dataSource.dispose();
     });
 
@@ -1055,7 +1091,7 @@ void main() {
         );
       };
       await dataSource.prepend();
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
 
       // Recover to loaded state
       dataSource.onLoad = (action) async => const Success(
@@ -1087,14 +1123,17 @@ void main() {
 
       // Should stay loaded with previous values
       final stateAfterFailure = dataSource.notifier.value;
-      expect(stateAfterFailure, isA<CenterPaging>());
-      expect((stateAfterFailure as CenterPaging).state, isA<LoadStateLoaded>());
+      expect(stateAfterFailure, isA<CenterPaging<int, String>>());
+      expect(
+        (stateAfterFailure as CenterPaging<int, String>).state,
+        isA<LoadStateLoaded>(),
+      );
       expect(stateAfterFailure.centerItems, ['center1', 'center2']);
 
       // Disable ignorePrepend and fail again -> CenterWarning
       dataSource.errorPolicy = {};
       await dataSource.prepend();
-      expect(dataSource.notifier.value, isA<CenterWarning>());
+      expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
       dataSource.dispose();
     });
   });
@@ -1111,9 +1150,12 @@ void main() {
 
       await dataSource.refresh();
 
-      expect(capturedAction, isA<Refresh>());
-      expect(capturedResult, isA<Success>());
-      expect((capturedResult as Success).page.data, ['center1', 'center2']);
+      expect(capturedAction, isA<Refresh<int>>());
+      expect(capturedResult, isA<Success<int, String>>());
+      expect((capturedResult as Success<int, String>).page.data, [
+        'center1',
+        'center2',
+      ]);
     });
 
     test('onLoadFinished should be called on refresh failure', () async {
@@ -1129,9 +1171,9 @@ void main() {
 
       await dataSource.refresh();
 
-      expect(capturedAction, isA<Refresh>());
-      expect(capturedResult, isA<Failure>());
-      expect((capturedResult as Failure).error, error);
+      expect(capturedAction, isA<Refresh<int>>());
+      expect(capturedResult, isA<Failure<int, String>>());
+      expect((capturedResult as Failure<int, String>).error, error);
     });
 
     test('onLoadFinished should be called on prepend', () async {
@@ -1147,9 +1189,9 @@ void main() {
 
       await dataSource.prepend();
 
-      expect(capturedAction, isA<Prepend>());
-      expect((capturedAction as Prepend).key, -1);
-      expect(capturedResult, isA<Success>());
+      expect(capturedAction, isA<Prepend<int>>());
+      expect((capturedAction as Prepend<int>).key, -1);
+      expect(capturedResult, isA<Success<int, String>>());
     });
 
     test('onLoadFinished should be called on append', () async {
@@ -1165,9 +1207,9 @@ void main() {
 
       await dataSource.append();
 
-      expect(capturedAction, isA<Append>());
-      expect((capturedAction as Append).key, 1);
-      expect(capturedResult, isA<Success>());
+      expect(capturedAction, isA<Append<int>>());
+      expect((capturedAction as Append<int>).key, 1);
+      expect(capturedResult, isA<Success<int, String>>());
     });
 
     test('onLoadFinished should be called when exception is thrown', () async {
@@ -1183,9 +1225,9 @@ void main() {
 
       await dataSource.refresh();
 
-      expect(capturedAction, isA<Refresh>());
-      expect(capturedResult, isA<Failure>());
-      expect((capturedResult as Failure).error, error);
+      expect(capturedAction, isA<Refresh<int>>());
+      expect(capturedResult, isA<Failure<int, String>>());
+      expect((capturedResult as Failure<int, String>).error, error);
     });
 
     test('onLoadFinished should be cleared on dispose', () {
@@ -1211,7 +1253,7 @@ void main() {
       await dataSource.refresh();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Refresh>());
+      expect(capturedAction, isA<Refresh<int>>());
     });
 
     test('onLoadStarted should be called on refresh failure', () async {
@@ -1227,7 +1269,7 @@ void main() {
       await dataSource.refresh();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Refresh>());
+      expect(capturedAction, isA<Refresh<int>>());
     });
 
     test('onLoadStarted should be called on prepend', () async {
@@ -1243,8 +1285,8 @@ void main() {
       await dataSource.prepend();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Prepend>());
-      expect((capturedAction as Prepend).key, -1);
+      expect(capturedAction, isA<Prepend<int>>());
+      expect((capturedAction as Prepend<int>).key, -1);
     });
 
     test('onLoadStarted should be called on append', () async {
@@ -1260,8 +1302,8 @@ void main() {
       await dataSource.append();
 
       expect(callCount, 1);
-      expect(capturedAction, isA<Append>());
-      expect((capturedAction as Append).key, 1);
+      expect(capturedAction, isA<Append<int>>());
+      expect((capturedAction as Append<int>).key, 1);
     });
 
     test('onLoadStarted should be cleared on dispose', () {

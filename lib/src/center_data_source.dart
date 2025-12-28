@@ -5,11 +5,11 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/center_page_manager.dart';
 import 'package:paging_view/src/private/entity.dart';
 
-/// A [DataSource] specifically designed for [CenterPagingList].
+/// A [DataSource] specifically designed for `CenterPagingList`.
 ///
 /// Unlike the standard [DataSource], this manages three separate segments
 /// of data: Prepend, Center, and Append. This allows for seamless bi-directional
-/// scrolling using [CustomScrollView]'s `center` key feature.
+/// scrolling using `CustomScrollView`'s `center` key feature.
 ///
 /// The Center segment is the initial anchor point of the list, and:
 /// - Prepend segment items appear above the Center (in reverse scroll direction)
@@ -32,7 +32,7 @@ abstract class CenterDataSource<PageKey, Value> {
   void Function(LoadAction<PageKey> action, LoadResult<PageKey, Value> result)?
   onLoadFinished;
 
-  /// The key used to anchor the [CustomScrollView] at the Center segment.
+  /// The key used to anchor the `CustomScrollView` at the Center segment.
   ///
   /// This key is assigned to the Center sliver, making it the origin point
   /// of the scroll view. Slivers before the center will be laid out in

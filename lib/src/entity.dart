@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 /// Represents the type of data loading action to be performed.
 ///
@@ -103,6 +104,7 @@ class None<PageKey, Value> implements LoadResult<PageKey, Value> {
 ///
 /// It holds the list of items for the current page and, optionally, keys
 /// that a data source can use to fetch the previous or next pages.
+@immutable
 class PageData<PageKey, Value> {
   /// Creates a page of data.
   const PageData({this.data = const [], this.prependKey, this.appendKey});

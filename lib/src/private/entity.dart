@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 
 /// Represents the current data loading status.
@@ -112,11 +113,12 @@ class LoadStateLoading extends LoadState {
 /// Represents the overall state of the paged data, including the data itself
 /// and any errors.
 sealed class PageManagerState<PageKey, Value> {
-  /// Creates a [PageManagerState].
+  /// Creates a `PageManagerState`.
   const PageManagerState();
 }
 
 /// A state representing successfully loaded pages of data.
+@immutable
 class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
   /// Creates a [Paging] state.
   const Paging({required this.state, required this.data});
@@ -151,6 +153,7 @@ class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
 /// A state representing an error that occurred during data processing or
 /// manipulation.
+@immutable
 class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
   /// Creates a [Warning] state.
   const Warning({required this.error, required this.stackTrace});
@@ -177,7 +180,7 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
   int get hashCode => Object.hash(runtimeType, error, stackTrace);
 }
 
-/// Provides convenient accessors for [PageManagerState].
+/// Provides convenient accessors for `PageManagerState`.
 extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
   /// Whether any loading operation is currently in progress.
   bool get isLoading => switch (this) {

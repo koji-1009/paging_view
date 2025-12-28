@@ -190,7 +190,7 @@ void main() {
       test('prepend on non-Paging state does nothing', () {
         manager.setError(error: 'e', stackTrace: null);
         manager.prepend(newPage: page2);
-        expect(manager.value, isA<CenterWarning>());
+        expect(manager.value, isA<CenterWarning<int, String>>());
       });
     });
 
@@ -231,7 +231,7 @@ void main() {
       test('append on non-Paging state does nothing', () {
         manager.setError(error: 'e', stackTrace: null);
         manager.append(newPage: page2);
-        expect(manager.value, isA<CenterWarning>());
+        expect(manager.value, isA<CenterWarning<int, String>>());
       });
     });
 
@@ -262,7 +262,7 @@ void main() {
       test('revertLoad() on non-Paging state does nothing', () {
         manager.setError(error: 'e', stackTrace: null);
         manager.revertLoad();
-        expect(manager.value, isA<CenterWarning>());
+        expect(manager.value, isA<CenterWarning<int, String>>());
       });
     });
   });
