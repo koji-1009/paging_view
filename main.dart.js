@@ -20813,8 +20813,7 @@ _.k1=a7
 _.a=a8
 _.$ti=a9},
 a6S:function a6S(a){this.a=a},
-a6T:function a6T(a,b){this.a=a
-this.b=b},
+a6T:function a6T(a){this.a=a},
 a6U:function a6U(a,b){this.a=a
 this.b=b},
 a6V:function a6V(a,b){this.a=a
@@ -66103,7 +66102,7 @@ l=m.a
 k=m.c
 j=A.c([new A.cG(A.dl(h,m.b,h),h),new A.bB(new A.aU(l,0,k,0),new A.cG(i.w.$3(a,i.id,g.gk8()),h),h)],t.D)
 s=s.length
-if(s!==0){s=A.Ha(new A.a6T(i,0),s)
+if(s!==0){s=A.Ha(new A.a6T(i),s)
 j.push(new A.bB(new A.aU(l,0,k,0),s,h))}s=A.Ha(new A.a6U(i,q),p.length)
 j.push(new A.bB(new A.aU(l,0,k,0),s,n))
 s=i.go.length
@@ -66122,7 +66121,7 @@ return A.M($async$$1,r)},
 $S:64}
 A.a6T.prototype={
 $2(a,b){var s=this.a,r=s.fx,q=r.length-1-b
-return s.e.$3(a,r[q],this.b+q)},
+return s.e.$3(a,r[q],q)},
 $S:30}
 A.a6U.prototype={
 $2(a,b){var s=this.a
