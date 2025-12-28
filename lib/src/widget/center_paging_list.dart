@@ -355,8 +355,6 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    // Calculate global index offset for items
-    const prependOffset = 0;
     final centerOffset = prependItems.length;
     final appendOffset = prependItems.length + centerItems.length;
 
@@ -407,7 +405,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
                 ? SliverList.separated(
                     itemBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return builder(
                         context,
                         prependItems[reversedIndex],
@@ -417,14 +415,14 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
                     itemCount: prependItems.length,
                     separatorBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index - 1;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return separatorBuilder!(context, globalIndex);
                     },
                   )
                 : SliverList.builder(
                     itemBuilder: (context, index) {
                       final reversedIndex = prependItems.length - 1 - index;
-                      final globalIndex = prependOffset + reversedIndex;
+                      final globalIndex = reversedIndex;
                       return builder(
                         context,
                         prependItems[reversedIndex],
