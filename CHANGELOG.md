@@ -1,3 +1,8 @@
+## 2.6.4
+
+* Update lint rules.
+* Update documentation.
+
 ## 2.6.3
 
 * Update README.
