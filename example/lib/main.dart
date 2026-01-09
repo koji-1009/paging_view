@@ -41,11 +41,11 @@ class _DemoPageState extends State<DemoPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('paging_view')),
       body: switch (_selected) {
-        .list => const PagingListDemo(),
-        .grid => const PagingGridDemo(),
-        .groupedList => const GroupedPagingListDemo(),
-        .manual => const ManualListDemo(),
-        .centeredList => const CenteredPagingListDemo(),
+        DemoType.list => const PagingListDemo(),
+        DemoType.grid => const PagingGridDemo(),
+        DemoType.groupedList => const GroupedPagingListDemo(),
+        DemoType.manual => const ManualListDemo(),
+        DemoType.centeredList => const CenteredPagingListDemo(),
       },
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selected.index,
@@ -105,18 +105,18 @@ class PagingListDemo extends ConsumerWidget {
             Center(child: Text('$error')),
         initialLoadingWidget: const Center(
           child: Padding(
-            padding: .all(16),
+            padding: EdgeInsets.all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         appendLoadingWidget: const Center(
           child: Padding(
-            padding: .all(16),
+            padding: EdgeInsets.all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         emptyWidget: const Center(child: Text('No Item')),
-        padding: const .symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
     );
   }
@@ -149,18 +149,18 @@ class PagingGridDemo extends ConsumerWidget {
             Center(child: Text('$error')),
         initialLoadingWidget: const Center(
           child: Padding(
-            padding: .all(16),
+            padding: EdgeInsets.all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         appendLoadingWidget: const Center(
           child: Padding(
-            padding: .all(16),
+            padding: EdgeInsets.all(16),
             child: CircularProgressIndicator.adaptive(),
           ),
         ),
         emptyWidget: const Center(child: Text('No Item')),
-        padding: const .all(16),
+        padding: const EdgeInsets.all(16),
       ),
     );
   }
@@ -180,11 +180,11 @@ class GroupedPagingListDemo extends ConsumerWidget {
           SliverGroupedPagingList(
             dataSource: dataSource,
             headerBuilder: (context, parent, groupIndex) => Padding(
-              padding: const .symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Material(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                clipBehavior: .antiAlias,
-                borderRadius: .circular(8),
+                clipBehavior: Clip.antiAlias,
+                borderRadius: BorderRadius.circular(8),
                 child: Center(
                   child: Text(
                     'category: $parent, index: $groupIndex',
@@ -203,18 +203,18 @@ class GroupedPagingListDemo extends ConsumerWidget {
                 Center(child: Text('$error')),
             initialLoadingWidget: const Center(
               child: Padding(
-                padding: .all(16),
+                padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
             appendLoadingWidget: const Center(
               child: Padding(
-                padding: .all(16),
+                padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
             emptyWidget: const Center(child: Text('No Item')),
-            padding: const .symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             stickyHeader: true,
             stickyHeaderMinExtentPrototype: const SizedBox(height: 40),
           ),
@@ -251,12 +251,12 @@ class ManualListDemo extends ConsumerWidget {
                 Center(child: Text('$error')),
             initialLoadingWidget: const Center(
               child: Padding(
-                padding: .all(16),
+                padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
             emptyWidget: const Center(child: Text('No Item')),
-            padding: const .symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             autoLoadPrepend: false,
             autoLoadAppend: false,
           ),
@@ -268,13 +268,13 @@ class ManualListDemo extends ConsumerWidget {
                 child: isLoading
                     ? const Center(
                         child: Padding(
-                          padding: .all(16),
+                          padding: EdgeInsets.all(16),
                           child: CircularProgressIndicator.adaptive(),
                         ),
                       )
                     : hasMore
                     ? Padding(
-                        padding: const .all(16),
+                        padding: const EdgeInsets.all(16),
                         child: FilledButton(
                           onPressed: () => dataSource.append(),
                           child: const Text('Load More'),
@@ -312,7 +312,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
           Center(child: Text('$error')),
       initialLoadingWidget: const Center(
         child: Padding(
-          padding: .all(16),
+          padding: EdgeInsets.all(16),
           child: CircularProgressIndicator.adaptive(),
         ),
       ),
@@ -323,7 +323,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
             height: 64,
             child: const Center(
               child: Padding(
-                padding: .all(16),
+                padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
@@ -333,7 +333,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
           return SizedBox(
             height: 64,
             child: const Padding(
-              padding: .all(16),
+              padding: EdgeInsets.all(16),
               child: Center(child: Text('--- Beginning of list ---')),
             ),
           );
@@ -341,7 +341,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
         return SizedBox(
           height: 64,
           child: Padding(
-            padding: const .all(16),
+            padding: const EdgeInsets.all(16),
             child: FilledButton(
               onPressed: () => dataSource.prepend(),
               child: const Text('Load Previous'),
@@ -355,7 +355,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
             height: 64,
             child: const Center(
               child: Padding(
-                padding: .all(16),
+                padding: EdgeInsets.all(16),
                 child: CircularProgressIndicator.adaptive(),
               ),
             ),
@@ -365,7 +365,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
           return SizedBox(
             height: 64,
             child: const Padding(
-              padding: .all(16),
+              padding: EdgeInsets.all(16),
               child: Center(child: Text('--- End of list ---')),
             ),
           );
@@ -373,7 +373,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
         return SizedBox(
           height: 64,
           child: Padding(
-            padding: const .all(16),
+            padding: const EdgeInsets.all(16),
             child: FilledButton(
               onPressed: () => dataSource.append(),
               child: const Text('Load More'),
@@ -381,7 +381,7 @@ class CenteredPagingListDemo extends ConsumerWidget {
           ),
         );
       },
-      padding: const .symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
     );
   }
 }
