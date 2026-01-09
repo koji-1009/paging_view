@@ -77,7 +77,7 @@ class PageManager<PageKey, Value>
     }
 
     if (newPage == null) {
-      value = const Paging(state: LoadStateLoaded(), data: []);
+      value = Paging(state: const LoadStateLoaded(), data: const []);
       return;
     }
 
