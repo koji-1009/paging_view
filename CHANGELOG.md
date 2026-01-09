@@ -1,3 +1,7 @@
+## 2.7.1
+
+* Code cleanup.
+
 ## 2.7.0
 
 * Added caching for `items` getter, providing O(1) access on subsequent reads.
