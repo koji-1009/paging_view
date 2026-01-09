@@ -36,9 +36,9 @@ void main() {
       tester,
     ) async {
       // Simulate initial data with prependKey
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoaded(),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: const [
           PageData(data: ['Item 1'], prependKey: 0),
         ],
       );
@@ -52,9 +52,9 @@ void main() {
 
     testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoading(state: LoadType.prepend),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoading(state: LoadType.prepend),
+        data: const [
           PageData(data: ['Item 1'], prependKey: 0),
         ],
       );
@@ -70,9 +70,9 @@ void main() {
       tester,
     ) async {
       // Simulate no more prepend pages
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoaded(),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: const [
           PageData(data: ['Item 1']),
         ],
       );
@@ -126,9 +126,9 @@ void main() {
       tester,
     ) async {
       // Simulate initial data with appendKey
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoaded(),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: const [
           PageData(data: ['Item 1'], appendKey: 1),
         ],
       );
@@ -142,9 +142,9 @@ void main() {
 
     testWidgets('shows loading text when isLoading is true', (tester) async {
       // Simulate loading state
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoading(state: LoadType.append),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoading(state: LoadType.append),
+        data: const [
           PageData(data: ['Item 1'], appendKey: 1),
         ],
       );
@@ -158,9 +158,9 @@ void main() {
 
     testWidgets('shows "No more append" when hasMore is false', (tester) async {
       // Simulate no more append pages
-      dataSource.notifier.value = const Paging(
-        state: LoadStateLoaded(),
-        data: [
+      dataSource.notifier.value = Paging(
+        state: const LoadStateLoaded(),
+        data: const [
           PageData(data: ['Item 1']),
         ],
       );

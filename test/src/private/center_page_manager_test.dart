@@ -269,23 +269,23 @@ void main() {
 
   group('CenterPageManagerState extension', () {
     test('isLoading returns correct values', () {
-      const init = CenterPaging<int, String>(
-        state: LoadStateInit(),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      final init = CenterPaging<int, String>(
+        state: const LoadStateInit(),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
-      const loaded = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      final loaded = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
-      const loading = CenterPaging<int, String>(
-        state: LoadStateLoading(state: LoadType.append),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      final loading = CenterPaging<int, String>(
+        state: const LoadStateLoading(state: LoadType.append),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
       const warning = CenterWarning<int, String>(
         error: 'error',
@@ -311,20 +311,20 @@ void main() {
       );
 
       // From prependPages first
-      const withPrepend = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [page2],
-        centerPages: [page1],
-        appendPages: [],
+      final withPrepend = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [page2],
+        centerPages: const [page1],
+        appendPages: const [],
       );
       expect(withPrepend.prependPageKey, 0);
 
       // From centerPages if no prependPages
-      const withoutPrepend = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [],
+      final withoutPrepend = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [],
       );
       expect(withoutPrepend.prependPageKey, 1);
 
@@ -349,20 +349,20 @@ void main() {
       );
 
       // From appendPages last
-      const withAppend = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [page2],
+      final withAppend = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [page2],
       );
       expect(withAppend.appendPageKey, 3);
 
       // From centerPages if no appendPages
-      const withoutAppend = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [],
+      final withoutAppend = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [],
       );
       expect(withoutAppend.appendPageKey, 2);
 
@@ -379,11 +379,11 @@ void main() {
       const page2 = PageData<int, String>(data: ['c', 'd']);
       const page3 = PageData<int, String>(data: ['e', 'f']);
 
-      const paging = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [page1],
-        centerPages: [page2],
-        appendPages: [page3],
+      final paging = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [page1],
+        centerPages: const [page2],
+        appendPages: const [page3],
       );
 
       expect(paging.prependItems, ['a', 'b']);
@@ -396,11 +396,11 @@ void main() {
       const page1 = PageData<int, String>(data: ['a', 'b']);
       const page2 = PageData<int, String>(data: ['c', 'd']);
 
-      const paging = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [page1, page2], // page1 is newer, page2 is older
-        centerPages: [],
-        appendPages: [],
+      final paging = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [page1, page2], // page1 is newer, page2 is older
+        centerPages: const [],
+        appendPages: const [],
       );
 
       expect(paging.prependItems, ['a', 'b', 'c', 'd']);
@@ -410,23 +410,23 @@ void main() {
   group('CenterPaging equality', () {
     test('equals works correctly', () {
       const page1 = PageData<int, String>(data: ['a']);
-      const paging1 = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [],
+      final paging1 = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [],
       );
-      const paging2 = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [],
+      final paging2 = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [],
       );
-      const paging3 = CenterPaging<int, String>(
-        state: LoadStateInit(),
-        prependPages: [],
-        centerPages: [page1],
-        appendPages: [],
+      final paging3 = CenterPaging<int, String>(
+        state: const LoadStateInit(),
+        prependPages: const [],
+        centerPages: const [page1],
+        appendPages: const [],
       );
 
       expect(paging1, equals(paging2));
@@ -435,11 +435,11 @@ void main() {
     });
 
     test('toString returns expected format', () {
-      const paging = CenterPaging<int, String>(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      final paging = CenterPaging<int, String>(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
       expect(paging.toString(), contains('CenterPaging'));
     });

@@ -8,6 +8,18 @@ import 'package:paging_view/src/private/entity.dart';
 sealed class CenterPageManagerState<PageKey, Value> {
   /// Creates a [CenterPageManagerState].
   const CenterPageManagerState();
+
+  /// A flattened list of prepend items.
+  List<Value> get prependItems;
+
+  /// A flattened list of center items.
+  List<Value> get centerItems;
+
+  /// A flattened list of append items.
+  List<Value> get appendItems;
+
+  /// A flattened list of all items in display order.
+  List<Value> get allItems;
 }
 
 /// A state representing successfully loaded pages of data for center paging.
@@ -15,7 +27,7 @@ sealed class CenterPageManagerState<PageKey, Value> {
 class CenterPaging<PageKey, Value>
     extends CenterPageManagerState<PageKey, Value> {
   /// Creates a [CenterPaging] state.
-  const CenterPaging({
+  CenterPaging({
     required this.state,
     required this.prependPages,
     required this.centerPages,
@@ -23,11 +35,11 @@ class CenterPaging<PageKey, Value>
   });
 
   /// Creates an initial [CenterPaging] state with no data.
-  factory CenterPaging.init() => const CenterPaging(
-    state: LoadStateInit(),
-    prependPages: [],
-    centerPages: [],
-    appendPages: [],
+  factory CenterPaging.init() => CenterPaging(
+    state: const LoadStateInit(),
+    prependPages: const [],
+    centerPages: const [],
+    appendPages: const [],
   );
 
   /// The current loading state.
@@ -42,6 +54,32 @@ class CenterPaging<PageKey, Value>
 
   /// Pages loaded via append operations.
   final List<PageData<PageKey, Value>> appendPages;
+
+  /// A flattened list of prepend items.
+  @override
+  late final List<Value> prependItems = [
+    for (final page in prependPages) ...page.data,
+  ];
+
+  /// A flattened list of center items.
+  @override
+  late final List<Value> centerItems = [
+    for (final page in centerPages) ...page.data,
+  ];
+
+  /// A flattened list of append items.
+  @override
+  late final List<Value> appendItems = [
+    for (final page in appendPages) ...page.data,
+  ];
+
+  /// A flattened list of all items in display order.
+  @override
+  late final List<Value> allItems = [
+    ...prependItems,
+    ...centerItems,
+    ...appendItems,
+  ];
 
   @override
   String toString() =>
@@ -103,6 +141,22 @@ class CenterWarning<PageKey, Value>
 
   @override
   int get hashCode => Object.hash(runtimeType, error, stackTrace);
+
+  /// A flattened list of prepend items.
+  @override
+  List<Value> get prependItems => const [];
+
+  /// A flattened list of center items.
+  @override
+  List<Value> get centerItems => const [];
+
+  /// A flattened list of append items.
+  @override
+  List<Value> get appendItems => const [];
+
+  /// A flattened list of all items in display order.
+  @override
+  List<Value> get allItems => const [];
 }
 
 /// Provides convenient accessors for [CenterPageManagerState].
@@ -167,20 +221,6 @@ extension CenterPagingStateExt<PageKey, Value>
     CenterPaging(:final appendPages) => appendPages,
     CenterWarning() => const [],
   };
-
-  /// A flattened list of prepend items.
-  List<Value> get prependItems => [
-    ...prependPages.map((e) => e.data).flattened,
-  ];
-
-  /// A flattened list of center items.
-  List<Value> get centerItems => [...centerPages.map((e) => e.data).flattened];
-
-  /// A flattened list of append items.
-  List<Value> get appendItems => [...appendPages.map((e) => e.data).flattened];
-
-  /// A flattened list of all items in display order.
-  List<Value> get allItems => [...prependItems, ...centerItems, ...appendItems];
 }
 
 /// A [ValueNotifier] that manages the [CenterPageManagerState] for center paging.
@@ -289,11 +329,11 @@ class CenterPageManager<PageKey, Value>
     }
 
     if (newPage == null) {
-      value = const CenterPaging(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      value = CenterPaging(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
       return;
     }
@@ -313,11 +353,11 @@ class CenterPageManager<PageKey, Value>
     }
 
     if (newPage == null) {
-      value = const CenterPaging(
-        state: LoadStateLoaded(),
-        prependPages: [],
-        centerPages: [],
-        appendPages: [],
+      value = CenterPaging(
+        state: const LoadStateLoaded(),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
       );
       return;
     }

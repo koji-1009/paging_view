@@ -115,22 +115,29 @@ class LoadStateLoading extends LoadState {
 sealed class PageManagerState<PageKey, Value> {
   /// Creates a `PageManagerState`.
   const PageManagerState();
+
+  /// A flattened list of all items from all loaded pages.
+  List<Value> get items;
 }
 
 /// A state representing successfully loaded pages of data.
 @immutable
 class Paging<PageKey, Value> extends PageManagerState<PageKey, Value> {
   /// Creates a [Paging] state.
-  const Paging({required this.state, required this.data});
+  Paging({required this.state, required this.data});
 
   /// Creates an initial [Paging] state with no data.
-  factory Paging.init() => const Paging(state: LoadStateInit(), data: []);
+  factory Paging.init() => Paging(state: const LoadStateInit(), data: const []);
 
   /// The current loading state of the data.
   final LoadState state;
 
   /// The list of loaded pages.
   final List<PageData<PageKey, Value>> data;
+
+  /// A flattened list of all items from all loaded pages.
+  @override
+  late final List<Value> items = [for (final page in data) ...page.data];
 
   @override
   String toString() => 'Paging(state: $state, data: $data)';
@@ -178,6 +185,10 @@ class Warning<PageKey, Value> extends PageManagerState<PageKey, Value> {
 
   @override
   int get hashCode => Object.hash(runtimeType, error, stackTrace);
+
+  /// A flattened list of all items from all loaded pages.
+  @override
+  List<Value> get items => const [];
 }
 
 /// Provides convenient accessors for `PageManagerState`.
@@ -209,9 +220,6 @@ extension PagingStateExt<PageKey, Value> on PageManagerState<PageKey, Value> {
     Paging(:final data) => data,
     Warning() => const [],
   };
-
-  /// A flattened list of all items from all loaded pages.
-  List<Value> get items => [...pages.map((e) => e.data).flattened];
 }
 
 /// Defines the type of data loading operation.
