@@ -1,3 +1,8 @@
+## 2.7.0
+
+* Added caching for `items` getter, providing O(1) access on subsequent reads.
+* Fix example project.
+
 ## 2.6.4
 
 * Update lint rules.
