@@ -9,6 +9,15 @@ sealed class CenterPageManagerState<PageKey, Value> {
   /// Creates a [CenterPageManagerState].
   const CenterPageManagerState();
 
+  /// Pages loaded via prepend operations.
+  List<PageData<PageKey, Value>> get prependPages;
+
+  /// The initial/center pages loaded via refresh.
+  List<PageData<PageKey, Value>> get centerPages;
+
+  /// Pages loaded via append operations.
+  List<PageData<PageKey, Value>> get appendPages;
+
   /// A flattened list of prepend items.
   List<Value> get prependItems;
 
@@ -47,12 +56,15 @@ class CenterPaging<PageKey, Value>
 
   /// Pages loaded via prepend operations.
   /// These are displayed in reverse order (most recent prepend first).
+  @override
   final List<PageData<PageKey, Value>> prependPages;
 
   /// The initial/center pages loaded via refresh.
+  @override
   final List<PageData<PageKey, Value>> centerPages;
 
   /// Pages loaded via append operations.
+  @override
   final List<PageData<PageKey, Value>> appendPages;
 
   /// A flattened list of prepend items.
@@ -157,6 +169,18 @@ class CenterWarning<PageKey, Value>
   /// A flattened list of all items in display order.
   @override
   List<Value> get allItems => const [];
+
+  /// Pages loaded via prepend operations.
+  @override
+  List<PageData<PageKey, Value>> get prependPages => const [];
+
+  /// The initial/center pages loaded via refresh.
+  @override
+  List<PageData<PageKey, Value>> get centerPages => const [];
+
+  /// Pages loaded via append operations.
+  @override
+  List<PageData<PageKey, Value>> get appendPages => const [];
 }
 
 /// Provides convenient accessors for [CenterPageManagerState].
@@ -203,24 +227,6 @@ extension CenterPagingStateExt<PageKey, Value>
         return null;
     }
   }
-
-  /// The prepend pages (displayed in reverse order in the UI).
-  List<PageData<PageKey, Value>> get prependPages => switch (this) {
-    CenterPaging(:final prependPages) => prependPages,
-    CenterWarning() => const [],
-  };
-
-  /// The center pages (the initial anchor point).
-  List<PageData<PageKey, Value>> get centerPages => switch (this) {
-    CenterPaging(:final centerPages) => centerPages,
-    CenterWarning() => const [],
-  };
-
-  /// The append pages.
-  List<PageData<PageKey, Value>> get appendPages => switch (this) {
-    CenterPaging(:final appendPages) => appendPages,
-    CenterWarning() => const [],
-  };
 }
 
 /// A [ValueNotifier] that manages the [CenterPageManagerState] for center paging.
