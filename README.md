@@ -589,3 +589,7 @@ class _CenterPagingListDemoState extends State<CenterPagingListDemo> {
 ## API Reference
 
 See the [API documentation](https://pub.dev/documentation/paging_view/latest/) for more details on all the available classes and widgets.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
