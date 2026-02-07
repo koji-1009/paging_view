@@ -11,20 +11,20 @@ Whether you are building a simple infinite scroll list, a complex grid, a groupe
 
 ## Features
 
-- **Separation of Concerns**: Defines data loading logic in a dedicated `DataSource` class, keeping your Widgets clean, focused, and testable.
-- **Real-time Data Updates**: `DataSource` allows dynamic `updateItem`, `updateItems`, `insertItem`, and `removeItem` operations for seamless UI synchronization.
-- **Versatile UI**:
-  - `PagingList`, `PagingGrid`: High-level widgets for common use cases.
-  - `SliverPagingList`, `SliverPagingGrid`: For use in a `CustomScrollView` to create sophisticated scroll effects (e.g., with an `SliverAppBar`).
-- **Grouped Lists**: Built-in support for `GroupedPagingList` and `GroupedPagingGrid`, making it easy to render sectioned data (e.g., by date or category) with sticky headers.
-- **Bidirectional Loading**: Supports `Refresh`, `Append` (load more), and `Prepend` (load previous/history), making it ideal for feeds and chat applications.
-- **Manual Paging Control**: Provides `autoLoadAppend=false` and `autoLoadPrepend=false` options for widgets and explicit `dataSource.append()`/`prepend()` calls for fine-grained control over data loading.
-- **Modern & Type-Safe**: Leverages modern Dart patterns (sealed classes with switch expressions) to handle loading states elegantly.
-- **Customizable**: Full control over loading indicators, error widgets, and empty states.
+* **Separation of Concerns**: Defines data loading logic in a dedicated `DataSource` class, keeping your Widgets clean, focused, and testable.
+* **Real-time Data Updates**: `DataSource` allows dynamic `updateItem`, `updateItems`, `insertItem`, and `removeItem` operations for seamless UI synchronization.
+* **Versatile UI**:
+  * `PagingList`, `PagingGrid`: High-level widgets for common use cases.
+  * `SliverPagingList`, `SliverPagingGrid`: For use in a `CustomScrollView` to create sophisticated scroll effects (e.g., with an `SliverAppBar`).
+* **Grouped Lists**: Built-in support for `GroupedPagingList` and `GroupedPagingGrid`, making it easy to render sectioned data (e.g., by date or category) with sticky headers.
+* **Bidirectional Loading**: Supports `Refresh`, `Append` (load more), and `Prepend` (load previous/history), making it ideal for feeds and chat applications.
+* **Manual Paging Control**: Provides `autoLoadAppend=false` and `autoLoadPrepend=false` options for widgets and explicit `dataSource.append()`/`prepend()` calls for fine-grained control over data loading.
+* **Modern & Type-Safe**: Leverages modern Dart patterns (sealed classes with switch expressions) to handle loading states elegantly.
+* **Customizable**: Full control over loading indicators, error widgets, and empty states.
 
 ## Live Preview
 
-https://koji-1009.github.io/paging_view/
+[https://koji-1009.github.io/paging_view/](https://koji-1009.github.io/paging_view/)
 
 ## Getting Started
 
@@ -79,7 +79,7 @@ class ExampleDataSource extends DataSource<int, DemoEntity> {
 
       // Determine the key for the next page. If null, it means we've reached the end.
       final nextKey = start + pageSize < allItems.length ? start + pageSize : null;
-      
+
       return Success(page: PageData(data: items, appendKey: nextKey));
     } catch (e, st) {
       return Failure(error: e, stackTrace: st);
@@ -373,13 +373,13 @@ class _ManualLoadDemoState extends State<ManualLoadDemo> {
 
 `DataSource` provides fine-grained control over how errors are handled during `refresh`, `prepend`, or `append` operations, and allows you to observe the outcome of every load via a callback.
 
-- **`LoadErrorPolicy` Enum**: Configures whether the `DataSource` should enter an error state or silently ignore errors for specific actions.
-  - **Default behavior**: If an error occurs, the `DataSource` updates its state to `Failure`. Paging widgets will typically display an error widget with `errorBuilder`.
-  - **`LoadErrorPolicy.ignoreRefresh`**: If a refresh fails, the error is ignored, and the list retains its current items.
-  - **`LoadErrorPolicy.ignorePrepend` / `ignoreAppend`**: If loading more items fails, the error is ignored, and the state reverts to the last successful state. This is useful when you want to suppress the default error view and handle retry logic externally (e.g., showing a SnackBar or a custom button outside the list).
-- **`onLoadFinished` Callback**: A callback invoked after every `load()` operation completes.
-  - **Signature**: `void Function(LoadAction action, LoadResult result)`
-  - **Purpose**: Ideal for analytics, logging, showing transient messages (like `SnackBar`), or managing external UI state for retries.
+* **`LoadErrorPolicy` Enum**: Configures whether the `DataSource` should enter an error state or silently ignore errors for specific actions.
+  * **Default behavior**: If an error occurs, the `DataSource` updates its state to `Failure`. Paging widgets will typically display an error widget with `errorBuilder`.
+  * **`LoadErrorPolicy.ignoreRefresh`**: If a refresh fails, the error is ignored, and the list retains its current items.
+  * **`LoadErrorPolicy.ignorePrepend` / `ignoreAppend`**: If loading more items fails, the error is ignored, and the state reverts to the last successful state. This is useful when you want to suppress the default error view and handle retry logic externally (e.g., showing a SnackBar or a custom button outside the list).
+* **`onLoadFinished` Callback**: A callback invoked after every `load()` operation completes.
+  * **Signature**: `void Function(LoadAction action, LoadResult result)`
+  * **Purpose**: Ideal for analytics, logging, showing transient messages (like `SnackBar`), or managing external UI state for retries.
 
 **Example: Implementing a Custom Retry Button**
 
@@ -412,7 +412,7 @@ class _RetryableLoadDemoState extends State<RetryableLoadDemo> {
   void initState() {
     super.initState();
     _dataSource = MyRetryableDataSource();
-    
+
     // Listen for load results to update UI state
     _dataSource.onLoadFinished = (action, result) {
       if (!mounted) return;
@@ -444,7 +444,7 @@ class _RetryableLoadDemoState extends State<RetryableLoadDemo> {
         slivers: [
           SliverPagingList(
             dataSource: _dataSource,
-            builder: (context, item, index) => 
+            builder: (context, item, index) =>
               ListTile(title: Text(item)),
           ),
           // Custom Footer for Retry
@@ -479,17 +479,17 @@ class _RetryableLoadDemoState extends State<RetryableLoadDemo> {
 
 Unlike the standard `DataSource` which manages a single list of pages, `CenterDataSource` manages three separate segments:
 
-- **Prepend Pages**: Pages loaded via `prepend()` (displayed above the center)
-- **Center Pages**: The initial page(s) loaded via `refresh()` (the anchor point)
-- **Append Pages**: Pages loaded via `append()` (displayed below the center)
+* **Prepend Pages**: Pages loaded via `prepend()` (displayed above the center)
+* **Center Pages**: The initial page(s) loaded via `refresh()` (the anchor point)
+* **Append Pages**: Pages loaded via `append()` (displayed below the center)
 
 The center segment uses a `GlobalKey` to mark its position in the `CustomScrollView`. When new prepend pages are loaded, existing prepend content moves to the center segment, ensuring the scroll position remains stable.
 
 ### When to Use CenterPagingList
 
-- **Chat applications**: Load older messages (prepend) and newer messages (append) around the current view
-- **Timeline feeds**: Browse content in both directions with stable scroll position
-- **Infinite scrolling with history**: Load past and future data dynamically
+* **Chat applications**: Load older messages (prepend) and newer messages (append) around the current view
+* **Timeline feeds**: Browse content in both directions with stable scroll position
+* **Infinite scrolling with history**: Load past and future data dynamically
 
 **Example: Implementing a CenterPagingList**
 
