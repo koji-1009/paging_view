@@ -1,3 +1,8 @@
+## 2.7.2
+
+* Update README.
+* Format code.
+
 ## 2.7.1
 
 * Code cleanup.
