@@ -86,6 +86,7 @@ class ExampleDataSource extends DataSource<int, DemoEntity> {
     }
   }
 }
+```
 
 #### Updating Data in DataSource
 
@@ -581,6 +582,7 @@ class _CenterPagingListDemoState extends State<CenterPagingListDemo> {
           );
         }
         return null;
+      },
     );
   }
 }
