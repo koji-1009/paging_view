@@ -443,18 +443,6 @@ class CenterPageManager<PageKey, Value>
     );
   }
 
-  /// Helper to safely recreate PageData with updated list of items.
-  PageData<PageKey, Value> _createUpdatedPage(
-    PageData<PageKey, Value> original,
-    List<Value> updatedData,
-  ) {
-    return PageData(
-      data: updatedData,
-      prependKey: original.prependKey,
-      appendKey: original.appendKey,
-    );
-  }
-
   /// Updates a single item at the specified [index] across all segments.
   void updateItem(int index, Value Function(Value item) update) {
     if (_disposed) {
@@ -613,10 +601,11 @@ class CenterPageManager<PageKey, Value>
         final targetSegment = getLastSegmentToAppend();
         final lastPage = targetSegment.last;
 
-        final newLastPage = _createUpdatedPage(lastPage, [
-          ...lastPage.data,
-          item,
-        ]);
+        final newLastPage = PageData(
+          data: [...lastPage.data, item],
+          prependKey: lastPage.prependKey,
+          appendKey: lastPage.appendKey,
+        );
 
         if (targetSegment == currentVal.appendPages) {
           value = CenterPaging(
@@ -698,7 +687,13 @@ class CenterPageManager<PageKey, Value>
       for (final page in segment) {
         final newItems = processor(page, itemIndexAcrossPages).toList();
         if (newItems.isNotEmpty) {
-          updatedSegment.add(_createUpdatedPage(page, newItems));
+          updatedSegment.add(
+            PageData(
+              data: newItems,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
         }
         itemIndexAcrossPages += page.data.length;
       }
