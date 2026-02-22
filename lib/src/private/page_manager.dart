@@ -139,13 +139,10 @@ class PageManager<PageKey, Value>
     }
 
     try {
-      final items = currentValue.items;
-      if (index < 0 || index >= items.length) {
-        throw RangeError.index(index, items, 'index', null, items.length);
+      final totalItems = _getTotalItemCount(currentValue);
+      if (index < 0 || index >= totalItems) {
+        throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
-
-      final itemToUpdate = items[index];
-      final updatedItem = update(itemToUpdate);
 
       var itemIndexAcrossPages = 0;
       final updatedPages = <PageData<PageKey, Value>>[];
@@ -158,6 +155,9 @@ class PageManager<PageKey, Value>
 
         if (isTargetInThisPage) {
           final indexInPage = index - itemIndexAcrossPages;
+          final itemToUpdate = page.data[indexInPage];
+          final updatedItem = update(itemToUpdate);
+
           final updatedPageData = List<Value>.from(page.data);
           updatedPageData[indexInPage] = updatedItem;
 
@@ -246,9 +246,9 @@ class PageManager<PageKey, Value>
     }
 
     try {
-      final items = currentValue.items;
-      if (index < 0 || index >= items.length) {
-        throw RangeError.index(index, items, 'index', null, items.length);
+      final totalItems = _getTotalItemCount(currentValue);
+      if (index < 0 || index >= totalItems) {
+        throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
 
       var itemIndexAcrossPages = 0;
@@ -358,13 +358,13 @@ class PageManager<PageKey, Value>
     }
 
     try {
-      final items = currentValue.items;
-      if (index < 0 || index > items.length) {
-        throw RangeError.range(index, 0, items.length, 'index');
+      final totalItems = _getTotalItemCount(currentValue);
+      if (index < 0 || index > totalItems) {
+        throw RangeError.range(index, 0, totalItems, 'index');
       }
 
       // Special case: insert at the end
-      if (index == items.length) {
+      if (index == totalItems) {
         if (currentValue.pages.isEmpty) {
           // Create a new page if there are no pages
           value = Paging(
@@ -424,5 +424,13 @@ class PageManager<PageKey, Value>
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
+  }
+
+  int _getTotalItemCount(Paging<PageKey, Value> paging) {
+    int count = 0;
+    for (final page in paging.data) {
+      count += page.data.length;
+    }
+    return count;
   }
 }

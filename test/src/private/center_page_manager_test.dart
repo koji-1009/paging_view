@@ -265,6 +265,145 @@ void main() {
         expect(manager.value, isA<CenterWarning<int, String>>());
       });
     });
+
+    group('Item manipulation', () {
+      setUp(() {
+        manager.setCenter(newPage: page1); // ['a', 'b']
+        manager.prepend(newPage: page2); // ['c', 'd'] at prepend
+        manager.append(newPage: page3); // ['e', 'f'] at append
+        // allItems: ['c', 'd', 'a', 'b', 'e', 'f']
+      });
+
+      tearDown(() {
+        manager.dispose();
+      });
+
+      test('updateItem() updates an item in prepend segment', () {
+        manager.updateItem(0, (item) => '${item}X');
+        expect(manager.value.allItems, ['cX', 'd', 'a', 'b', 'e', 'f']);
+      });
+
+      test('updateItem() updates an item in center segment', () {
+        manager.updateItem(2, (item) => '${item}X');
+        expect(manager.value.allItems, ['c', 'd', 'aX', 'b', 'e', 'f']);
+      });
+
+      test('updateItem() updates an item in append segment', () {
+        manager.updateItem(5, (item) => '${item}X');
+        expect(manager.value.allItems, ['c', 'd', 'a', 'b', 'e', 'fX']);
+      });
+
+      test('updateItems() updates all specified items', () {
+        manager.updateItems(
+          (index, item) => index % 2 == 0 ? '${item}X' : item,
+        );
+        expect(manager.value.allItems, ['cX', 'd', 'aX', 'b', 'eX', 'f']);
+      });
+
+      test('removeItem() removes an item from prepend segment', () {
+        manager.removeItem(1); // 'd'
+        expect(manager.value.allItems, ['c', 'a', 'b', 'e', 'f']);
+      });
+
+      test('removeItem() removes an item from center segment', () {
+        manager.removeItem(2); // 'a'
+        expect(manager.value.allItems, ['c', 'd', 'b', 'e', 'f']);
+      });
+
+      test('removeItem() removes an item from append segment', () {
+        manager.removeItem(4); // 'e'
+        expect(manager.value.allItems, ['c', 'd', 'a', 'b', 'f']);
+      });
+
+      test('removeItems() removes all matching items', () {
+        manager.removeItems((index, item) => item == 'a' || item == 'f');
+        expect(manager.value.allItems, ['c', 'd', 'b', 'e']);
+      });
+
+      test('insertItem() inserts an item into prepend segment', () {
+        manager.insertItem(1, 'X');
+        expect(manager.value.allItems, ['c', 'X', 'd', 'a', 'b', 'e', 'f']);
+      });
+
+      test('insertItem() inserts an item into center segment', () {
+        manager.insertItem(2, 'X');
+        expect(manager.value.allItems, ['c', 'd', 'X', 'a', 'b', 'e', 'f']);
+      });
+
+      test('insertItem() inserts an item into append segment', () {
+        manager.insertItem(5, 'X');
+        expect(manager.value.allItems, ['c', 'd', 'a', 'b', 'e', 'X', 'f']);
+      });
+
+      test('insertItem() at the very end adds to the last segment', () {
+        manager.insertItem(6, 'X');
+        expect(manager.value.allItems, ['c', 'd', 'a', 'b', 'e', 'f', 'X']);
+        expect(manager.value.appendItems, ['e', 'f', 'X']);
+      });
+
+      test(
+        'insertItem() at the very end when only center exists adding to centerPages',
+        () {
+          manager.setCenter(newPage: page1);
+          manager.insertItem(2, 'X');
+          expect(manager.value.allItems, ['a', 'b', 'X']);
+          expect(manager.value.centerItems, ['a', 'b', 'X']);
+        },
+      );
+
+      test(
+        'insertItem() at the very end when only prepend exists adding to prependPages',
+        () {
+          manager.setCenter(newPage: null);
+          manager.changeState(type: LoadType.prepend);
+          manager.prepend(newPage: page1);
+          manager.insertItem(2, 'X');
+          expect(manager.value.allItems, ['a', 'b', 'X']);
+          expect(manager.value.prependItems, ['a', 'b', 'X']);
+        },
+      );
+
+      test('insertItem() on empty state sets center', () {
+        manager.dispose();
+        manager = CenterPageManager<int, String>();
+        manager.insertItem(0, 'X');
+        expect(manager.value.centerItems, ['X']);
+      });
+
+      test('manipulation with out-of-bounds index sets error', () {
+        manager.updateItem(99, (item) => item);
+        expect(manager.value, isA<CenterWarning<int, String>>());
+
+        manager.setCenter(newPage: page1);
+        manager.removeItem(99);
+        expect(manager.value, isA<CenterWarning<int, String>>());
+
+        manager.setCenter(newPage: page1);
+        manager.insertItem(99, 'X');
+        expect(manager.value, isA<CenterWarning<int, String>>());
+      });
+
+      test('manipulation with inner exceptions sets error', () {
+        manager.updateItems((index, item) => throw Exception('test'));
+        expect(manager.value, isA<CenterWarning<int, String>>());
+
+        manager.setCenter(newPage: page1);
+        manager.removeItems((index, item) => throw Exception('test'));
+        expect(manager.value, isA<CenterWarning<int, String>>());
+      });
+
+      test('methods do nothing when state is not CenterPaging', () {
+        manager.setError(error: 'err', stackTrace: null);
+
+        manager.updateItem(0, (item) => item);
+        manager.updateItems((index, item) => item);
+        manager.removeItem(0);
+        manager.removeItems((index, item) => false);
+        manager.insertItem(0, 'X');
+
+        expect(manager.value, isA<CenterWarning<int, String>>());
+      });
+    });
   });
 
   group('CenterPageManagerState extension', () {
