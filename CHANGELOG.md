@@ -1,3 +1,9 @@
+## 2.8.0
+
+* Add item manipulation methods (`updateItem`, `updateItems`, `removeItem`, `removeItems`, `insertItem`) in `CenterDataSource` and `CenterPageManager`.
+* Optimize all item manipulation methods in `PageManager` and `CenterPageManager`.
+* Add edge case tests.
+
 ## 2.7.2
 
 * Update README.
