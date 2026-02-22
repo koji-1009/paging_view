@@ -442,4 +442,269 @@ class CenterPageManager<PageKey, Value>
       appendPages: [newPage],
     );
   }
+
+  /// Updates a single item at the specified [index] across all segments.
+  void updateItem(int index, Value Function(Value item) update) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is! CenterPaging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final totalItems = _getTotalItemCount(currentVal);
+      if (index < 0 || index >= totalItems) {
+        throw RangeError.range(index, 0, totalItems - 1, 'index');
+      }
+
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData[indexInPage] = update(page.data[indexInPage]);
+          return updatedPageData;
+        }
+        return page.data;
+      });
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Updates all items currently in the list across all segments.
+  void updateItems(Value Function(int index, Value item) update) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is! CenterPaging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final updatedPageData = <Value>[];
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = startIndex + i;
+          updatedPageData.add(update(globalIndex, page.data[i]));
+        }
+        return updatedPageData;
+      });
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Removes the item at the specified [index] across all segments.
+  void removeItem(int index) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is! CenterPaging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final totalItems = _getTotalItemCount(currentVal);
+      if (index < 0 || index >= totalItems) {
+        throw RangeError.range(index, 0, totalItems - 1, 'index');
+      }
+
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.removeAt(indexInPage);
+          return updatedPageData;
+        }
+        return page.data;
+      });
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Removes all items that satisfy the given [test] predicate.
+  void removeItems(bool Function(int index, Value item) test) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is! CenterPaging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final updatedPageData = <Value>[];
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = startIndex + i;
+          final item = page.data[i];
+          if (!test(globalIndex, item)) {
+            updatedPageData.add(item);
+          }
+        }
+        return updatedPageData;
+      });
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  /// Inserts an [item] at the specified [index].
+  void insertItem(int index, Value item) {
+    if (_disposed) {
+      return;
+    }
+
+    final currentVal = value;
+    if (currentVal is! CenterPaging<PageKey, Value>) {
+      return;
+    }
+
+    try {
+      final totalItems = _getTotalItemCount(currentVal);
+      if (index < 0 || index > totalItems) {
+        throw RangeError.range(index, 0, totalItems, 'index');
+      }
+
+      // Special case: insert into an empty list
+      if (totalItems == 0) {
+        value = CenterPaging(
+          state: currentVal.state,
+          prependPages: const [],
+          centerPages: [
+            PageData(data: [item]),
+          ],
+          appendPages: const [],
+        );
+        return;
+      }
+
+      // Identifies the last non-empty segment to append if inserting at the very end
+      List<PageData<PageKey, Value>> getLastSegmentToAppend() {
+        if (currentVal.appendPages.isNotEmpty) return currentVal.appendPages;
+        if (currentVal.centerPages.isNotEmpty) return currentVal.centerPages;
+        return currentVal.prependPages;
+      }
+
+      if (index == totalItems) {
+        final targetSegment = getLastSegmentToAppend();
+        final lastPage = targetSegment.last;
+
+        final newLastPage = PageData(
+          data: [...lastPage.data, item],
+          prependKey: lastPage.prependKey,
+          appendKey: lastPage.appendKey,
+        );
+
+        if (targetSegment == currentVal.appendPages) {
+          value = CenterPaging(
+            state: currentVal.state,
+            prependPages: currentVal.prependPages,
+            centerPages: currentVal.centerPages,
+            appendPages: [
+              ...currentVal.appendPages.take(currentVal.appendPages.length - 1),
+              newLastPage,
+            ],
+          );
+        } else if (targetSegment == currentVal.centerPages) {
+          value = CenterPaging(
+            state: currentVal.state,
+            prependPages: currentVal.prependPages,
+            centerPages: [
+              ...currentVal.centerPages.take(currentVal.centerPages.length - 1),
+              newLastPage,
+            ],
+            appendPages: currentVal.appendPages,
+          );
+        } else {
+          value = CenterPaging(
+            state: currentVal.state,
+            prependPages: [
+              ...currentVal.prependPages.take(
+                currentVal.prependPages.length - 1,
+              ),
+              newLastPage,
+            ],
+            centerPages: currentVal.centerPages,
+            appendPages: currentVal.appendPages,
+          );
+        }
+        return;
+      }
+
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.insert(indexInPage, item);
+          return updatedPageData;
+        }
+        return page.data;
+      });
+    } catch (error, stackTrace) {
+      setError(error: error, stackTrace: stackTrace);
+    }
+  }
+
+  int _getTotalItemCount(CenterPaging<PageKey, Value> paging) {
+    int count = 0;
+    for (final page in paging.prependPages) {
+      count += page.data.length;
+    }
+    for (final page in paging.centerPages) {
+      count += page.data.length;
+    }
+    for (final page in paging.appendPages) {
+      count += page.data.length;
+    }
+    return count;
+  }
+
+  /// Helper to iterate and update segments without mutating external variables
+  CenterPaging<PageKey, Value> _updateSegments(
+    CenterPaging<PageKey, Value> currentVal,
+    Iterable<Value> Function(PageData<PageKey, Value> page, int startIndex)
+    processor,
+  ) {
+    var itemIndexAcrossPages = 0;
+
+    List<PageData<PageKey, Value>> processSegment(
+      List<PageData<PageKey, Value>> segment,
+    ) {
+      final updatedSegment = <PageData<PageKey, Value>>[];
+      for (final page in segment) {
+        final newItems = processor(page, itemIndexAcrossPages).toList();
+        if (newItems.isNotEmpty) {
+          updatedSegment.add(
+            PageData(
+              data: newItems,
+              prependKey: page.prependKey,
+              appendKey: page.appendKey,
+            ),
+          );
+        }
+        itemIndexAcrossPages += page.data.length;
+      }
+      return updatedSegment;
+    }
+
+    return CenterPaging(
+      state: currentVal.state,
+      prependPages: processSegment(currentVal.prependPages),
+      centerPages: processSegment(currentVal.centerPages),
+      appendPages: processSegment(currentVal.appendPages),
+    );
+  }
 }

@@ -1315,4 +1315,50 @@ void main() {
       expect(testDataSource.onLoadStarted, isNull);
     });
   });
+
+  group('Item manipulation delegates to _manager', () {
+    late TestCenterDataSource dataSource;
+
+    setUp(() async {
+      dataSource = TestCenterDataSource();
+      dataSource.onLoad = (action) {
+        return Future.value(
+          const Success(
+            page: PageData(data: ['a', 'b'], prependKey: 0, appendKey: 2),
+          ),
+        );
+      };
+      await dataSource.refresh();
+      // Now centerItems: ['a', 'b']
+    });
+
+    tearDown(() {
+      dataSource.dispose();
+    });
+
+    test('updateItem', () {
+      dataSource.updateItem(0, (item) => '${item}X');
+      expect(dataSource.notifier.value.centerItems, ['aX', 'b']);
+    });
+
+    test('updateItems', () {
+      dataSource.updateItems((index, item) => '${item}X');
+      expect(dataSource.notifier.value.centerItems, ['aX', 'bX']);
+    });
+
+    test('removeItem', () {
+      dataSource.removeItem(1);
+      expect(dataSource.notifier.value.centerItems, ['a']);
+    });
+
+    test('removeItems', () {
+      dataSource.removeItems((index, item) => item == 'a');
+      expect(dataSource.notifier.value.centerItems, ['b']);
+    });
+
+    test('insertItem', () {
+      dataSource.insertItem(1, 'X');
+      expect(dataSource.notifier.value.centerItems, ['a', 'X', 'b']);
+    });
+  });
 }

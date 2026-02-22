@@ -75,6 +75,31 @@ abstract class CenterDataSource<PageKey, Value> {
     _manager.removeListener(listener);
   }
 
+  /// Updates a single item in the list at the specified [index].
+  void updateItem(int index, Value Function(Value item) update) {
+    _manager.updateItem(index, update);
+  }
+
+  /// Updates all items currently in the list and notifies listeners.
+  void updateItems(Value Function(int index, Value item) update) {
+    _manager.updateItems(update);
+  }
+
+  /// Removes a single item at the specified [index] and notifies listeners.
+  void removeItem(int index) {
+    _manager.removeItem(index);
+  }
+
+  /// Removes all items that satisfy the given [test] and notifies listeners.
+  void removeItems(bool Function(int index, Value item) test) {
+    _manager.removeItems(test);
+  }
+
+  /// Inserts an [item] at the specified [index] and notifies listeners.
+  void insertItem(int index, Value item) {
+    _manager.insertItem(index, item);
+  }
+
   /// Triggers a full refresh of the data, discarding all segments.
   ///
   /// The result becomes the new Center segment.
