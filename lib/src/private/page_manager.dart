@@ -144,38 +144,16 @@ class PageManager<PageKey, Value>
         throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPages = <PageData<PageKey, Value>>[];
-
-      for (final page in currentValue.pages) {
+      value = _updatePages(currentValue, (page, startIndex) {
         final pageSize = page.data.length;
-        final isTargetInThisPage =
-            index >= itemIndexAcrossPages &&
-            index < itemIndexAcrossPages + pageSize;
-
-        if (isTargetInThisPage) {
-          final indexInPage = index - itemIndexAcrossPages;
-          final itemToUpdate = page.data[indexInPage];
-          final updatedItem = update(itemToUpdate);
-
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
           final updatedPageData = List<Value>.from(page.data);
-          updatedPageData[indexInPage] = updatedItem;
-
-          updatedPages.add(
-            PageData(
-              data: updatedPageData,
-              prependKey: page.prependKey,
-              appendKey: page.appendKey,
-            ),
-          );
-        } else {
-          updatedPages.add(page);
+          updatedPageData[indexInPage] = update(page.data[indexInPage]);
+          return updatedPageData;
         }
-
-        itemIndexAcrossPages += pageSize;
-      }
-
-      value = Paging(state: currentValue.state, data: updatedPages);
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -197,34 +175,14 @@ class PageManager<PageKey, Value>
     }
 
     try {
-      var itemIndexAcrossPages = 0;
-      final updatedPages = <PageData<PageKey, Value>>[];
-
-      for (final page in currentValue.pages) {
+      value = _updatePages(currentValue, (page, startIndex) {
         final updatedPageData = <Value>[];
-
         for (var i = 0; i < page.data.length; i++) {
-          final globalIndex = itemIndexAcrossPages + i;
-          final item = page.data[i];
-          final updatedItem = update(globalIndex, item);
-          updatedPageData.add(updatedItem);
+          final globalIndex = startIndex + i;
+          updatedPageData.add(update(globalIndex, page.data[i]));
         }
-
-        // Only add page if it still has data
-        if (updatedPageData.isNotEmpty) {
-          updatedPages.add(
-            PageData(
-              data: updatedPageData,
-              prependKey: page.prependKey,
-              appendKey: page.appendKey,
-            ),
-          );
-        }
-
-        itemIndexAcrossPages += page.data.length;
-      }
-
-      value = Paging(state: currentValue.state, data: updatedPages);
+        return updatedPageData;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -251,38 +209,16 @@ class PageManager<PageKey, Value>
         throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPages = <PageData<PageKey, Value>>[];
-
-      for (final page in currentValue.pages) {
+      value = _updatePages(currentValue, (page, startIndex) {
         final pageSize = page.data.length;
-        final isTargetInThisPage =
-            index >= itemIndexAcrossPages &&
-            index < itemIndexAcrossPages + pageSize;
-
-        if (isTargetInThisPage) {
-          final indexInPage = index - itemIndexAcrossPages;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
           final updatedPageData = List<Value>.from(page.data);
           updatedPageData.removeAt(indexInPage);
-
-          // Only add page if it still has data
-          if (updatedPageData.isNotEmpty) {
-            updatedPages.add(
-              PageData(
-                data: updatedPageData,
-                prependKey: page.prependKey,
-                appendKey: page.appendKey,
-              ),
-            );
-          }
-        } else {
-          updatedPages.add(page);
+          return updatedPageData;
         }
-
-        itemIndexAcrossPages += pageSize;
-      }
-
-      value = Paging(state: currentValue.state, data: updatedPages);
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -305,37 +241,17 @@ class PageManager<PageKey, Value>
     }
 
     try {
-      var itemIndexAcrossPages = 0;
-      final updatedPages = <PageData<PageKey, Value>>[];
-
-      for (final page in currentValue.pages) {
+      value = _updatePages(currentValue, (page, startIndex) {
         final updatedPageData = <Value>[];
-
         for (var i = 0; i < page.data.length; i++) {
-          final globalIndex = itemIndexAcrossPages + i;
+          final globalIndex = startIndex + i;
           final item = page.data[i];
-          final shouldRemove = test(globalIndex, item);
-
-          if (!shouldRemove) {
+          if (!test(globalIndex, item)) {
             updatedPageData.add(item);
           }
         }
-
-        // Only add page if it still has data
-        if (updatedPageData.isNotEmpty) {
-          updatedPages.add(
-            PageData(
-              data: updatedPageData,
-              prependKey: page.prependKey,
-              appendKey: page.appendKey,
-            ),
-          );
-        }
-
-        itemIndexAcrossPages += page.data.length;
-      }
-
-      value = Paging(state: currentValue.state, data: updatedPages);
+        return updatedPageData;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -392,35 +308,16 @@ class PageManager<PageKey, Value>
         return;
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPages = <PageData<PageKey, Value>>[];
-
-      for (final page in currentValue.pages) {
+      value = _updatePages(currentValue, (page, startIndex) {
         final pageSize = page.data.length;
-        final isTargetInThisPage =
-            index >= itemIndexAcrossPages &&
-            index < itemIndexAcrossPages + pageSize;
-
-        if (isTargetInThisPage) {
-          final indexInPage = index - itemIndexAcrossPages;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
           final updatedPageData = List<Value>.from(page.data);
           updatedPageData.insert(indexInPage, item);
-
-          updatedPages.add(
-            PageData(
-              data: updatedPageData,
-              prependKey: page.prependKey,
-              appendKey: page.appendKey,
-            ),
-          );
-        } else {
-          updatedPages.add(page);
+          return updatedPageData;
         }
-
-        itemIndexAcrossPages += pageSize;
-      }
-
-      value = Paging(state: currentValue.state, data: updatedPages);
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -432,5 +329,31 @@ class PageManager<PageKey, Value>
       count += page.data.length;
     }
     return count;
+  }
+
+  /// Helper to iterate and update pages without mutating external variables
+  Paging<PageKey, Value> _updatePages(
+    Paging<PageKey, Value> currentVal,
+    Iterable<Value> Function(PageData<PageKey, Value> page, int startIndex)
+    processor,
+  ) {
+    var itemIndexAcrossPages = 0;
+    final updatedPages = <PageData<PageKey, Value>>[];
+
+    for (final page in currentVal.pages) {
+      final newItems = processor(page, itemIndexAcrossPages).toList();
+      if (newItems.isNotEmpty) {
+        updatedPages.add(
+          PageData(
+            data: newItems,
+            prependKey: page.prependKey,
+            appendKey: page.appendKey,
+          ),
+        );
+      }
+      itemIndexAcrossPages += page.data.length;
+    }
+
+    return Paging(state: currentVal.state, data: updatedPages);
   }
 }

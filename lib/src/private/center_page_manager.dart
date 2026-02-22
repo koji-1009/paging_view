@@ -472,47 +472,16 @@ class CenterPageManager<PageKey, Value>
         throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPrepend = <PageData<PageKey, Value>>[];
-      final updatedCenter = <PageData<PageKey, Value>>[];
-      final updatedAppend = <PageData<PageKey, Value>>[];
-
-      // Helper function to process a segment
-      void processSegment(
-        List<PageData<PageKey, Value>> segment,
-        List<PageData<PageKey, Value>> target,
-      ) {
-        for (final page in segment) {
-          final pageSize = page.data.length;
-          final isTargetInThisPage =
-              index >= itemIndexAcrossPages &&
-              index < itemIndexAcrossPages + pageSize;
-
-          if (isTargetInThisPage) {
-            final indexInPage = index - itemIndexAcrossPages;
-            final itemToUpdate = page.data[indexInPage];
-            final updatedItem = update(itemToUpdate);
-
-            final updatedPageData = List<Value>.from(page.data);
-            updatedPageData[indexInPage] = updatedItem;
-            target.add(_createUpdatedPage(page, updatedPageData));
-          } else {
-            target.add(page);
-          }
-          itemIndexAcrossPages += pageSize;
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData[indexInPage] = update(page.data[indexInPage]);
+          return updatedPageData;
         }
-      }
-
-      processSegment(currentVal.prependPages, updatedPrepend);
-      processSegment(currentVal.centerPages, updatedCenter);
-      processSegment(currentVal.appendPages, updatedAppend);
-
-      value = CenterPaging(
-        state: currentVal.state,
-        prependPages: updatedPrepend,
-        centerPages: updatedCenter,
-        appendPages: updatedAppend,
-      );
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -530,42 +499,14 @@ class CenterPageManager<PageKey, Value>
     }
 
     try {
-      var itemIndexAcrossPages = 0;
-      final updatedPrepend = <PageData<PageKey, Value>>[];
-      final updatedCenter = <PageData<PageKey, Value>>[];
-      final updatedAppend = <PageData<PageKey, Value>>[];
-
-      // Helper function to process a segment
-      void processSegment(
-        List<PageData<PageKey, Value>> segment,
-        List<PageData<PageKey, Value>> target,
-      ) {
-        for (final page in segment) {
-          final updatedPageData = <Value>[];
-
-          for (var i = 0; i < page.data.length; i++) {
-            final globalIndex = itemIndexAcrossPages + i;
-            final item = page.data[i];
-            updatedPageData.add(update(globalIndex, item));
-          }
-
-          if (updatedPageData.isNotEmpty) {
-            target.add(_createUpdatedPage(page, updatedPageData));
-          }
-          itemIndexAcrossPages += page.data.length;
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final updatedPageData = <Value>[];
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = startIndex + i;
+          updatedPageData.add(update(globalIndex, page.data[i]));
         }
-      }
-
-      processSegment(currentVal.prependPages, updatedPrepend);
-      processSegment(currentVal.centerPages, updatedCenter);
-      processSegment(currentVal.appendPages, updatedAppend);
-
-      value = CenterPaging(
-        state: currentVal.state,
-        prependPages: updatedPrepend,
-        centerPages: updatedCenter,
-        appendPages: updatedAppend,
-      );
+        return updatedPageData;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -588,47 +529,16 @@ class CenterPageManager<PageKey, Value>
         throw RangeError.range(index, 0, totalItems - 1, 'index');
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPrepend = <PageData<PageKey, Value>>[];
-      final updatedCenter = <PageData<PageKey, Value>>[];
-      final updatedAppend = <PageData<PageKey, Value>>[];
-
-      // Helper function to process a segment
-      void processSegment(
-        List<PageData<PageKey, Value>> segment,
-        List<PageData<PageKey, Value>> target,
-      ) {
-        for (final page in segment) {
-          final pageSize = page.data.length;
-          final isTargetInThisPage =
-              index >= itemIndexAcrossPages &&
-              index < itemIndexAcrossPages + pageSize;
-
-          if (isTargetInThisPage) {
-            final indexInPage = index - itemIndexAcrossPages;
-            final updatedPageData = List<Value>.from(page.data);
-            updatedPageData.removeAt(indexInPage);
-
-            if (updatedPageData.isNotEmpty) {
-              target.add(_createUpdatedPage(page, updatedPageData));
-            }
-          } else {
-            target.add(page);
-          }
-          itemIndexAcrossPages += pageSize;
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.removeAt(indexInPage);
+          return updatedPageData;
         }
-      }
-
-      processSegment(currentVal.prependPages, updatedPrepend);
-      processSegment(currentVal.centerPages, updatedCenter);
-      processSegment(currentVal.appendPages, updatedAppend);
-
-      value = CenterPaging(
-        state: currentVal.state,
-        prependPages: updatedPrepend,
-        centerPages: updatedCenter,
-        appendPages: updatedAppend,
-      );
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -646,44 +556,17 @@ class CenterPageManager<PageKey, Value>
     }
 
     try {
-      var itemIndexAcrossPages = 0;
-      final updatedPrepend = <PageData<PageKey, Value>>[];
-      final updatedCenter = <PageData<PageKey, Value>>[];
-      final updatedAppend = <PageData<PageKey, Value>>[];
-
-      // Helper function to process a segment
-      void processSegment(
-        List<PageData<PageKey, Value>> segment,
-        List<PageData<PageKey, Value>> target,
-      ) {
-        for (final page in segment) {
-          final updatedPageData = <Value>[];
-
-          for (var i = 0; i < page.data.length; i++) {
-            final globalIndex = itemIndexAcrossPages + i;
-            final item = page.data[i];
-            if (!test(globalIndex, item)) {
-              updatedPageData.add(item);
-            }
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final updatedPageData = <Value>[];
+        for (var i = 0; i < page.data.length; i++) {
+          final globalIndex = startIndex + i;
+          final item = page.data[i];
+          if (!test(globalIndex, item)) {
+            updatedPageData.add(item);
           }
-
-          if (updatedPageData.isNotEmpty) {
-            target.add(_createUpdatedPage(page, updatedPageData));
-          }
-          itemIndexAcrossPages += page.data.length;
         }
-      }
-
-      processSegment(currentVal.prependPages, updatedPrepend);
-      processSegment(currentVal.centerPages, updatedCenter);
-      processSegment(currentVal.appendPages, updatedAppend);
-
-      value = CenterPaging(
-        state: currentVal.state,
-        prependPages: updatedPrepend,
-        centerPages: updatedCenter,
-        appendPages: updatedAppend,
-      );
+        return updatedPageData;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -771,44 +654,16 @@ class CenterPageManager<PageKey, Value>
         return;
       }
 
-      var itemIndexAcrossPages = 0;
-      final updatedPrepend = <PageData<PageKey, Value>>[];
-      final updatedCenter = <PageData<PageKey, Value>>[];
-      final updatedAppend = <PageData<PageKey, Value>>[];
-
-      // Helper function to process a segment
-      void processSegment(
-        List<PageData<PageKey, Value>> segment,
-        List<PageData<PageKey, Value>> target,
-      ) {
-        for (final page in segment) {
-          final pageSize = page.data.length;
-          final isTargetInThisPage =
-              index >= itemIndexAcrossPages &&
-              index < itemIndexAcrossPages + pageSize;
-
-          if (isTargetInThisPage) {
-            final indexInPage = index - itemIndexAcrossPages;
-            final updatedPageData = List<Value>.from(page.data);
-            updatedPageData.insert(indexInPage, item);
-            target.add(_createUpdatedPage(page, updatedPageData));
-          } else {
-            target.add(page);
-          }
-          itemIndexAcrossPages += pageSize;
+      value = _updateSegments(currentVal, (page, startIndex) {
+        final pageSize = page.data.length;
+        if (index >= startIndex && index < startIndex + pageSize) {
+          final indexInPage = index - startIndex;
+          final updatedPageData = List<Value>.from(page.data);
+          updatedPageData.insert(indexInPage, item);
+          return updatedPageData;
         }
-      }
-
-      processSegment(currentVal.prependPages, updatedPrepend);
-      processSegment(currentVal.centerPages, updatedCenter);
-      processSegment(currentVal.appendPages, updatedAppend);
-
-      value = CenterPaging(
-        state: currentVal.state,
-        prependPages: updatedPrepend,
-        centerPages: updatedCenter,
-        appendPages: updatedAppend,
-      );
+        return page.data;
+      });
     } catch (error, stackTrace) {
       setError(error: error, stackTrace: stackTrace);
     }
@@ -826,5 +681,35 @@ class CenterPageManager<PageKey, Value>
       count += page.data.length;
     }
     return count;
+  }
+
+  /// Helper to iterate and update segments without mutating external variables
+  CenterPaging<PageKey, Value> _updateSegments(
+    CenterPaging<PageKey, Value> currentVal,
+    Iterable<Value> Function(PageData<PageKey, Value> page, int startIndex)
+    processor,
+  ) {
+    var itemIndexAcrossPages = 0;
+
+    List<PageData<PageKey, Value>> processSegment(
+      List<PageData<PageKey, Value>> segment,
+    ) {
+      final updatedSegment = <PageData<PageKey, Value>>[];
+      for (final page in segment) {
+        final newItems = processor(page, itemIndexAcrossPages).toList();
+        if (newItems.isNotEmpty) {
+          updatedSegment.add(_createUpdatedPage(page, newItems));
+        }
+        itemIndexAcrossPages += page.data.length;
+      }
+      return updatedSegment;
+    }
+
+    return CenterPaging(
+      state: currentVal.state,
+      prependPages: processSegment(currentVal.prependPages),
+      centerPages: processSegment(currentVal.centerPages),
+      appendPages: processSegment(currentVal.appendPages),
+    );
   }
 }
