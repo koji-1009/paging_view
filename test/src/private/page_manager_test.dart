@@ -35,6 +35,18 @@ void main() {
       manager.dispose();
     });
 
+    test('values getter caches the list instance', () {
+      manager.append(newPage: page1);
+      manager.append(newPage: page2);
+
+      final values1 = manager.values;
+      final values2 = manager.values;
+
+      expect(identical(values1, values2), isTrue);
+
+      manager.dispose();
+    });
+
     test('dispose() prevents further state changes', () {
       manager.dispose();
       manager.changeState(type: LoadType.init);
