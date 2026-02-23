@@ -1,3 +1,12 @@
+## Next
+
+* Prevent duplicate load requests while a load is already in progress in `DataSource` and `CenterDataSource`.
+* Improve `CenterPageManager.revertLoad()` to restore the pre-load paging snapshot when available.
+* Add equality and `hashCode` for `LoadStateLoading`.
+* Refactor sliver paging widgets to consume `Paging.items` directly.
+* Clean up key forwarding in paging/grouped paging widgets.
+* Add and expand unit tests for `CenterPageManager` and load state equality.
+
 ## 2.8.0
 
 * Add item manipulation methods (`updateItem`, `updateItems`, `removeItem`, `removeItems`, `insertItem`) in `CenterDataSource` and `CenterPageManager`.
