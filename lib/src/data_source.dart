@@ -183,6 +183,10 @@ abstract class DataSource<PageKey, Value> {
       errorPolicy.contains(LoadErrorPolicy.ignoreAppend);
 
   Future<void> _init() async {
+    if (_manager.isLoading) {
+      return;
+    }
+
     _manager.changeState(type: LoadType.init);
     onLoadStarted?.call(const Refresh());
 
