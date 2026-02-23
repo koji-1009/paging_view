@@ -1,6 +1,6 @@
 name: paging_view
 description: Like Android Jetpack's Paging library 3, manages data and displays paged lists.
-version: 2.8.0
+version: 2.8.1
 repository: https://github.com/koji-1009/paging_view
 issue_tracker: https://github.com/koji-1009/paging_view/issues
 

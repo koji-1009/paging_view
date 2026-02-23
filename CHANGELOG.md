@@ -1,4 +1,4 @@
-## Next
+## 2.8.1
 
 * Prevent duplicate load requests while a load is already in progress in `DataSource` and `CenterDataSource`.
 * Improve `CenterPageManager.revertLoad()` to restore the pre-load paging snapshot when available.
