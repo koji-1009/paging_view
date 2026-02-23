@@ -90,14 +90,6 @@ class LoadStateLoading extends LoadState {
   final LoadType state;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is LoadStateLoading && other.state == state);
-
-  @override
-  int get hashCode => state.hashCode;
-
-  @override
   bool get isInit => false;
 
   @override
@@ -114,6 +106,14 @@ class LoadStateLoading extends LoadState {
 
   @override
   bool get isAppendLoading => state == LoadType.append;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LoadStateLoading && other.state == state);
+
+  @override
+  int get hashCode => state.hashCode;
 
   @override
   String toString() => 'LoadStateLoading(state: $state)';

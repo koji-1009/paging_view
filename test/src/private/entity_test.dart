@@ -37,6 +37,38 @@ void main() {
     });
 
     group('LoadStateLoading', () {
+      test('same LoadType should be equal', () {
+        const init1 = LoadStateLoading(state: LoadType.init);
+        const init2 = LoadStateLoading(state: LoadType.init);
+        const refresh1 = LoadStateLoading(state: LoadType.refresh);
+        const refresh2 = LoadStateLoading(state: LoadType.refresh);
+        const prepend1 = LoadStateLoading(state: LoadType.prepend);
+        const prepend2 = LoadStateLoading(state: LoadType.prepend);
+        const append1 = LoadStateLoading(state: LoadType.append);
+        const append2 = LoadStateLoading(state: LoadType.append);
+
+        expect(init1, equals(init2));
+        expect(refresh1, equals(refresh2));
+        expect(prepend1, equals(prepend2));
+        expect(append1, equals(append2));
+      });
+
+      test('same LoadType should have same hashCode', () {
+        const init1 = LoadStateLoading(state: LoadType.init);
+        const init2 = LoadStateLoading(state: LoadType.init);
+        const refresh1 = LoadStateLoading(state: LoadType.refresh);
+        const refresh2 = LoadStateLoading(state: LoadType.refresh);
+        const prepend1 = LoadStateLoading(state: LoadType.prepend);
+        const prepend2 = LoadStateLoading(state: LoadType.prepend);
+        const append1 = LoadStateLoading(state: LoadType.append);
+        const append2 = LoadStateLoading(state: LoadType.append);
+
+        expect(init1.hashCode, equals(init2.hashCode));
+        expect(refresh1.hashCode, equals(refresh2.hashCode));
+        expect(prepend1.hashCode, equals(prepend2.hashCode));
+        expect(append1.hashCode, equals(append2.hashCode));
+      });
+
       test('with LoadType.init should have correct properties', () {
         const state = LoadStateLoading(state: LoadType.init);
         expect(state.isInit, isFalse);
