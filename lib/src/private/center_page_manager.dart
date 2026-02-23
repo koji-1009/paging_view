@@ -249,6 +249,8 @@ class CenterPageManager<PageKey, Value>
 
   bool _disposed = false;
 
+  CenterPaging<PageKey, Value>? _stateBeforeLoad;
+
   @override
   void dispose() {
     _disposed = true;
@@ -269,6 +271,9 @@ class CenterPageManager<PageKey, Value>
 
     final currentValue = value;
     if (currentValue is CenterPaging<PageKey, Value>) {
+      // Save the current state for potential revert
+      _stateBeforeLoad = currentValue;
+
       // For prepend, move existing prependPages to centerPages
       value = switch (type) {
         LoadType.prepend => CenterPaging(
@@ -314,15 +319,27 @@ class CenterPageManager<PageKey, Value>
       return;
     }
 
-    final currentVal = value;
-    if (currentVal is CenterPaging<PageKey, Value> &&
-        currentVal.state is LoadStateLoading) {
+    final savedState = _stateBeforeLoad;
+    _stateBeforeLoad = null;
+
+    if (savedState != null) {
       value = CenterPaging(
         state: const LoadStateLoaded(),
-        prependPages: currentVal.prependPages,
-        centerPages: currentVal.centerPages,
-        appendPages: currentVal.appendPages,
+        prependPages: savedState.prependPages,
+        centerPages: savedState.centerPages,
+        appendPages: savedState.appendPages,
       );
+    } else {
+      final currentVal = value;
+      if (currentVal is CenterPaging<PageKey, Value> &&
+          currentVal.state is LoadStateLoading) {
+        value = CenterPaging(
+          state: const LoadStateLoaded(),
+          prependPages: currentVal.prependPages,
+          centerPages: currentVal.centerPages,
+          appendPages: currentVal.appendPages,
+        );
+      }
     }
   }
 

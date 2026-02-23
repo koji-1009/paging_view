@@ -3,6 +3,24 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/center_page_manager.dart';
 import 'package:paging_view/src/private/entity.dart';
 
+class _ComparableStackTrace implements StackTrace {
+  _ComparableStackTrace(this.value);
+
+  final String value;
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) =>
+      other is _ComparableStackTrace && other.value == value;
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => value.hashCode;
+
+  @override
+  String toString() => value;
+}
+
 void main() {
   group('CenterPageManager', () {
     late CenterPageManager<int, String> manager;
@@ -263,6 +281,23 @@ void main() {
         manager.setError(error: 'e', stackTrace: null);
         manager.revertLoad();
         expect(manager.value, isA<CenterWarning<int, String>>());
+      });
+
+      test('revertLoad() loads current paging when saved state is null', () {
+        manager.value = CenterPaging<int, String>(
+          state: const LoadStateLoading(state: LoadType.append),
+          prependPages: const [page2],
+          centerPages: const [page1],
+          appendPages: const [page3],
+        );
+
+        manager.revertLoad();
+
+        final paging = manager.value as CenterPaging<int, String>;
+        expect(paging.state, isA<LoadStateLoaded>());
+        expect(paging.prependPages, [page2]);
+        expect(paging.centerPages, [page1]);
+        expect(paging.appendPages, [page3]);
       });
     });
 
@@ -610,6 +645,24 @@ void main() {
         stackTrace: null,
       );
       expect(warning.toString(), contains('CenterWarning'));
+    });
+
+    test('equals handles non-identical but equal stackTrace', () {
+      final stackTrace1 = _ComparableStackTrace('same-stack');
+      final stackTrace2 = _ComparableStackTrace('same-stack');
+
+      final warning1 = CenterWarning<int, String>(
+        error: 'error',
+        stackTrace: stackTrace1,
+      );
+      final warning2 = CenterWarning<int, String>(
+        error: 'error',
+        stackTrace: stackTrace2,
+      );
+
+      expect(identical(stackTrace1, stackTrace2), isFalse);
+      expect(warning1, equals(warning2));
+      expect(warning1.hashCode, equals(warning2.hashCode));
     });
   });
 }

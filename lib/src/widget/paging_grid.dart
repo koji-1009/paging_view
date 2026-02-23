@@ -149,7 +149,6 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      key: key,
       scrollDirection: scrollDirection,
       reverse: reverse,
       controller: controller,
@@ -163,7 +162,6 @@ class PagingGrid<PageKey, Value> extends StatelessWidget {
       clipBehavior: clipBehavior,
       slivers: [
         SliverPagingGrid<PageKey, Value>(
-          key: key,
           gridDelegate: gridDelegate,
           dataSource: dataSource,
           builder: builder,

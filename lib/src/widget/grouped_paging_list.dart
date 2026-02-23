@@ -206,7 +206,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      key: key,
       scrollDirection: scrollDirection,
       reverse: reverse,
       controller: controller,
@@ -221,7 +220,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
       slivers: [
         _separatorBuilder != null
             ? SliverGroupedPagingList<PageKey, Parent, Value>.separated(
-                key: key,
                 dataSource: dataSource,
                 headerBuilder: headerBuilder,
                 itemBuilder: itemBuilder,
@@ -239,7 +237,6 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
                 separatorBuilder: _separatorBuilder,
               )
             : SliverGroupedPagingList<PageKey, Parent, Value>(
-                key: key,
                 dataSource: dataSource,
                 headerBuilder: headerBuilder,
                 itemBuilder: itemBuilder,

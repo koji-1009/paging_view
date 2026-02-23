@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
-import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
@@ -96,11 +95,11 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(:final state, :final data) =>
+        Paging(:final state, :final items) =>
           _separatorBuilder != null
               ? _List<PageKey, Value>.separated(
                   state: state,
-                  pages: data,
+                  items: items,
                   dataSource: dataSource,
                   builder: builder,
                   initialLoadingWidget: initialLoadingWidget,
@@ -115,7 +114,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
                 )
               : _List<PageKey, Value>(
                   state: state,
-                  pages: data,
+                  items: items,
                   dataSource: dataSource,
                   builder: builder,
                   initialLoadingWidget: initialLoadingWidget,
@@ -146,7 +145,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
 class _List<PageKey, Value> extends StatelessWidget {
   const _List({
     required this.state,
-    required this.pages,
+    required this.items,
     required this.dataSource,
     required this.builder,
     required this.initialLoadingWidget,
@@ -161,7 +160,7 @@ class _List<PageKey, Value> extends StatelessWidget {
 
   const _List.separated({
     required this.state,
-    required this.pages,
+    required this.items,
     required this.dataSource,
     required this.builder,
     required this.initialLoadingWidget,
@@ -176,7 +175,7 @@ class _List<PageKey, Value> extends StatelessWidget {
   }) : _separatorBuilder = separatorBuilder;
 
   final LoadState state;
-  final List<PageData<PageKey, Value>> pages;
+  final List<Value> items;
   final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final Widget? initialLoadingWidget;
@@ -211,7 +210,6 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    final items = dataSource.notifier.values;
     if (state.isLoaded && items.isEmpty) {
       if (fillRemainEmptyWidget) {
         return SliverPadding(

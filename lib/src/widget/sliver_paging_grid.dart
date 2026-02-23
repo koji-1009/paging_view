@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
-import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
@@ -78,9 +77,9 @@ class SliverPagingGrid<PageKey, Value> extends StatelessWidget {
     return ValueListenableBuilder<PageManagerState<PageKey, Value>>(
       valueListenable: dataSource.notifier,
       builder: (context, value, child) => switch (value) {
-        Paging(:final state, :final data) => _Grid<PageKey, Value>(
+        Paging(:final state, :final items) => _Grid<PageKey, Value>(
           state: state,
-          pages: data,
+          items: items,
           gridDelegate: gridDelegate,
           dataSource: dataSource,
           builder: builder,
@@ -113,7 +112,7 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   const _Grid({
     required this.gridDelegate,
     required this.state,
-    required this.pages,
+    required this.items,
     required this.dataSource,
     required this.builder,
     required this.initialLoadingWidget,
@@ -128,7 +127,7 @@ class _Grid<PageKey, Value> extends StatelessWidget {
 
   final SliverGridDelegate gridDelegate;
   final LoadState state;
-  final List<PageData<PageKey, Value>> pages;
+  final List<Value> items;
   final DataSource<PageKey, Value> dataSource;
   final TypedWidgetBuilder<Value> builder;
   final Widget? initialLoadingWidget;
@@ -162,7 +161,6 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    final items = dataSource.notifier.values;
     if (state.isLoaded && items.isEmpty) {
       if (fillEmptyWidget) {
         return SliverPadding(
