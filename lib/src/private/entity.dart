@@ -81,12 +81,21 @@ class LoadStateLoaded extends LoadState {
 }
 
 /// The state when a data loading operation is in progress.
+@immutable
 class LoadStateLoading extends LoadState {
   /// Creates a [LoadStateLoading].
   const LoadStateLoading({required this.state});
 
   /// The specific type of loading operation.
   final LoadType state;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LoadStateLoading && other.state == state);
+
+  @override
+  int get hashCode => state.hashCode;
 
   @override
   bool get isInit => false;
