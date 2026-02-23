@@ -175,7 +175,6 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      key: key,
       scrollDirection: scrollDirection,
       reverse: reverse,
       controller: controller,
@@ -189,7 +188,6 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
       clipBehavior: clipBehavior,
       slivers: [
         SliverGroupedPagingGrid<PageKey, Parent, Value>(
-          key: key,
           gridDelegate: gridDelegate,
           dataSource: dataSource,
           headerBuilder: headerBuilder,
