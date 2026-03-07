@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: koji-1009/setup-flutter@da1d7a630a98e2b43650b81da73deb5ac838980f # v1.0.4
+      - uses: koji-1009/setup-flutter@3efb0ef90ae10a6335568455a332da389e5ed2c6 # v1.1.0
         with:
           channel: 'stable'
       - run: flutter pub get
@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: koji-1009/setup-flutter@da1d7a630a98e2b43650b81da73deb5ac838980f # v1.0.4
+      - uses: koji-1009/setup-flutter@3efb0ef90ae10a6335568455a332da389e5ed2c6 # v1.1.0
         with:
           channel: 'stable'
       - run: flutter pub get
@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: koji-1009/setup-flutter@da1d7a630a98e2b43650b81da73deb5ac838980f # v1.0.4
+      - uses: koji-1009/setup-flutter@3efb0ef90ae10a6335568455a332da389e5ed2c6 # v1.1.0
         with:
           channel: 'stable'
       - run: flutter pub get
