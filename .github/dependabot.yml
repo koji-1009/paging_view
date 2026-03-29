@@ -4,3 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "saturday"
+      time: "08:00"
+      timezone: "Asia/Tokyo"
+    groups:
+      github-actions-official:
+        patterns:
+          - "actions/*"
