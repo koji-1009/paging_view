@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: koji-1009/setup-flutter@e869444283cdc5705870adddd145d42cd1cfd627 # v1.1.2
+      - uses: koji-1009/setup-flutter@f3f6da93828bdc04c16df16e88984a1bd8f3ce81 # v1.1.3
         with:
           channel: 'stable'
       - run: flutter pub get
