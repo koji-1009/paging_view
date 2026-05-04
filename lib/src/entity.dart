@@ -17,7 +17,7 @@ sealed class LoadAction<PageKey> {
 /// This typically involves clearing the existing data and loading the first page.
 class Refresh<PageKey> implements LoadAction<PageKey> {
   /// Creates a [Refresh] action.
-  const Refresh();
+  const Refresh(); // coverage:ignore-line
 
   @override
   String toString() => 'Refresh()';
@@ -94,7 +94,7 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 /// does not exist (e.g., requesting a page beyond the end of the data).
 class None<PageKey, Value> implements LoadResult<PageKey, Value> {
   /// Creates a [None] result.
-  const None();
+  const None(); // coverage:ignore-line
 
   @override
   String toString() => 'None()';
