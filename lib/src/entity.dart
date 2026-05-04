@@ -94,7 +94,7 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
 /// does not exist (e.g., requesting a page beyond the end of the data).
 class None<PageKey, Value> implements LoadResult<PageKey, Value> {
   /// Creates a [None] result.
-  const None();
+  const None(); // coverage:ignore-line
 
   @override
   String toString() => 'None()';
