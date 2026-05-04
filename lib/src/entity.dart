@@ -17,7 +17,7 @@ sealed class LoadAction<PageKey> {
 /// This typically involves clearing the existing data and loading the first page.
 class Refresh<PageKey> implements LoadAction<PageKey> {
   /// Creates a [Refresh] action.
-  const Refresh();
+  const Refresh(); // coverage:ignore-line
 
   @override
   String toString() => 'Refresh()';
