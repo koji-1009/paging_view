@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
@@ -43,7 +44,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.physics,
     this.scrollBehavior,
     this.shrinkWrap = false,
-    this.cacheExtent,
+    this.scrollCacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
@@ -76,10 +77,11 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.physics,
     this.scrollBehavior,
     this.shrinkWrap = false,
-    this.cacheExtent,
+    this.scrollCacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
+    // ignore: prefer_initializing_formals
   }) : _separatorBuilder = separatorBuilder;
 
   /// The [GroupedDataSource] that provides the paginated and grouped data.
@@ -184,8 +186,8 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
 
   /// The cache extent of the scroll view.
   ///
-  /// See [ScrollView.cacheExtent].
-  final double? cacheExtent;
+  /// See [ScrollView.scrollCacheExtent].
+  final ScrollCacheExtent? scrollCacheExtent;
 
   /// Determines the way that drag start behavior is handled.
   ///
@@ -213,7 +215,7 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
       physics: physics,
       scrollBehavior: scrollBehavior,
       shrinkWrap: shrinkWrap,
-      cacheExtent: cacheExtent,
+      scrollCacheExtent: scrollCacheExtent,
       dragStartBehavior: dragStartBehavior,
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,

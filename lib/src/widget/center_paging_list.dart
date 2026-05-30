@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/center_data_source.dart';
 import 'package:paging_view/src/function.dart';
@@ -40,7 +41,7 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
     this.physics,
     this.scrollBehavior,
     this.shrinkWrap = false,
-    this.cacheExtent,
+    this.scrollCacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
@@ -66,11 +67,12 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
     this.physics,
     this.scrollBehavior,
     this.shrinkWrap = false,
-    this.cacheExtent,
+    this.scrollCacheExtent,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.clipBehavior = Clip.hardEdge,
     required IndexedWidgetBuilder separatorBuilder,
+    // ignore: prefer_initializing_formals
   }) : _separatorBuilder = separatorBuilder;
 
   /// The [CenterDataSource] that provides the paginated data.
@@ -140,9 +142,10 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
   /// determined by the contents being viewed.
   final bool shrinkWrap;
 
-  /// The viewport has an area before and after the visible area to cache items
-  /// that are about to become visible when the user scrolls.
-  final double? cacheExtent;
+  /// The cache extent of the scroll view.
+  ///
+  /// See [ScrollView.scrollCacheExtent].
+  final ScrollCacheExtent? scrollCacheExtent;
 
   /// Determines the way that drag start behavior is handled.
   final DragStartBehavior dragStartBehavior;
@@ -177,7 +180,7 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
           physics: physics,
           scrollBehavior: scrollBehavior,
           shrinkWrap: shrinkWrap,
-          cacheExtent: cacheExtent,
+          scrollCacheExtent: scrollCacheExtent,
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           clipBehavior: clipBehavior,
@@ -195,7 +198,7 @@ class CenterPagingList<PageKey, Value> extends StatelessWidget {
           physics: physics,
           scrollBehavior: scrollBehavior,
           shrinkWrap: shrinkWrap,
-          cacheExtent: cacheExtent,
+          scrollCacheExtent: scrollCacheExtent,
           dragStartBehavior: dragStartBehavior,
           keyboardDismissBehavior: keyboardDismissBehavior,
           clipBehavior: clipBehavior,
@@ -234,7 +237,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
     required this.physics,
     required this.scrollBehavior,
     required this.shrinkWrap,
-    required this.cacheExtent,
+    required this.scrollCacheExtent,
     required this.dragStartBehavior,
     required this.keyboardDismissBehavior,
     required this.clipBehavior,
@@ -265,7 +268,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
   final ScrollPhysics? physics;
   final ScrollBehavior? scrollBehavior;
   final bool shrinkWrap;
-  final double? cacheExtent;
+  final ScrollCacheExtent? scrollCacheExtent;
   final DragStartBehavior dragStartBehavior;
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final Clip clipBehavior;
@@ -294,7 +297,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         physics: physics,
         scrollBehavior: scrollBehavior,
         shrinkWrap: shrinkWrap,
-        cacheExtent: cacheExtent,
+        scrollCacheExtent: scrollCacheExtent,
         dragStartBehavior: dragStartBehavior,
         keyboardDismissBehavior: keyboardDismissBehavior,
         clipBehavior: clipBehavior,
@@ -317,7 +320,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         physics: physics,
         scrollBehavior: scrollBehavior,
         shrinkWrap: shrinkWrap,
-        cacheExtent: cacheExtent,
+        scrollCacheExtent: scrollCacheExtent,
         dragStartBehavior: dragStartBehavior,
         keyboardDismissBehavior: keyboardDismissBehavior,
         clipBehavior: clipBehavior,
@@ -342,7 +345,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         physics: physics,
         scrollBehavior: scrollBehavior,
         shrinkWrap: shrinkWrap,
-        cacheExtent: cacheExtent,
+        scrollCacheExtent: scrollCacheExtent,
         dragStartBehavior: dragStartBehavior,
         keyboardDismissBehavior: keyboardDismissBehavior,
         clipBehavior: clipBehavior,
@@ -367,7 +370,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       physics: physics,
       scrollBehavior: scrollBehavior,
       shrinkWrap: shrinkWrap,
-      cacheExtent: cacheExtent,
+      scrollCacheExtent: scrollCacheExtent,
       dragStartBehavior: dragStartBehavior,
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,
