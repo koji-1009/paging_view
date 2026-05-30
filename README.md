@@ -262,10 +262,12 @@ class _PagingGridDemoState extends State<PagingGridDemo> {
 
 Since `paging_view` is built on top of Slivers, integrating with `CustomScrollView` is seamless. This is perfect for screens with collapsible headers or other complex scroll effects.
 
-A key aspect of this integration is the `CustomScrollView`'s `cacheExtent` property. By adjusting `cacheExtent`, you can control how far in advance (or behind) `paging_view` requests new data for `append` and `prepend` operations. A larger `cacheExtent` will trigger data loading earlier, providing a smoother user experience, especially during fast scrolling.
+A key aspect of this integration is the `CustomScrollView`'s `scrollCacheExtent` property. By adjusting `scrollCacheExtent`, you can control how far in advance (or behind) `paging_view` requests new data for `append` and `prepend` operations. A larger `scrollCacheExtent` will trigger data loading earlier, providing a smoother user experience, especially during fast scrolling.
 
 ```dart
 CustomScrollView(
+  // Load further ahead/behind so paging requests fire earlier.
+  scrollCacheExtent: const ScrollCacheExtent.pixels(500),
   slivers: [
     const SliverAppBar(
       title: Text('Sliver Example'),
@@ -590,7 +592,7 @@ class _CenterPagingListDemoState extends State<CenterPagingListDemo> {
 
 ## Further Reading
 
-* [Paging and Flutter (and the paging_view package)](https://zenn.dev/koji_1009/articles/5d34da19bc802e?locale=en) — Design philosophy behind `paging_view`, including how `SliverBoundsDetector` and `cacheExtent` interact to enable smooth infinite scrolling.
+* [Paging and Flutter (and the paging_view package)](https://zenn.dev/koji_1009/articles/5d34da19bc802e?locale=en) — Design philosophy behind `paging_view`, including how `SliverBoundsDetector` and `scrollCacheExtent` interact to enable smooth infinite scrolling.
 
 ## API Reference
 
