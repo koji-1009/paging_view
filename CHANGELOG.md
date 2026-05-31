@@ -1,3 +1,8 @@
+## 2.9.0
+
+* Require Flutter 3.44.0 (Dart 3.12.0) or later.
+* **BREAKING**: Replace the `cacheExtent` (`double?`) parameter with `scrollCacheExtent` (`ScrollCacheExtent?`) in `PagingList`, `PagingGrid`, `GroupedPagingList`, `GroupedPagingGrid`, and `CenterPagingList`, following Flutter's deprecation of `ScrollView.cacheExtent`. Migrate `cacheExtent: 250` to `scrollCacheExtent: ScrollCacheExtent.pixels(250)`.
+
 ## 2.8.1
 
 * Prevent duplicate load requests while a load is already in progress in `DataSource` and `CenterDataSource`.

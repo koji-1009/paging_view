@@ -56,6 +56,7 @@ class SliverGroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
     this.autoLoadPrepend = true,
     this.autoLoadAppend = true,
     required IndexedWidgetBuilder separatorBuilder,
+    // ignore: prefer_initializing_formals
   }) : _separatorBuilder = separatorBuilder;
 
   /// The [GroupedDataSource] that provides the paginated and grouped data.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
@@ -16,7 +17,7 @@ void main() {
         home: Scaffold(
           body: CustomScrollView(
             controller: controller,
-            cacheExtent: cacheExtent,
+            scrollCacheExtent: ScrollCacheExtent.pixels(cacheExtent),
             slivers: [
               const SliverToBoxAdapter(child: SizedBox(height: sliverOffset)),
               SliverBoundsDetector(onVisibilityChanged: onVisibilityChanged),

@@ -47,6 +47,7 @@ class SliverPagingList<PageKey, Value> extends StatelessWidget {
     required IndexedWidgetBuilder separatorBuilder,
     this.autoLoadAppend = true,
     this.autoLoadPrepend = true,
+    // ignore: prefer_initializing_formals
   }) : _separatorBuilder = separatorBuilder;
 
   /// The [DataSource] that provides the paginated data.
@@ -172,6 +173,7 @@ class _List<PageKey, Value> extends StatelessWidget {
     required this.autoLoadPrepend,
     required this.autoLoadAppend,
     required IndexedWidgetBuilder separatorBuilder,
+    // ignore: prefer_initializing_formals
   }) : _separatorBuilder = separatorBuilder;
 
   final LoadState state;

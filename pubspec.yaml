@@ -1,6 +1,6 @@
 name: paging_view
 description: Like Android Jetpack's Paging library 3, manages data and displays paged lists.
-version: 2.8.1
+version: 2.9.0
 repository: https://github.com/koji-1009/paging_view
 issue_tracker: https://github.com/koji-1009/paging_view/issues
 
@@ -12,8 +12,8 @@ topics:
   - sliver
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
-  flutter: ">=3.32.0"
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
