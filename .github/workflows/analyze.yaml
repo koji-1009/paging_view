@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: koji-1009/setup-flutter@26fb6927d2874fcc9b3af19cb4cf5cd66ec18a28 # v1.3.0
       - run: flutter pub get
       - run: dart analyze
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: koji-1009/setup-flutter@26fb6927d2874fcc9b3af19cb4cf5cd66ec18a28 # v1.3.0
       - run: flutter pub get
       - run: dart format --set-exit-if-changed .
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-slim
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: koji-1009/setup-flutter@26fb6927d2874fcc9b3af19cb4cf5cd66ec18a28 # v1.3.0
       - run: flutter pub get
       - run: flutter test --coverage
