@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: koji-1009/setup-flutter@6684b1e2693265f44314b7ec18935073116a2241 # v1.3.1
+      - uses: koji-1009/setup-flutter@9a42a50501f6af795c1a42e2c3c371f40e8c54b2 # v1.4.0
       - run: flutter pub get
         working-directory: example
       - run: flutter build web --base-href "/paging_view/"
