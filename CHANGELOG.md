@@ -1,3 +1,11 @@
+## 2.10.0
+
+* Fix `CenterDataSource` restoring data from before an error when a load fails while the error is displayed. Reverting a load no longer resurrects the snapshot taken by an earlier load.
+* Fix `LoadErrorPolicy` being ignored by `CenterDataSource` when a load starts from an error state.
+* Prevent duplicate load requests in `CenterDataSource` when a load starts from an error state, completing the fix made in 2.8.1.
+* Share the load pipeline between `DataSource` and `CenterDataSource`. This is an internal refactoring with no public API change.
+* Document that the `Parent` returned by `GroupedDataSource.groupBy` must provide value equality.
+
 ## 2.9.0
 
 * Require Flutter 3.44.0 (Dart 3.12.0) or later.

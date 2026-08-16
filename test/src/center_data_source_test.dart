@@ -1361,4 +1361,75 @@ void main() {
       expect(dataSource.notifier.value.centerItems, ['a', 'X', 'b']);
     });
   });
+
+  group('Loading from an error state', () {
+    test(
+      'a failed retry does not bring back data from before the error',
+      () async {
+        dataSource.onLoad = (_) async => const Success(
+          page: PageData(data: ['old'], prependKey: -1, appendKey: 1),
+        );
+        await dataSource.refresh();
+        expect(dataSource.notifier.value.allItems, ['old']);
+
+        // Fail without a policy, so the error is displayed.
+        dataSource.onLoad = (_) async => Failure(error: Exception('boom'));
+        await dataSource.refresh();
+        expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
+
+        // Retry with the error suppressed. The pre-error data must not return.
+        dataSource.errorPolicy = {LoadErrorPolicy.ignoreRefresh};
+        await dataSource.refresh();
+
+        expect(dataSource.notifier.value, isA<CenterPaging<int, String>>());
+        expect(dataSource.notifier.value.allItems, isEmpty);
+      },
+    );
+
+    test(
+      'ignoreRefresh applies to a retry started from an error state',
+      () async {
+        final source = TestCenterDataSource(
+          errorPolicy: {LoadErrorPolicy.ignoreRefresh},
+          onLoad: (_) async => Failure(error: Exception('boom')),
+        );
+
+        await source.refresh();
+        await source.refresh();
+
+        expect(source.notifier.value, isA<CenterPaging<int, String>>());
+        expect(source.notifier.value.allItems, isEmpty);
+
+        source.dispose();
+      },
+    );
+
+    test(
+      'a retry started from an error state blocks a concurrent load',
+      () async {
+        final completer = Completer<LoadResult<int, String>>();
+        var calls = 0;
+
+        dataSource.onLoad = (_) async => Failure(error: Exception('boom'));
+        await dataSource.refresh();
+        expect(dataSource.notifier.value, isA<CenterWarning<int, String>>());
+
+        dataSource.onLoad = (_) {
+          calls++;
+          return completer.future;
+        };
+
+        final future = dataSource.refresh();
+        expect(dataSource.notifier.isLoading, isTrue);
+
+        // This call must be a no-op while the first one is in flight.
+        await dataSource.refresh();
+        expect(calls, 1);
+
+        completer.complete(const None());
+        await future;
+        expect(dataSource.notifier.isLoading, isFalse);
+      },
+    );
+  });
 }
