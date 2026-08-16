@@ -83,7 +83,7 @@ void main() {
 
     group('Operations on disposed manager', () {
       setUp(() {
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
         manager.dispose();
       });
 
@@ -93,10 +93,6 @@ void main() {
       });
       test('setError does nothing', () {
         manager.setError(error: 'e', stackTrace: null);
-        expect(manager.value.centerItems, ['a', 'b']);
-      });
-      test('setCenter does nothing', () {
-        manager.setCenter(newPage: page2);
         expect(manager.value.centerItems, ['a', 'b']);
       });
       test('refresh does nothing', () {
@@ -122,8 +118,8 @@ void main() {
         manager.dispose();
       });
 
-      test('setCenter() with data sets center pages', () {
-        manager.setCenter(newPage: page1);
+      test('refresh() with data sets center pages', () {
+        manager.refresh(newPage: page1);
         expect(manager.value.centerItems, ['a', 'b']);
         expect(manager.value.prependItems, isEmpty);
         expect(manager.value.appendItems, isEmpty);
@@ -131,15 +127,15 @@ void main() {
         expect(manager.appendPageKey, 2);
       });
 
-      test('setCenter() with null clears all pages', () {
-        manager.setCenter(newPage: page1);
-        manager.setCenter(newPage: null);
+      test('refresh() with null clears all pages', () {
+        manager.refresh(newPage: page1);
+        manager.refresh(newPage: null);
         expect(manager.value.centerItems, isEmpty);
         expect(manager.value.allItems, isEmpty);
       });
 
       test('refresh() with data replaces all pages', () {
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
         manager.prepend(newPage: page2);
         manager.append(newPage: page3);
         manager.refresh(newPage: page1);
@@ -147,17 +143,11 @@ void main() {
         expect(manager.value.prependItems, isEmpty);
         expect(manager.value.appendItems, isEmpty);
       });
-
-      test('refresh() with null clears all pages', () {
-        manager.setCenter(newPage: page1);
-        manager.refresh(newPage: null);
-        expect(manager.value.allItems, isEmpty);
-      });
     });
 
     group('Prepend page manipulation', () {
       setUp(() {
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
       });
 
       tearDown(() {
@@ -214,7 +204,7 @@ void main() {
 
     group('Append page manipulation', () {
       setUp(() {
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
       });
 
       tearDown(() {
@@ -234,12 +224,28 @@ void main() {
         expect(manager.value.centerItems, ['a', 'b']);
       });
 
-      test('append moves existing appendPages to centerPages', () {
+      test('changeState(append) moves appendPages to centerPages', () {
         manager.append(newPage: page2);
         expect(manager.value.appendItems, ['c', 'd']);
         expect(manager.value.centerItems, ['a', 'b']);
 
-        // Second append
+        manager.changeState(type: LoadType.append);
+        expect(manager.value.appendItems, isEmpty);
+        expect(manager.value.centerItems, ['a', 'b', 'c', 'd']);
+      });
+
+      test('multiple appends work correctly with changeState', () {
+        // First append
+        manager.append(newPage: page2);
+        expect(manager.value.appendItems, ['c', 'd']);
+        expect(manager.value.centerItems, ['a', 'b']);
+
+        // Second append: changeState moves appendPages to center
+        manager.changeState(type: LoadType.append);
+        expect(manager.value.appendItems, isEmpty);
+        expect(manager.value.centerItems, ['a', 'b', 'c', 'd']);
+
+        // Complete second append
         manager.append(newPage: page3);
         expect(manager.value.appendItems, ['e', 'f']);
         expect(manager.value.centerItems, ['a', 'b', 'c', 'd']);
@@ -255,7 +261,7 @@ void main() {
 
     group('revertLoad', () {
       setUp(() {
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
       });
 
       tearDown(() {
@@ -299,11 +305,43 @@ void main() {
         expect(paging.centerPages, [page1]);
         expect(paging.appendPages, [page3]);
       });
+
+      test(
+        'revertLoad() does not restore a snapshot taken before an error',
+        () {
+          // A load that saves a snapshot of the loaded state.
+          manager.changeState(type: LoadType.refresh);
+          manager.setError(error: 'e', stackTrace: null);
+
+          // A second load starting from the error state must not keep the
+          // snapshot around, otherwise reverting would resurrect stale data.
+          manager.changeState(type: LoadType.refresh);
+          manager.revertLoad();
+
+          // Reverting yields an empty loaded state, not the pre-error data.
+          expect(manager.value, isA<CenterPaging<int, String>>());
+          expect(manager.value.allItems, isEmpty);
+          expect(
+            (manager.value as CenterPaging<int, String>).state,
+            isA<LoadStateLoaded>(),
+          );
+        },
+      );
+
+      test('changeState() from an error state enters the loading state', () {
+        manager.setError(error: 'e', stackTrace: null);
+        expect(manager.isLoading, isFalse);
+
+        manager.changeState(type: LoadType.refresh);
+
+        expect(manager.isLoading, isTrue);
+        expect(manager.value.allItems, isEmpty);
+      });
     });
 
     group('Item manipulation', () {
       setUp(() {
-        manager.setCenter(newPage: page1); // ['a', 'b']
+        manager.refresh(newPage: page1); // ['a', 'b']
         manager.prepend(newPage: page2); // ['c', 'd'] at prepend
         manager.append(newPage: page3); // ['e', 'f'] at append
         // allItems: ['c', 'd', 'a', 'b', 'e', 'f']
@@ -379,7 +417,7 @@ void main() {
       test(
         'insertItem() at the very end when only center exists adding to centerPages',
         () {
-          manager.setCenter(newPage: page1);
+          manager.refresh(newPage: page1);
           manager.insertItem(2, 'X');
           expect(manager.value.allItems, ['a', 'b', 'X']);
           expect(manager.value.centerItems, ['a', 'b', 'X']);
@@ -389,7 +427,7 @@ void main() {
       test(
         'insertItem() at the very end when only prepend exists adding to prependPages',
         () {
-          manager.setCenter(newPage: null);
+          manager.refresh(newPage: null);
           manager.changeState(type: LoadType.prepend);
           manager.prepend(newPage: page1);
           manager.insertItem(2, 'X');
@@ -409,11 +447,11 @@ void main() {
         manager.updateItem(99, (item) => item);
         expect(manager.value, isA<CenterWarning<int, String>>());
 
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
         manager.removeItem(99);
         expect(manager.value, isA<CenterWarning<int, String>>());
 
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
         manager.insertItem(99, 'X');
         expect(manager.value, isA<CenterWarning<int, String>>());
       });
@@ -422,7 +460,7 @@ void main() {
         manager.updateItems((index, item) => throw Exception('test'));
         expect(manager.value, isA<CenterWarning<int, String>>());
 
-        manager.setCenter(newPage: page1);
+        manager.refresh(newPage: page1);
         manager.removeItems((index, item) => throw Exception('test'));
         expect(manager.value, isA<CenterWarning<int, String>>());
       });

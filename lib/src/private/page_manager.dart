@@ -1,23 +1,26 @@
-import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/paging_manager.dart';
 
-/// A [ValueNotifier] that manages the `PageManagerState` of a paging view.
+/// A [PagingManager] that manages the `PageManagerState` of a paging view.
 ///
 /// This class handles the state for data loading, page management, and item
 /// manipulations (add, update, remove).
 class PageManager<PageKey, Value>
-    extends ValueNotifier<PageManagerState<PageKey, Value>> {
+    extends PagingManager<PageKey, Value, PageManagerState<PageKey, Value>> {
   /// Creates a [PageManager] with an initial empty state.
   PageManager() : super(Paging.init());
 
   /// Whether a data loading operation is currently in progress.
+  @override
   bool get isLoading => value.isLoading;
 
   /// The key for prepending more data, if available.
+  @override
   PageKey? get prependPageKey => value.prependPageKey;
 
   /// The key for appending more data, if available.
+  @override
   PageKey? get appendPageKey => value.appendPageKey;
 
   /// A flattened list of all items from all loaded pages.
@@ -32,6 +35,7 @@ class PageManager<PageKey, Value>
   }
 
   /// Transitions the manager to a loading state for the given `LoadType`.
+  @override
   void changeState({required LoadType type}) {
     if (_disposed) {
       return;
@@ -44,6 +48,7 @@ class PageManager<PageKey, Value>
   }
 
   /// Transitions the manager to a [Warning] state with the given [error].
+  @override
   void setError({required Object error, required StackTrace? stackTrace}) {
     if (_disposed) {
       return;
@@ -56,6 +61,7 @@ class PageManager<PageKey, Value>
   ///
   /// This is used when an error policy is active to revert to the loaded state
   /// instead of showing an error.
+  @override
   void revertLoad() {
     if (_disposed) {
       return;
@@ -71,6 +77,7 @@ class PageManager<PageKey, Value>
   /// Replaces all existing pages with a new single [newPage].
   ///
   /// If [newPage] is null, all pages are cleared.
+  @override
   void refresh({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -87,6 +94,7 @@ class PageManager<PageKey, Value>
   /// Adds a [newPage] to the beginning of the list of pages.
   ///
   /// If [newPage] is null, the state remains unchanged.
+  @override
   void prepend({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -106,6 +114,7 @@ class PageManager<PageKey, Value>
   /// Adds a [newPage] to the end of the list of pages.
   ///
   /// If [newPage] is null, the state remains unchanged.
+  @override
   void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -128,6 +137,7 @@ class PageManager<PageKey, Value>
   /// updated item.
   /// If [index] is out of bounds or an error occurs in `update`, the manager
   /// will transition to a [Warning] state.
+  @override
   void updateItem(int index, Value Function(Value item) update) {
     if (_disposed) {
       return;
@@ -164,6 +174,7 @@ class PageManager<PageKey, Value>
   /// The `update` function provides the global index and the current item,
   /// and should return the updated item.
   /// If an error occurs in `update`, the manager transitions to a [Warning] state.
+  @override
   void updateItems(Value Function(int index, Value item) update) {
     if (_disposed) {
       return;
@@ -193,6 +204,7 @@ class PageManager<PageKey, Value>
   /// If a page becomes empty after removing the item, the page itself is
   /// also removed.
   /// If [index] is out of bounds, the manager transitions to a [Warning] state.
+  @override
   void removeItem(int index) {
     if (_disposed) {
       return;
@@ -230,6 +242,7 @@ class PageManager<PageKey, Value>
   /// `true`, the item is removed.
   /// If a page becomes empty after removing items, it is also removed.
   /// If an error occurs in [test], the manager transitions to a [Warning] state.
+  @override
   void removeItems(bool Function(int index, Value item) test) {
     if (_disposed) {
       return;
@@ -263,6 +276,7 @@ class PageManager<PageKey, Value>
   /// If [index] is equal to the total number of items, the item is appended
   /// to the last page.
   /// If [index] is out of bounds, the manager transitions to a [Warning] state.
+  @override
   void insertItem(int index, Value item) {
     if (_disposed) {
       return;

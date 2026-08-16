@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/paging_manager.dart';
 
 /// Represents the state of a [CenterPageManager], managing three segments:
 /// Prepend, Center, and Append.
@@ -234,17 +235,21 @@ extension CenterPagingStateExt<PageKey, Value>
 /// This class handles the state for data loading with three separate segments:
 /// Prepend, Center, and Append.
 class CenterPageManager<PageKey, Value>
-    extends ValueNotifier<CenterPageManagerState<PageKey, Value>> {
+    extends
+        PagingManager<PageKey, Value, CenterPageManagerState<PageKey, Value>> {
   /// Creates a [CenterPageManager] with an initial empty state.
   CenterPageManager() : super(CenterPaging.init());
 
   /// Whether a data loading operation is currently in progress.
+  @override
   bool get isLoading => value.isLoading;
 
   /// The key for prepending more data, if available.
+  @override
   PageKey? get prependPageKey => value.prependPageKey;
 
   /// The key for appending more data, if available.
+  @override
   PageKey? get appendPageKey => value.appendPageKey;
 
   bool _disposed = false;
@@ -264,6 +269,7 @@ class CenterPageManager<PageKey, Value>
   /// center key behavior: by clearing prependPages at the start of loading,
   /// the centerKey sliver becomes the topmost content, and when the new
   /// prepend data arrives, it will appear above without causing scroll jumps.
+  @override
   void changeState({required LoadType type}) {
     if (_disposed) {
       return;
@@ -301,10 +307,25 @@ class CenterPageManager<PageKey, Value>
           appendPages: currentValue.appendPages,
         ),
       };
+    } else {
+      // Starting a load from an error state. Drop any snapshot taken during an
+      // earlier load so that revertLoad() cannot resurrect stale data, and
+      // enter the loading state with no pages, mirroring `PageManager`.
+      // Without this the manager would stay in [CenterWarning], leaving
+      // `isLoading` false for the whole load and keeping the error visible
+      // even when [LoadErrorPolicy] asks for it to be ignored.
+      _stateBeforeLoad = null;
+      value = CenterPaging(
+        state: LoadStateLoading(state: type),
+        prependPages: const [],
+        centerPages: const [],
+        appendPages: const [],
+      );
     }
   }
 
   /// Transitions the manager to a [CenterWarning] state with the given [error].
+  @override
   void setError({required Object error, required StackTrace? stackTrace}) {
     if (_disposed) {
       return;
@@ -314,6 +335,7 @@ class CenterPageManager<PageKey, Value>
   }
 
   /// Reverts a loading state back to a loaded state without changing the data.
+  @override
   void revertLoad() {
     if (_disposed) {
       return;
@@ -343,33 +365,8 @@ class CenterPageManager<PageKey, Value>
     }
   }
 
-  /// Sets the center pages with a new single [newPage], clearing all segments.
-  ///
-  /// If [newPage] is null, all pages are cleared.
-  void setCenter({required PageData<PageKey, Value>? newPage}) {
-    if (_disposed) {
-      return;
-    }
-
-    if (newPage == null) {
-      value = CenterPaging(
-        state: const LoadStateLoaded(),
-        prependPages: const [],
-        centerPages: const [],
-        appendPages: const [],
-      );
-      return;
-    }
-
-    value = CenterPaging(
-      state: const LoadStateLoaded(),
-      prependPages: const [],
-      centerPages: [newPage],
-      appendPages: const [],
-    );
-  }
-
   /// Refreshes and sets the center pages, clearing prepend and append.
+  @override
   void refresh({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -400,6 +397,7 @@ class CenterPageManager<PageKey, Value>
   /// was called with `LoadType.prepend`.
   ///
   /// If [newPage] is null, the state remains unchanged but loading ends.
+  @override
   void prepend({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -430,8 +428,12 @@ class CenterPageManager<PageKey, Value>
 
   /// Adds a [newPage] to the append segment.
   ///
-  /// Appended pages are simply added to the end of `appendPages`.
+  /// This method is called after the append request completes. The existing
+  /// `appendPages` were already moved to `centerPages` when `changeState`
+  /// was called with `LoadType.append`.
+  ///
   /// If [newPage] is null, the state remains unchanged but loading ends.
+  @override
   void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
       return;
@@ -455,12 +457,13 @@ class CenterPageManager<PageKey, Value>
     value = CenterPaging(
       state: const LoadStateLoaded(),
       prependPages: currentVal.prependPages,
-      centerPages: [...currentVal.centerPages, ...currentVal.appendPages],
+      centerPages: currentVal.centerPages,
       appendPages: [newPage],
     );
   }
 
   /// Updates a single item at the specified [index] across all segments.
+  @override
   void updateItem(int index, Value Function(Value item) update) {
     if (_disposed) {
       return;
@@ -493,6 +496,7 @@ class CenterPageManager<PageKey, Value>
   }
 
   /// Updates all items currently in the list across all segments.
+  @override
   void updateItems(Value Function(int index, Value item) update) {
     if (_disposed) {
       return;
@@ -518,6 +522,7 @@ class CenterPageManager<PageKey, Value>
   }
 
   /// Removes the item at the specified [index] across all segments.
+  @override
   void removeItem(int index) {
     if (_disposed) {
       return;
@@ -550,6 +555,7 @@ class CenterPageManager<PageKey, Value>
   }
 
   /// Removes all items that satisfy the given [test] predicate.
+  @override
   void removeItems(bool Function(int index, Value item) test) {
     if (_disposed) {
       return;
@@ -578,6 +584,7 @@ class CenterPageManager<PageKey, Value>
   }
 
   /// Inserts an [item] at the specified [index].
+  @override
   void insertItem(int index, Value item) {
     if (_disposed) {
       return;

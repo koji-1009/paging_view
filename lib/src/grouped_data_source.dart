@@ -69,8 +69,18 @@ abstract class GroupedDataSource<PageKey, Parent, Value>
   /// The order of the groups is determined by the order in which the first
   /// item of a group appears in the source list.
   ///
-  /// For example, you could return a `DateTime` to group items by day,
-  /// or the first letter of a string to group them alphabetically.
+  /// For example, you could return the first letter of a string to group items
+  /// alphabetically, or a date normalized to midnight to group them by day.
+  ///
+  /// The returned `Parent` is used as a `Map` key, so it must provide value
+  /// equality (`==` and `hashCode`). Built-in types such as `String` and `int`
+  /// already do. A custom class that does not override them is compared by
+  /// identity, which puts every item into its own group.
+  ///
+  /// Beware of values that carry more precision than you intend to group by.
+  /// `DateTime` compares down to the microsecond, so returning a raw timestamp
+  /// creates one group per item; normalize it first, for example
+  /// `DateTime(d.year, d.month, d.day)`.
   @protected
   Parent groupBy(Value value);
 
