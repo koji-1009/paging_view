@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show precisionErrorTolerance;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -70,15 +71,19 @@ class RenderSliverBoundsDetector extends RenderSliver {
     // positive, it means this sliver's leading edge is inside the cache area.
     final hasReachedSliverStart = constraints.remainingCacheExtent > 0;
 
-    // `constraints.scrollOffset` is the distance from the leading edge of the
-    // viewport to the leading edge of this sliver. Since this sliver has a
-    // zero extent, a scrollOffset greater than zero means the viewport has
-    // scrolled completely past it.
-    final hasNotPassedSliver = constraints.scrollOffset <= 0;
+    // `constraints.scrollOffset` is how far the leading edge of the viewport
+    // has scrolled past the leading edge of this sliver, and
+    // `constraints.cacheOrigin` is how far before that point the cache area
+    // starts. The viewport clamps `cacheOrigin` to `-scrollOffset`, so their
+    // sum stays zero while this zero-extent sliver is inside the leading cache
+    // area and becomes positive once the cache area has scrolled past it.
+    final hasNotLeftCacheArea =
+        constraints.scrollOffset + constraints.cacheOrigin <=
+        precisionErrorTolerance;
 
-    // The sliver is visible if it has entered the cache area from the bottom
-    // and has not yet exited from the top.
-    final isNowVisible = hasReachedSliverStart && hasNotPassedSliver;
+    // The sliver is visible if it has entered the cache area from the trailing
+    // side and has not yet left it from the leading side.
+    final isNowVisible = hasReachedSliverStart && hasNotLeftCacheArea;
 
     if (isNowVisible != _isVisible) {
       _isVisible = isNowVisible;
