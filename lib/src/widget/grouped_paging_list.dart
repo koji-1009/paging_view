@@ -179,7 +179,8 @@ class GroupedPagingList<PageKey, Parent, Value> extends StatelessWidget {
   /// See [ScrollView.scrollBehavior].
   final ScrollBehavior? scrollBehavior;
 
-  /// Whether to wrap the entire scrollable contents in a [Center] widget.
+  /// Whether the extent of the scroll view in the [scrollDirection] should be
+  /// determined by the contents being viewed.
   ///
   /// See [ListView.shrinkWrap].
   final bool shrinkWrap;

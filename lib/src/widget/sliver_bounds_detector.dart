@@ -40,22 +40,15 @@ class SliverBoundsDetector extends LeafRenderObjectWidget {
 /// and reports changes via the [onVisibilityChanged] callback.
 class RenderSliverBoundsDetector extends RenderSliver {
   /// Creates a render object that detects its visibility.
-  RenderSliverBoundsDetector({required this._onVisibilityChanged});
+  RenderSliverBoundsDetector({required this.onVisibilityChanged});
 
   bool _isVisible = false;
 
   /// The callback that is called when the visibility of the sliver changes.
-  SliverVisibilityCallback get onVisibilityChanged => _onVisibilityChanged;
-
-  SliverVisibilityCallback _onVisibilityChanged;
-
-  set onVisibilityChanged(SliverVisibilityCallback value) {
-    if (_onVisibilityChanged != value) {
-      _onVisibilityChanged = value;
-      // The layout depends on the callback, so we need to mark for a new layout.
-      markNeedsLayout();
-    }
-  }
+  ///
+  /// The callback is not used during layout; it is read when the post-frame
+  /// callback runs, so changing it does not require a new layout.
+  SliverVisibilityCallback onVisibilityChanged;
 
   @override
   void performLayout() {
