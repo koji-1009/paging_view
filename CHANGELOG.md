@@ -1,3 +1,9 @@
+## 2.10.1
+
+* Fix `padding` not being resolved against `scrollDirection` and `reverse` in `PagingList`, `PagingGrid`, `GroupedPagingList`, `GroupedPagingGrid`, `CenterPagingList`, and their sliver variants. The padding is now applied the same way as `ListView`. (#140)
+* Fix `SliverBoundsDetector` ignoring the leading cache extent. A larger `scrollCacheExtent` now makes `prepend` requests fire earlier, as documented. (#141)
+* Fix incorrect doc comments for `shrinkWrap` and `RenderSliverBoundsDetector.onVisibilityChanged`. `RenderSliverBoundsDetector` no longer requests a new layout when the callback changes. (#142)
+
 ## 2.10.0
 
 * Fix `CenterDataSource` restoring data from before an error when a load fails while the error is displayed. Reverting a load no longer resurrects the snapshot taken by an earlier load.
