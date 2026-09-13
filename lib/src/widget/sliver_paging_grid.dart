@@ -139,9 +139,6 @@ class _Grid<PageKey, Value> extends StatelessWidget {
   final bool autoLoadPrepend;
   final bool autoLoadAppend;
 
-  EdgeInsets get _horizontalPadding =>
-      EdgeInsets.only(left: padding.left, right: padding.right);
-
   @override
   Widget build(BuildContext context) {
     final state = this.state;
@@ -175,46 +172,38 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    return SliverMainAxisGroup(
-      slivers: [
-        SliverToBoxAdapter(child: SizedBox(height: padding.top)),
-        if (state.isPrependLoading)
-          SliverPadding(
-            padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(child: prependLoadingWidget),
-          ),
-        if (autoLoadPrepend)
-          SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) async {
-              if (isVisible) {
-                await dataSource.update(LoadType.prepend);
-              }
-            },
-          ),
-        SliverPadding(
-          padding: _horizontalPadding,
-          sliver: SliverGrid.builder(
+    return SliverPadding(
+      padding: padding,
+      sliver: SliverMainAxisGroup(
+        slivers: [
+          if (state.isPrependLoading)
+            SliverToBoxAdapter(child: prependLoadingWidget),
+          if (autoLoadPrepend)
+            SliverBoundsDetector(
+              onVisibilityChanged: (isVisible) async {
+                if (isVisible) {
+                  await dataSource.update(LoadType.prepend);
+                }
+              },
+            ),
+          SliverGrid.builder(
             gridDelegate: gridDelegate,
             itemBuilder: (context, index) =>
                 builder(context, items[index], index),
             itemCount: items.length,
           ),
-        ),
-        if (autoLoadAppend)
-          SliverBoundsDetector(
-            onVisibilityChanged: (isVisible) async {
-              if (isVisible) {
-                await dataSource.update(LoadType.append);
-              }
-            },
-          ),
-        if (state.isAppendLoading)
-          SliverPadding(
-            padding: _horizontalPadding,
-            sliver: SliverToBoxAdapter(child: appendLoadingWidget),
-          ),
-        SliverToBoxAdapter(child: SizedBox(height: padding.bottom)),
-      ],
+          if (autoLoadAppend)
+            SliverBoundsDetector(
+              onVisibilityChanged: (isVisible) async {
+                if (isVisible) {
+                  await dataSource.update(LoadType.append);
+                }
+              },
+            ),
+          if (state.isAppendLoading)
+            SliverToBoxAdapter(child: appendLoadingWidget),
+        ],
+      ),
     );
   }
 }
