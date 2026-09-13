@@ -382,10 +382,6 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         bottom: padding.bottom,
       ),
     };
-    Widget mainAxisSpace(double extent) => switch (scrollDirection) {
-      Axis.vertical => SizedBox(height: extent),
-      Axis.horizontal => SizedBox(width: extent),
-    };
 
     return CustomScrollView(
       center: dataSource.centerKey,
@@ -402,7 +398,12 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       clipBehavior: clipBehavior,
       slivers: [
         // === Prepend section (above center, laid out in reverse) ===
-        SliverToBoxAdapter(child: mainAxisSpace(leadingPadding)),
+        SliverToBoxAdapter(
+          child: switch (scrollDirection) {
+            Axis.vertical => SizedBox(height: leadingPadding),
+            Axis.horizontal => SizedBox(width: leadingPadding),
+          },
+        ),
 
         // Prepend load state widget
         SliverPadding(
@@ -553,7 +554,12 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
           ),
         ),
 
-        SliverToBoxAdapter(child: mainAxisSpace(trailingPadding)),
+        SliverToBoxAdapter(
+          child: switch (scrollDirection) {
+            Axis.vertical => SizedBox(height: trailingPadding),
+            Axis.horizontal => SizedBox(width: trailingPadding),
+          },
+        ),
       ],
     );
   }
