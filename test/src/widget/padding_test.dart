@@ -401,4 +401,177 @@ void main() {
       );
     });
   });
+
+  group('padding before the center sliver is resolved like SliverPadding', () {
+    const centerKey = ValueKey('center');
+    const itemExtent = 100.0;
+
+    Widget itemBox(String label) =>
+        SizedBox(key: ValueKey(label), height: itemExtent);
+
+    // Returns the area covered by the labels. Slivers growing in the reverse
+    // direction order the children of a SliverMainAxisGroup differently from
+    // the items of a single SliverList, so compare the covered area rather
+    // than each item.
+    Future<Rect> rectBeforeCenter(
+      WidgetTester tester, {
+      required bool reverse,
+      required List<String> labels,
+      required Widget sliver,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CustomScrollView(
+              key: UniqueKey(),
+              reverse: reverse,
+              center: centerKey,
+              anchor: 0.5,
+              slivers: [
+                sliver,
+                const SliverToBoxAdapter(
+                  key: centerKey,
+                  child: SizedBox(height: 50),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return labels
+          .map((label) => tester.getRect(find.byKey(ValueKey(label))))
+          .reduce((a, b) => a.expandToInclude(b));
+    }
+
+    Future<void> expectSameAsSliverPadding(
+      WidgetTester tester, {
+      required bool reverse,
+      required List<String> labels,
+      required Widget sliver,
+    }) async {
+      final expected = await rectBeforeCenter(
+        tester,
+        reverse: reverse,
+        labels: labels,
+        sliver: SliverPadding(
+          padding: _padding,
+          sliver: SliverList.list(
+            children: [for (final label in labels) itemBox(label)],
+          ),
+        ),
+      );
+      final actual = await rectBeforeCenter(
+        tester,
+        reverse: reverse,
+        labels: labels,
+        sliver: sliver,
+      );
+      expect(actual, expected);
+    }
+
+    for (final reverse in [false, true]) {
+      testWidgets('SliverPagingList (reverse: $reverse)', (tester) async {
+        const items = ['Item 1', 'Item 2'];
+        final dataSource = TestDataSource(
+          initialItems: items,
+          maxAppendPages: 0,
+        );
+        addTearDown(dataSource.dispose);
+
+        await expectSameAsSliverPadding(
+          tester,
+          reverse: reverse,
+          labels: items,
+          sliver: SliverPagingList<int, String>(
+            dataSource: dataSource,
+            padding: _padding,
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+            builder: (context, item, index) => itemBox(item),
+          ),
+        );
+      });
+
+      testWidgets('SliverPagingGrid (reverse: $reverse)', (tester) async {
+        const items = ['Item 1', 'Item 2'];
+        final dataSource = TestDataSource(
+          initialItems: items,
+          maxAppendPages: 0,
+        );
+        addTearDown(dataSource.dispose);
+
+        await expectSameAsSliverPadding(
+          tester,
+          reverse: reverse,
+          labels: items,
+          sliver: SliverPagingGrid<int, String>(
+            dataSource: dataSource,
+            padding: _padding,
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              mainAxisExtent: itemExtent,
+            ),
+            builder: (context, item, index) => itemBox(item),
+          ),
+        );
+      });
+
+      testWidgets('SliverGroupedPagingList (reverse: $reverse)', (
+        tester,
+      ) async {
+        final dataSource = TestGroupedDataSource(
+          initialItems: const ['A1', 'A2'],
+          maxAppendPages: 0,
+        );
+        addTearDown(dataSource.dispose);
+
+        await expectSameAsSliverPadding(
+          tester,
+          reverse: reverse,
+          labels: const ['Group A', 'A1', 'A2'],
+          sliver: SliverGroupedPagingList<int, String, String>(
+            dataSource: dataSource,
+            padding: _padding,
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+            headerBuilder: (context, group, index) => itemBox(group),
+            itemBuilder: (context, item, itemIndex, groupIndex) =>
+                itemBox(item),
+          ),
+        );
+      });
+
+      testWidgets('SliverGroupedPagingGrid (reverse: $reverse)', (
+        tester,
+      ) async {
+        final dataSource = TestGroupedDataSource(
+          initialItems: const ['A1', 'A2'],
+          maxAppendPages: 0,
+        );
+        addTearDown(dataSource.dispose);
+
+        await expectSameAsSliverPadding(
+          tester,
+          reverse: reverse,
+          labels: const ['Group A', 'A1', 'A2'],
+          sliver: SliverGroupedPagingGrid<int, String, String>(
+            dataSource: dataSource,
+            padding: _padding,
+            autoLoadPrepend: false,
+            autoLoadAppend: false,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              mainAxisExtent: itemExtent,
+            ),
+            headerBuilder: (context, group, index) => itemBox(group),
+            itemBuilder: (context, item, itemIndex, groupIndex) =>
+                itemBox(item),
+          ),
+        );
+      });
+    }
+  });
 }

@@ -4,8 +4,8 @@ import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
+import 'package:paging_view/src/private/axis_direction_padding.dart';
 import 'package:paging_view/src/private/entity.dart';
-import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, 2D array of items (a grid), grouped by a parent value.
@@ -211,15 +211,24 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
       );
     }
 
+    // Apply the main axis padding next to the content rather than wrapping it
+    // in a SliverPadding: RenderSliverPadding passes
+    // `cacheOrigin + beforePadding` to its child, which shrinks the leading
+    // cache area of the content by the leading padding.
+    final axisDirection = Scrollable.of(context).axisDirection;
+    final leadingPadding = padding.leadingAlong(axisDirection);
+    final trailingPadding = padding.trailingAlong(axisDirection);
+
     return SliverMainAxisGroup(
       slivers: [
-        SliverAxisPadding(
-          padding: padding,
-          part: SliverAxisPaddingPart.leading,
+        SliverToBoxAdapter(
+          child: switch (axisDirectionToAxis(axisDirection)) {
+            Axis.vertical => SizedBox(height: leadingPadding),
+            Axis.horizontal => SizedBox(width: leadingPadding),
+          },
         ),
-        SliverAxisPadding(
-          padding: padding,
-          part: SliverAxisPaddingPart.crossAxis,
+        SliverPadding(
+          padding: padding.crossAxisOf(axisDirection),
           sliver: SliverMainAxisGroup(
             slivers: [
               if (state.isPrependLoading)
@@ -278,9 +287,11 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
             ],
           ),
         ),
-        SliverAxisPadding(
-          padding: padding,
-          part: SliverAxisPaddingPart.trailing,
+        SliverToBoxAdapter(
+          child: switch (axisDirectionToAxis(axisDirection)) {
+            Axis.vertical => SizedBox(height: trailingPadding),
+            Axis.horizontal => SizedBox(width: trailingPadding),
+          },
         ),
       ],
     );
