@@ -221,11 +221,10 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
 
     return SliverMainAxisGroup(
       slivers: [
+        // The cross axis extent is overridden by the tight cross axis
+        // constraint, so only the main axis extent takes effect.
         SliverToBoxAdapter(
-          child: switch (axisDirectionToAxis(axisDirection)) {
-            Axis.vertical => SizedBox(height: leadingPadding),
-            Axis.horizontal => SizedBox(width: leadingPadding),
-          },
+          child: SizedBox(width: leadingPadding, height: leadingPadding),
         ),
         SliverPadding(
           padding: padding.crossAxisOf(axisDirection),
@@ -288,10 +287,7 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: switch (axisDirectionToAxis(axisDirection)) {
-            Axis.vertical => SizedBox(height: trailingPadding),
-            Axis.horizontal => SizedBox(width: trailingPadding),
-          },
+          child: SizedBox(width: trailingPadding, height: trailingPadding),
         ),
       ],
     );
