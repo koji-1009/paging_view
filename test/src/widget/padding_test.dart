@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paging_view/paging_view.dart';
 
@@ -247,5 +248,157 @@ void main() {
         );
       });
     }
+  });
+
+  group('padding does not shrink the leading cache area', () {
+    const itemExtent = 50.0;
+    const scrollCacheExtent = ScrollCacheExtent.pixels(250);
+    final items = [for (var i = 0; i < 200; i++) 'A$i'];
+
+    Widget smallBox(String label) =>
+        SizedBox.square(key: ValueKey(label), dimension: itemExtent);
+
+    // Returns the labels built at 2000px past the start of the content.
+    Future<Set<String>> builtLabels(
+      WidgetTester tester, {
+      required double top,
+      required List<String> labels,
+      required Widget Function(ScrollController controller, EdgeInsets padding)
+      build,
+    }) async {
+      final controller = ScrollController();
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: build(controller, EdgeInsets.only(top: top))),
+        ),
+      );
+      await tester.pumpAndSettle();
+      controller.jumpTo(top + 2000);
+      await tester.pumpAndSettle();
+
+      return {
+        for (final label in labels)
+          if (find
+              .byKey(ValueKey(label), skipOffstage: false)
+              .evaluate()
+              .isNotEmpty)
+            label,
+      };
+    }
+
+    Future<void> expectSameCacheAsWithoutPadding(
+      WidgetTester tester, {
+      required List<String> labels,
+      required Widget Function(ScrollController controller, EdgeInsets padding)
+      build,
+    }) async {
+      final expected = await builtLabels(
+        tester,
+        top: 0,
+        labels: labels,
+        build: build,
+      );
+      final actual = await builtLabels(
+        tester,
+        top: 100,
+        labels: labels,
+        build: build,
+      );
+      expect(actual, expected);
+    }
+
+    testWidgets('PagingList', (tester) async {
+      final dataSource = TestDataSource(initialItems: items, maxAppendPages: 0);
+      addTearDown(dataSource.dispose);
+
+      await expectSameCacheAsWithoutPadding(
+        tester,
+        labels: items,
+        build: (controller, padding) => PagingList<int, String>(
+          dataSource: dataSource,
+          controller: controller,
+          padding: padding,
+          scrollCacheExtent: scrollCacheExtent,
+          autoLoadPrepend: false,
+          autoLoadAppend: false,
+          builder: (context, item, index) => smallBox(item),
+        ),
+      );
+    });
+
+    testWidgets('PagingGrid', (tester) async {
+      final dataSource = TestDataSource(initialItems: items, maxAppendPages: 0);
+      addTearDown(dataSource.dispose);
+
+      await expectSameCacheAsWithoutPadding(
+        tester,
+        labels: items,
+        build: (controller, padding) => PagingGrid<int, String>(
+          dataSource: dataSource,
+          controller: controller,
+          padding: padding,
+          scrollCacheExtent: scrollCacheExtent,
+          autoLoadPrepend: false,
+          autoLoadAppend: false,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            mainAxisExtent: itemExtent,
+          ),
+          builder: (context, item, index) => smallBox(item),
+        ),
+      );
+    });
+
+    testWidgets('GroupedPagingList', (tester) async {
+      final dataSource = TestGroupedDataSource(
+        initialItems: items,
+        maxAppendPages: 0,
+      );
+      addTearDown(dataSource.dispose);
+
+      await expectSameCacheAsWithoutPadding(
+        tester,
+        labels: items,
+        build: (controller, padding) => GroupedPagingList<int, String, String>(
+          dataSource: dataSource,
+          controller: controller,
+          padding: padding,
+          scrollCacheExtent: scrollCacheExtent,
+          autoLoadPrepend: false,
+          autoLoadAppend: false,
+          headerBuilder: (context, group, index) => smallBox(group),
+          itemBuilder: (context, item, itemIndex, groupIndex) => smallBox(item),
+        ),
+      );
+    });
+
+    testWidgets('GroupedPagingGrid', (tester) async {
+      final dataSource = TestGroupedDataSource(
+        initialItems: items,
+        maxAppendPages: 0,
+      );
+      addTearDown(dataSource.dispose);
+
+      await expectSameCacheAsWithoutPadding(
+        tester,
+        labels: items,
+        build: (controller, padding) => GroupedPagingGrid<int, String, String>(
+          dataSource: dataSource,
+          controller: controller,
+          padding: padding,
+          scrollCacheExtent: scrollCacheExtent,
+          autoLoadPrepend: false,
+          autoLoadAppend: false,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            mainAxisExtent: itemExtent,
+          ),
+          headerBuilder: (context, group, index) => smallBox(group),
+          itemBuilder: (context, item, itemIndex, groupIndex) => smallBox(item),
+        ),
+      );
+    });
   });
 }

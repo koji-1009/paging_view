@@ -4,6 +4,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, linear list of items, grouped by a parent value.
@@ -231,68 +232,89 @@ class _GroupedList<PageKey, Parent, Value> extends StatelessWidget {
       );
     }
 
-    return SliverPadding(
-      padding: padding,
-      sliver: SliverMainAxisGroup(
-        slivers: [
-          if (state.isPrependLoading)
-            SliverToBoxAdapter(child: prependLoadingWidget),
-          if (autoLoadPrepend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.prepend);
-                }
-              },
-            ),
-          ...groupedData.mapIndexed(
-            (groupIndex, group) => SliverMainAxisGroup(
-              slivers: [
-                stickyHeader
-                    ? SliverResizingHeader(
-                        minExtentPrototype: stickyHeaderMinExtentPrototype,
-                        maxExtentPrototype: stickyHeaderMaxExtentPrototype,
-                        child: headerBuilder(context, group.parent, groupIndex),
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.leading,
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.crossAxis,
+          sliver: SliverMainAxisGroup(
+            slivers: [
+              if (state.isPrependLoading)
+                SliverToBoxAdapter(child: prependLoadingWidget),
+              if (autoLoadPrepend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.prepend);
+                    }
+                  },
+                ),
+              ...groupedData.mapIndexed(
+                (groupIndex, group) => SliverMainAxisGroup(
+                  slivers: [
+                    stickyHeader
+                        ? SliverResizingHeader(
+                            minExtentPrototype: stickyHeaderMinExtentPrototype,
+                            maxExtentPrototype: stickyHeaderMaxExtentPrototype,
+                            child: headerBuilder(
+                              context,
+                              group.parent,
+                              groupIndex,
+                            ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: headerBuilder(
+                              context,
+                              group.parent,
+                              groupIndex,
+                            ),
+                          ),
+                    if (separatorBuilder == null)
+                      SliverList.builder(
+                        itemCount: group.children.length,
+                        itemBuilder: (context, index) => valueBuilder(
+                          context,
+                          group.children[index].value,
+                          group.children[index].index,
+                          index,
+                        ),
                       )
-                    : SliverToBoxAdapter(
-                        child: headerBuilder(context, group.parent, groupIndex),
+                    else
+                      SliverList.separated(
+                        itemCount: group.children.length,
+                        itemBuilder: (context, index) => valueBuilder(
+                          context,
+                          group.children[index].value,
+                          group.children[index].index,
+                          index,
+                        ),
+                        separatorBuilder: separatorBuilder!,
                       ),
-                if (separatorBuilder == null)
-                  SliverList.builder(
-                    itemCount: group.children.length,
-                    itemBuilder: (context, index) => valueBuilder(
-                      context,
-                      group.children[index].value,
-                      group.children[index].index,
-                      index,
-                    ),
-                  )
-                else
-                  SliverList.separated(
-                    itemCount: group.children.length,
-                    itemBuilder: (context, index) => valueBuilder(
-                      context,
-                      group.children[index].value,
-                      group.children[index].index,
-                      index,
-                    ),
-                    separatorBuilder: separatorBuilder!,
-                  ),
-              ],
-            ),
+                  ],
+                ),
+              ),
+              if (autoLoadAppend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.append);
+                    }
+                  },
+                ),
+              if (state.isAppendLoading)
+                SliverToBoxAdapter(child: appendLoadingWidget),
+            ],
           ),
-          if (autoLoadAppend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.append);
-                }
-              },
-            ),
-          if (state.isAppendLoading)
-            SliverToBoxAdapter(child: appendLoadingWidget),
-        ],
-      ),
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.trailing,
+        ),
+      ],
     );
   }
 }

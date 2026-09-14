@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, 2D array of items (a grid).
@@ -172,38 +173,51 @@ class _Grid<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    return SliverPadding(
-      padding: padding,
-      sliver: SliverMainAxisGroup(
-        slivers: [
-          if (state.isPrependLoading)
-            SliverToBoxAdapter(child: prependLoadingWidget),
-          if (autoLoadPrepend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.prepend);
-                }
-              },
-            ),
-          SliverGrid.builder(
-            gridDelegate: gridDelegate,
-            itemBuilder: (context, index) =>
-                builder(context, items[index], index),
-            itemCount: items.length,
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.leading,
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.crossAxis,
+          sliver: SliverMainAxisGroup(
+            slivers: [
+              if (state.isPrependLoading)
+                SliverToBoxAdapter(child: prependLoadingWidget),
+              if (autoLoadPrepend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.prepend);
+                    }
+                  },
+                ),
+              SliverGrid.builder(
+                gridDelegate: gridDelegate,
+                itemBuilder: (context, index) =>
+                    builder(context, items[index], index),
+                itemCount: items.length,
+              ),
+              if (autoLoadAppend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.append);
+                    }
+                  },
+                ),
+              if (state.isAppendLoading)
+                SliverToBoxAdapter(child: appendLoadingWidget),
+            ],
           ),
-          if (autoLoadAppend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.append);
-                }
-              },
-            ),
-          if (state.isAppendLoading)
-            SliverToBoxAdapter(child: appendLoadingWidget),
-        ],
-      ),
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.trailing,
+        ),
+      ],
     );
   }
 }

@@ -136,56 +136,65 @@ void main() {
       expect(item1Pos.dy, greaterThan(item2Pos.dy));
     });
 
-    testWidgets('loads prepend when scrolled into the leading cache extent', (
-      tester,
-    ) async {
-      final dataSource = TestDataSource(
-        initialItems: [for (var i = 1; i <= 20; i++) 'Item $i'],
-        maxAppendPages: 0,
-        maxPrependPages: 1,
-      );
-      addTearDown(dataSource.dispose);
-      final controller = ScrollController();
-      addTearDown(controller.dispose);
-      const scrollCacheExtent = ScrollCacheExtent.pixels(250);
+    for (final top in [0.0, 100.0]) {
+      testWidgets('loads prepend when scrolled into the leading cache extent '
+          '(padding.top: $top)', (tester) async {
+        final dataSource = TestDataSource(
+          initialItems: [for (var i = 1; i <= 20; i++) 'Item $i'],
+          maxAppendPages: 0,
+          maxPrependPages: 1,
+        );
+        addTearDown(dataSource.dispose);
+        final controller = ScrollController();
+        addTearDown(controller.dispose);
+        const cacheExtent = 250.0;
+        const scrollCacheExtent = ScrollCacheExtent.pixels(cacheExtent);
+        final padding = EdgeInsets.only(top: top);
 
-      // Load the first page without the prepend trigger, which would fire at
-      // the initial offset, and scroll beyond the leading cache extent.
-      await tester.pumpWidget(
-        createPagingList(
-          dataSource: dataSource,
-          controller: controller,
-          scrollCacheExtent: scrollCacheExtent,
-          autoLoadPrepend: false,
-        ),
-      );
-      await tester.pumpAndSettle();
-      controller.jumpTo(400);
-      await tester.pumpAndSettle();
+        // Load the first page without the prepend trigger, which would fire
+        // at the initial offset, and scroll beyond the leading cache extent.
+        await tester.pumpWidget(
+          createPagingList(
+            dataSource: dataSource,
+            controller: controller,
+            scrollCacheExtent: scrollCacheExtent,
+            padding: padding,
+            autoLoadPrepend: false,
+          ),
+        );
+        await tester.pumpAndSettle();
+        controller.jumpTo(400);
+        await tester.pumpAndSettle();
 
-      await tester.pumpWidget(
-        createPagingList(
-          dataSource: dataSource,
-          controller: controller,
-          scrollCacheExtent: scrollCacheExtent,
-        ),
-      );
-      // The prepended item is laid out in the leading cache area, so include
-      // offstage widgets.
-      final prependedItem = find.text('Prepended Item -1', skipOffstage: false);
-      await tester.pumpAndSettle();
-      expect(prependedItem, findsNothing);
+        await tester.pumpWidget(
+          createPagingList(
+            dataSource: dataSource,
+            controller: controller,
+            scrollCacheExtent: scrollCacheExtent,
+            padding: padding,
+          ),
+        );
+        // The prepended item is laid out in the leading cache area, so
+        // include offstage widgets.
+        final prependedItem = find.text(
+          'Prepended Item -1',
+          skipOffstage: false,
+        );
+        await tester.pumpAndSettle();
+        expect(prependedItem, findsNothing);
 
-      // The trigger at offset 0 is still outside the leading cache extent.
-      controller.jumpTo(251);
-      await tester.pumpAndSettle();
-      expect(prependedItem, findsNothing);
+        // The trigger sits right after the top padding and is still outside
+        // the leading cache extent.
+        controller.jumpTo(top + cacheExtent + 1);
+        await tester.pumpAndSettle();
+        expect(prependedItem, findsNothing);
 
-      // The trigger enters the leading cache extent before the viewport
-      // reaches it.
-      controller.jumpTo(250);
-      await tester.pumpAndSettle();
-      expect(prependedItem, findsOneWidget);
-    });
+        // The trigger enters the leading cache extent before the viewport
+        // reaches it.
+        controller.jumpTo(top + cacheExtent);
+        await tester.pumpAndSettle();
+        expect(prependedItem, findsOneWidget);
+      });
+    }
   });
 }
