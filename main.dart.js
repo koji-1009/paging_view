@@ -68633,7 +68633,7 @@ bp(){var s,r,q,p,o=this
 o.dy=B.ft
 s=t.p
 r=s.a(A.x.prototype.gL.call(o))
-q=s.a(A.x.prototype.gL.call(o)).d<=0
+q=s.a(A.x.prototype.gL.call(o)).d+s.a(A.x.prototype.gL.call(o)).z<=1e-10
 p=r.Q>0&&q
 if(p!==o.y1){o.y1=p
 $.a3.ok$.push(new A.a24(o))}},
