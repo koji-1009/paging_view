@@ -278,9 +278,6 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
   final bool hasPrependMore;
   final bool hasAppendMore;
 
-  EdgeInsets get _horizontalPadding =>
-      EdgeInsets.only(left: padding.left, right: padding.right);
-
   @override
   Widget build(BuildContext context) {
     // Handle initial state - trigger first load
@@ -361,6 +358,31 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
     final centerOffset = prependItems.length;
     final appendOffset = prependItems.length + centerItems.length;
 
+    // The center anchor must be a direct child of the viewport, so the
+    // padding cannot be applied by a single SliverPadding. Resolve each side
+    // against the axis direction, as SliverPadding does.
+    final axisDirection = getAxisDirectionFromAxisReverseAndDirectionality(
+      context,
+      scrollDirection,
+      reverse,
+    );
+    final (leadingPadding, trailingPadding) = switch (axisDirection) {
+      AxisDirection.down => (padding.top, padding.bottom),
+      AxisDirection.up => (padding.bottom, padding.top),
+      AxisDirection.right => (padding.left, padding.right),
+      AxisDirection.left => (padding.right, padding.left),
+    };
+    final crossAxisPadding = switch (scrollDirection) {
+      Axis.vertical => EdgeInsets.only(
+        left: padding.left,
+        right: padding.right,
+      ),
+      Axis.horizontal => EdgeInsets.only(
+        top: padding.top,
+        bottom: padding.bottom,
+      ),
+    };
+
     return CustomScrollView(
       center: dataSource.centerKey,
       scrollDirection: scrollDirection,
@@ -376,11 +398,16 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       clipBehavior: clipBehavior,
       slivers: [
         // === Prepend section (above center, laid out in reverse) ===
-        SliverToBoxAdapter(child: SizedBox(height: padding.top)),
+        SliverToBoxAdapter(
+          child: switch (scrollDirection) {
+            Axis.vertical => SizedBox(height: leadingPadding),
+            Axis.horizontal => SizedBox(width: leadingPadding),
+          },
+        ),
 
         // Prepend load state widget
         SliverPadding(
-          padding: _horizontalPadding,
+          padding: crossAxisPadding,
           sliver: SliverToBoxAdapter(
             child: prependLoadStateBuilder(
               context,
@@ -403,7 +430,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         // Prepend items list (reversed for proper display order)
         if (prependItems.isNotEmpty)
           SliverPadding(
-            padding: _horizontalPadding,
+            padding: crossAxisPadding,
             sliver: separatorBuilder != null
                 ? SliverList.separated(
                     itemBuilder: (context, index) {
@@ -439,7 +466,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         // Separator between prepend and center sections
         if (separatorBuilder != null && prependItems.isNotEmpty)
           SliverPadding(
-            padding: _horizontalPadding,
+            padding: crossAxisPadding,
             sliver: SliverToBoxAdapter(
               child: separatorBuilder!(context, prependItems.length - 1),
             ),
@@ -448,7 +475,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         // === Center section (the anchor point) ===
         SliverPadding(
           key: dataSource.centerKey,
-          padding: _horizontalPadding,
+          padding: crossAxisPadding,
           sliver: separatorBuilder != null
               ? SliverList.separated(
                   itemBuilder: (context, index) {
@@ -473,7 +500,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
             centerItems.isNotEmpty &&
             appendItems.isNotEmpty)
           SliverPadding(
-            padding: _horizontalPadding,
+            padding: crossAxisPadding,
             sliver: SliverToBoxAdapter(
               child: separatorBuilder!(
                 context,
@@ -485,7 +512,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         // === Append section (below center) ===
         if (appendItems.isNotEmpty)
           SliverPadding(
-            padding: _horizontalPadding,
+            padding: crossAxisPadding,
             sliver: separatorBuilder != null
                 ? SliverList.separated(
                     itemBuilder: (context, index) {
@@ -517,7 +544,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
 
         // Append load state widget
         SliverPadding(
-          padding: _horizontalPadding,
+          padding: crossAxisPadding,
           sliver: SliverToBoxAdapter(
             child: appendLoadStateBuilder(
               context,
@@ -527,7 +554,12 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
           ),
         ),
 
-        SliverToBoxAdapter(child: SizedBox(height: padding.bottom)),
+        SliverToBoxAdapter(
+          child: switch (scrollDirection) {
+            Axis.vertical => SizedBox(height: trailingPadding),
+            Axis.horizontal => SizedBox(width: trailingPadding),
+          },
+        ),
       ],
     );
   }
