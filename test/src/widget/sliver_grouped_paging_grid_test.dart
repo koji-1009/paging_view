@@ -117,10 +117,16 @@ void main() {
     });
 
     testWidgets('loads more items on scroll (prepend)', (tester) async {
-      final dataSource = TestGroupedDataSource(maxPrependPages: 1);
+      // Enough rows that the offset stays beyond the leading cache extent of
+      // the prepend trigger.
+      final dataSource = TestGroupedDataSource(
+        maxPrependPages: 1,
+        initialItems: const ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'],
+      );
       addTearDown(dataSource.dispose);
 
       final controller = ScrollController(initialScrollOffset: 1000.0);
+      addTearDown(controller.dispose);
       await tester.pumpWidget(
         createSliverGroupedPagingGrid(
           dataSource: dataSource,
@@ -128,12 +134,16 @@ void main() {
           height: 500,
         ),
       );
+      await tester.pump();
+      // Stop the ballistic activity started while the initial loading widget
+      // was shown, which would otherwise scroll back to the top.
+      controller.jumpTo(1000.0);
       await tester.pumpAndSettle();
       expect(find.text('Grouped Prepended Item -1'), findsNothing);
 
       await tester.fling(
         find.byType(CustomScrollView),
-        const Offset(0, 500),
+        const Offset(0, 1000),
         1000,
       );
       await tester.pumpAndSettle();

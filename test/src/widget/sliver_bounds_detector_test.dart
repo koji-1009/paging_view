@@ -21,7 +21,9 @@ void main() {
             slivers: [
               const SliverToBoxAdapter(child: SizedBox(height: sliverOffset)),
               SliverBoundsDetector(onVisibilityChanged: onVisibilityChanged),
-              const SliverToBoxAdapter(child: SizedBox(height: sliverOffset)),
+              // Long enough that offsets beyond the leading cache extent are
+              // reachable without being clamped back.
+              const SliverToBoxAdapter(child: SizedBox(height: 2000)),
             ],
           ),
         ),
@@ -135,6 +137,12 @@ void main() {
       // Leading cache starts at scrollOffset - 250.
       // To make sliver at 800 invisible, we need 800 < scrollOffset - 250
       // => scrollOffset > 1050
+      for (final offset in [801.0, 900.0, 1049.0, 1050.0]) {
+        controller.jumpTo(offset);
+        await tester.pumpAndSettle();
+        expect(visibilityLog, [true], reason: 'scrollOffset: $offset');
+      }
+
       controller.jumpTo(1051);
       await tester.pumpAndSettle();
       expect(visibilityLog, [true, false]);
