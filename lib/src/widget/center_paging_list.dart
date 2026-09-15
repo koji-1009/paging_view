@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/center_data_source.dart';
 import 'package:paging_view/src/function.dart';
+import 'package:paging_view/src/private/axis_direction_padding.dart';
 import 'package:paging_view/src/private/center_page_manager.dart';
 import 'package:paging_view/src/private/entity.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
@@ -366,22 +367,9 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       scrollDirection,
       reverse,
     );
-    final (leadingPadding, trailingPadding) = switch (axisDirection) {
-      AxisDirection.down => (padding.top, padding.bottom),
-      AxisDirection.up => (padding.bottom, padding.top),
-      AxisDirection.right => (padding.left, padding.right),
-      AxisDirection.left => (padding.right, padding.left),
-    };
-    final crossAxisPadding = switch (scrollDirection) {
-      Axis.vertical => EdgeInsets.only(
-        left: padding.left,
-        right: padding.right,
-      ),
-      Axis.horizontal => EdgeInsets.only(
-        top: padding.top,
-        bottom: padding.bottom,
-      ),
-    };
+    final leadingPadding = padding.leadingAlong(axisDirection);
+    final trailingPadding = padding.trailingAlong(axisDirection);
+    final crossAxisPadding = padding.crossAxisOf(axisDirection);
 
     return CustomScrollView(
       center: dataSource.centerKey,
@@ -398,11 +386,10 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
       clipBehavior: clipBehavior,
       slivers: [
         // === Prepend section (above center, laid out in reverse) ===
+        // The cross axis extent is overridden by the tight cross axis
+        // constraint, so only the main axis extent takes effect.
         SliverToBoxAdapter(
-          child: switch (scrollDirection) {
-            Axis.vertical => SizedBox(height: leadingPadding),
-            Axis.horizontal => SizedBox(width: leadingPadding),
-          },
+          child: SizedBox(width: leadingPadding, height: leadingPadding),
         ),
 
         // Prepend load state widget
@@ -555,10 +542,7 @@ class _CenterList<PageKey, Value> extends StatelessWidget {
         ),
 
         SliverToBoxAdapter(
-          child: switch (scrollDirection) {
-            Axis.vertical => SizedBox(height: trailingPadding),
-            Axis.horizontal => SizedBox(width: trailingPadding),
-          },
+          child: SizedBox(width: trailingPadding, height: trailingPadding),
         ),
       ],
     );

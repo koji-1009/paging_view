@@ -5,6 +5,7 @@ import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/grouped_data_source.dart';
 import 'package:paging_view/src/grouped_entity.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, 2D array of items (a grid), grouped by a parent value.
@@ -210,57 +211,82 @@ class _GroupedGrid<PageKey, Parent, Value> extends StatelessWidget {
       );
     }
 
-    return SliverPadding(
-      padding: padding,
-      sliver: SliverMainAxisGroup(
-        slivers: [
-          if (state.isPrependLoading)
-            SliverToBoxAdapter(child: prependLoadingWidget),
-          if (autoLoadPrepend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.prepend);
-                }
-              },
-            ),
-          ...groupedData.mapIndexed(
-            (groupIndex, group) => SliverMainAxisGroup(
-              slivers: [
-                stickyHeader
-                    ? SliverResizingHeader(
-                        minExtentPrototype: stickyHeaderMinExtentPrototype,
-                        maxExtentPrototype: stickyHeaderMaxExtentPrototype,
-                        child: headerBuilder(context, group.parent, groupIndex),
-                      )
-                    : SliverToBoxAdapter(
-                        child: headerBuilder(context, group.parent, groupIndex),
-                      ),
-                SliverGrid.builder(
-                  gridDelegate: gridDelegate,
-                  itemCount: group.children.length,
-                  itemBuilder: (context, index) => itemBuilder(
-                    context,
-                    group.children[index].value,
-                    group.children[index].index,
-                    index,
-                  ),
+    // Apply the main axis padding next to the content rather than wrapping it
+    // in a SliverPadding: RenderSliverPadding passes
+    // `cacheOrigin + beforePadding` to its child, which shrinks the leading
+    // cache area of the content by the leading padding.
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.leading,
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.crossAxis,
+          sliver: SliverMainAxisGroup(
+            slivers: [
+              if (state.isPrependLoading)
+                SliverToBoxAdapter(child: prependLoadingWidget),
+              if (autoLoadPrepend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.prepend);
+                    }
+                  },
                 ),
-              ],
-            ),
+              ...groupedData.mapIndexed(
+                (groupIndex, group) => SliverMainAxisGroup(
+                  slivers: [
+                    stickyHeader
+                        ? SliverResizingHeader(
+                            minExtentPrototype: stickyHeaderMinExtentPrototype,
+                            maxExtentPrototype: stickyHeaderMaxExtentPrototype,
+                            child: headerBuilder(
+                              context,
+                              group.parent,
+                              groupIndex,
+                            ),
+                          )
+                        : SliverToBoxAdapter(
+                            child: headerBuilder(
+                              context,
+                              group.parent,
+                              groupIndex,
+                            ),
+                          ),
+                    SliverGrid.builder(
+                      gridDelegate: gridDelegate,
+                      itemCount: group.children.length,
+                      itemBuilder: (context, index) => itemBuilder(
+                        context,
+                        group.children[index].value,
+                        group.children[index].index,
+                        index,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (autoLoadAppend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.append);
+                    }
+                  },
+                ),
+              if (state.isAppendLoading)
+                SliverToBoxAdapter(child: appendLoadingWidget),
+            ],
           ),
-          if (autoLoadAppend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.append);
-                }
-              },
-            ),
-          if (state.isAppendLoading)
-            SliverToBoxAdapter(child: appendLoadingWidget),
-        ],
-      ),
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.trailing,
+        ),
+      ],
     );
   }
 }

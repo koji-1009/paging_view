@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, linear list of items.
@@ -223,44 +224,61 @@ class _List<PageKey, Value> extends StatelessWidget {
       );
     }
 
-    return SliverPadding(
-      padding: padding,
-      sliver: SliverMainAxisGroup(
-        slivers: [
-          if (state.isPrependLoading)
-            SliverToBoxAdapter(child: prependLoadingWidget),
-          if (autoLoadPrepend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.prepend);
-                }
-              },
-            ),
-          _separatorBuilder != null
-              ? SliverList.separated(
-                  itemBuilder: (context, index) =>
-                      builder(context, items[index], index),
-                  itemCount: items.length,
-                  separatorBuilder: _separatorBuilder,
-                )
-              : SliverList.builder(
-                  itemBuilder: (context, index) =>
-                      builder(context, items[index], index),
-                  itemCount: items.length,
+    // Apply the main axis padding next to the content rather than wrapping it
+    // in a SliverPadding: RenderSliverPadding passes
+    // `cacheOrigin + beforePadding` to its child, which shrinks the leading
+    // cache area of the content by the leading padding.
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.leading,
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.crossAxis,
+          sliver: SliverMainAxisGroup(
+            slivers: [
+              if (state.isPrependLoading)
+                SliverToBoxAdapter(child: prependLoadingWidget),
+              if (autoLoadPrepend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.prepend);
+                    }
+                  },
                 ),
-          if (autoLoadAppend)
-            SliverBoundsDetector(
-              onVisibilityChanged: (isVisible) async {
-                if (isVisible) {
-                  await dataSource.update(LoadType.append);
-                }
-              },
-            ),
-          if (state.isAppendLoading)
-            SliverToBoxAdapter(child: appendLoadingWidget),
-        ],
-      ),
+              _separatorBuilder != null
+                  ? SliverList.separated(
+                      itemBuilder: (context, index) =>
+                          builder(context, items[index], index),
+                      itemCount: items.length,
+                      separatorBuilder: _separatorBuilder,
+                    )
+                  : SliverList.builder(
+                      itemBuilder: (context, index) =>
+                          builder(context, items[index], index),
+                      itemCount: items.length,
+                    ),
+              if (autoLoadAppend)
+                SliverBoundsDetector(
+                  onVisibilityChanged: (isVisible) async {
+                    if (isVisible) {
+                      await dataSource.update(LoadType.append);
+                    }
+                  },
+                ),
+              if (state.isAppendLoading)
+                SliverToBoxAdapter(child: appendLoadingWidget),
+            ],
+          ),
+        ),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.trailing,
+        ),
+      ],
     );
   }
 }
