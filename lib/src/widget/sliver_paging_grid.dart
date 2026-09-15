@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';
-import 'package:paging_view/src/private/axis_direction_padding.dart';
 import 'package:paging_view/src/private/entity.dart';
+import 'package:paging_view/src/private/sliver_axis_padding.dart';
 import 'package:paging_view/src/widget/sliver_bounds_detector.dart';
 
 /// A sliver that displays a paginated, 2D array of items (a grid).
@@ -177,19 +177,15 @@ class _Grid<PageKey, Value> extends StatelessWidget {
     // in a SliverPadding: RenderSliverPadding passes
     // `cacheOrigin + beforePadding` to its child, which shrinks the leading
     // cache area of the content by the leading padding.
-    final axisDirection = Scrollable.of(context).axisDirection;
-    final leadingPadding = padding.leadingAlong(axisDirection);
-    final trailingPadding = padding.trailingAlong(axisDirection);
-
     return SliverMainAxisGroup(
       slivers: [
-        // The cross axis extent is overridden by the tight cross axis
-        // constraint, so only the main axis extent takes effect.
-        SliverToBoxAdapter(
-          child: SizedBox(width: leadingPadding, height: leadingPadding),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.leading,
         ),
-        SliverPadding(
-          padding: padding.crossAxisOf(axisDirection),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.crossAxis,
           sliver: SliverMainAxisGroup(
             slivers: [
               if (state.isPrependLoading)
@@ -221,8 +217,9 @@ class _Grid<PageKey, Value> extends StatelessWidget {
             ],
           ),
         ),
-        SliverToBoxAdapter(
-          child: SizedBox(width: trailingPadding, height: trailingPadding),
+        SliverAxisPadding(
+          padding: padding,
+          part: SliverAxisPaddingPart.trailing,
         ),
       ],
     );
