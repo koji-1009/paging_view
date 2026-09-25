@@ -592,7 +592,7 @@ class _CenterPagingListDemoState extends State<CenterPagingListDemo> {
 
 ## Further Reading
 
-* [Paging and Flutter (and the paging_view package)](https://zenn.dev/koji_1009/articles/5d34da19bc802e?locale=en) — Design philosophy behind `paging_view`, including how `SliverBoundsDetector` and `scrollCacheExtent` interact to enable smooth infinite scrolling.
+* [Beyond Infinite Scroll: A Data-Driven Approach to Flutter Pagination](https://blog.koji-1009.com/posts/beyond-infinite-scroll-a-data-driven-approach-to-flutter-pagination/) — Design philosophy behind `paging_view`, including how `SliverBoundsDetector` and `scrollCacheExtent` interact to enable smooth infinite scrolling.
 
 ## API Reference
 
