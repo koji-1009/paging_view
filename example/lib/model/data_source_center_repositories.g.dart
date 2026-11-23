@@ -10,7 +10,7 @@ part of 'data_source_center_repositories.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(centerDataSource)
-const centerDataSourceProvider = CenterDataSourceProvider._();
+final centerDataSourceProvider = CenterDataSourceProvider._();
 
 final class CenterDataSourceProvider
     extends
@@ -20,7 +20,7 @@ final class CenterDataSourceProvider
           ExampleCenterDataSource
         >
     with $Provider<ExampleCenterDataSource> {
-  const CenterDataSourceProvider._()
+  CenterDataSourceProvider._()
     : super(
         from: null,
         argument: null,

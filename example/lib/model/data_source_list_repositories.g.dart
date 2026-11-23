@@ -10,7 +10,7 @@ part of 'data_source_list_repositories.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(dataSource)
-const dataSourceProvider = DataSourceProvider._();
+final dataSourceProvider = DataSourceProvider._();
 
 final class DataSourceProvider
     extends
@@ -20,7 +20,7 @@ final class DataSourceProvider
           ExampleDataSource
         >
     with $Provider<ExampleDataSource> {
-  const DataSourceProvider._()
+  DataSourceProvider._()
     : super(
         from: null,
         argument: null,

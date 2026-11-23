@@ -10,7 +10,7 @@ part of 'data_source_grouped_repositories.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(groupedDataSource)
-const groupedDataSourceProvider = GroupedDataSourceProvider._();
+final groupedDataSourceProvider = GroupedDataSourceProvider._();
 
 final class GroupedDataSourceProvider
     extends
@@ -20,7 +20,7 @@ final class GroupedDataSourceProvider
           ExampleGroupedDataSource
         >
     with $Provider<ExampleGroupedDataSource> {
-  const GroupedDataSourceProvider._()
+  GroupedDataSourceProvider._()
     : super(
         from: null,
         argument: null,
