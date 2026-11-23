@@ -31,6 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.0
+  collection: ^1.19.0
 
   riverpod_annotation: ^4.0.0
 
