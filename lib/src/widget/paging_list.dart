@@ -164,7 +164,7 @@ class PagingList<PageKey, Value> extends StatelessWidget {
   /// See [ScrollView.dragStartBehavior].
   final DragStartBehavior dragStartBehavior;
 
-  /// [ScrollViewKeyboardDismissBehavior] the defines how this [ScrollView] will
+  /// [ScrollViewKeyboardDismissBehavior] that defines how this [ScrollView] will
   /// dismiss the keyboard automatically.
   ///
   /// See [ScrollView.keyboardDismissBehavior].

@@ -56,7 +56,9 @@ class CenterPaging<PageKey, Value>
   final LoadState state;
 
   /// Pages loaded via prepend operations.
-  /// These are displayed in reverse order (most recent prepend first).
+  ///
+  /// This holds at most the most recently prepended page: earlier prepend
+  /// pages are moved to [centerPages] when the next prepend starts.
   @override
   final List<PageData<PageKey, Value>> prependPages;
 
@@ -396,7 +398,7 @@ class CenterPageManager<PageKey, Value>
   /// `prependPages` were already moved to `centerPages` when `changeState`
   /// was called with `LoadType.prepend`.
   ///
-  /// If [newPage] is null, the state remains unchanged but loading ends.
+  /// If [newPage] is null, the pages remain unchanged but loading ends.
   @override
   void prepend({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
@@ -432,7 +434,7 @@ class CenterPageManager<PageKey, Value>
   /// `appendPages` were already moved to `centerPages` when `changeState`
   /// was called with `LoadType.append`.
   ///
-  /// If [newPage] is null, the state remains unchanged but loading ends.
+  /// If [newPage] is null, the pages remain unchanged but loading ends.
   @override
   void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {

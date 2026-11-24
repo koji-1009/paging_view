@@ -9,6 +9,11 @@ import 'package:paging_view/src/private/entity.dart';
 /// * Show a button only when `hasMore` is true.
 /// * Disable the button when `isLoading` is true.
 ///
+/// This widget builds a box widget, not a sliver. Wrap it in a
+/// `SliverToBoxAdapter` to place it in a `CustomScrollView`. While the
+/// [DataSource] is in the error state, it builds an empty box instead of
+/// calling [builder].
+///
 /// Example:
 /// ```dart
 /// PrependLoadStateBuilder(
@@ -71,6 +76,11 @@ class PrependLoadStateBuilder<PageKey, Value> extends StatelessWidget {
 /// It provides `hasMore` and `isLoading` states to the builder, allowing you to:
 /// * Show a button only when `hasMore` is true.
 /// * Disable the button when `isLoading` is true.
+///
+/// This widget builds a box widget, not a sliver. Wrap it in a
+/// `SliverToBoxAdapter` to place it in a `CustomScrollView`. While the
+/// [DataSource] is in the error state, it builds an empty box instead of
+/// calling [builder].
 ///
 /// Example:
 /// ```dart

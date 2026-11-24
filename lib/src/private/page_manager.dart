@@ -93,7 +93,7 @@ class PageManager<PageKey, Value>
 
   /// Adds a [newPage] to the beginning of the list of pages.
   ///
-  /// If [newPage] is null, the state remains unchanged.
+  /// If [newPage] is null, the pages remain unchanged but loading ends.
   @override
   void prepend({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {
@@ -113,7 +113,7 @@ class PageManager<PageKey, Value>
 
   /// Adds a [newPage] to the end of the list of pages.
   ///
-  /// If [newPage] is null, the state remains unchanged.
+  /// If [newPage] is null, the pages remain unchanged but loading ends.
   @override
   void append({required PageData<PageKey, Value>? newPage}) {
     if (_disposed) {

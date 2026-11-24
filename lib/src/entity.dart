@@ -54,8 +54,11 @@ class Append<PageKey> implements LoadAction<PageKey> {
 /// This is a sealed class with three concrete implementations:
 /// - [Success]: Indicates that the data was loaded successfully.
 /// - [Failure]: Indicates that an error occurred during loading.
-/// - [None]: Indicates that the load operation was skipped or resulted in no data,
-///   often signifying the end of the data source (e.g., no more pages).
+/// - [None]: Indicates that the load operation was skipped or resulted in no
+///   data.
+///
+/// The end of the data is signaled by a `null` [PageData.appendKey] or
+/// [PageData.prependKey] in a [Success], not by [None].
 sealed class LoadResult<PageKey, Value> {
   const LoadResult._();
 }
@@ -87,11 +90,14 @@ class Failure<PageKey, Value> implements LoadResult<PageKey, Value> {
   String toString() => 'Failure(error: $error, stackTrace: $stackTrace)';
 }
 
-/// A [LoadResult] that indicates no data was loaded and no further action
-/// should be taken for this load cycle.
+/// A [LoadResult] that indicates no data was loaded.
 ///
-/// This is typically returned when a [LoadAction] is triggered for a page that
-/// does not exist (e.g., requesting a page beyond the end of the data).
+/// For a [Prepend] or [Append], the current items and page keys are kept, so
+/// the same key can be requested again later. To mark the end of the data,
+/// return a [Success] whose [PageData.prependKey] or [PageData.appendKey] is
+/// `null` instead.
+///
+/// For a [Refresh], all items are cleared and the empty state is shown.
 class None<PageKey, Value> implements LoadResult<PageKey, Value> {
   /// Creates a [None] result.
   const None(); // coverage:ignore-line
@@ -112,13 +118,15 @@ class PageData<PageKey, Value> {
   /// The list of items in this page. Defaults to an empty list.
   final List<Value> data;
 
-  /// The key to be used to fetch the *previous* page of data (older content).
+  /// The key to be used to fetch the page displayed before this one, passed
+  /// to [Prepend].
   ///
   /// If `null`, it signifies that there is no previous page to load, effectively
   /// marking the beginning of the dataset.
   final PageKey? prependKey;
 
-  /// The key to be used to fetch the *next* page of data (newer content).
+  /// The key to be used to fetch the page displayed after this one, passed
+  /// to [Append].
   ///
   /// If `null`, it signifies that there is no next page to load, effectively
   /// marking the end of the dataset.
@@ -150,11 +158,16 @@ class PageData<PageKey, Value> {
 
 /// Defines the policy when a data load fails.
 ///
-/// By default, an error triggers an error state in the `PageManager`.
-/// Adding these values allows you to ignore errors for specific actions,
-/// reverting to the previous valid state instead of showing an error.
+/// By default, a failed load puts the data source into the error state, and
+/// paging widgets show their `errorBuilder`. Adding these values allows you to
+/// ignore errors for specific actions, reverting to the previous valid state
+/// instead of showing an error.
 enum LoadErrorPolicy {
-  /// Ignores errors during a refresh operation. The list retains its current items.
+  /// Ignores errors during a refresh operation. The list retains its current
+  /// items.
+  ///
+  /// This applies to `refresh()` only. A failure of the initial load always
+  /// puts the data source into the error state.
   ignoreRefresh,
 
   /// Ignores errors when prepending items.
