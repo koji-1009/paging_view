@@ -1,5 +1,4 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/widgets.dart';
 import 'package:paging_view/src/data_source.dart';
 import 'package:paging_view/src/function.dart';

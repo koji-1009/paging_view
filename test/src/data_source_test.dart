@@ -420,35 +420,32 @@ void main() {
       expect(dataSource.notifier.values, ['0', 'X', '1', '2']);
     });
 
-    test(
-      'updateItem during loading applies update and preserves loaded data later',
-      () async {
-        final completer = Completer<LoadResult<int, String>>();
-        dataSource.onLoad = (action) {
-          if (action is Append) {
-            return completer.future;
-          }
-          return Future.value(
-            const Success(page: PageData(data: ['0'], appendKey: 1)),
-          );
-        };
-
-        // Start append
-        final future = dataSource.append();
-
-        // While appending (isLoading == true), update an item
-        dataSource.updateItem(0, (item) => 'updated');
-
-        // Complete append
-        completer.complete(
-          const Success(page: PageData(data: ['a1'], appendKey: 2)),
+    test('updateItem during loading applies update and preserves loaded data later', () async {
+      final completer = Completer<LoadResult<int, String>>();
+      dataSource.onLoad = (action) {
+        if (action is Append) {
+          return completer.future;
+        }
+        return Future.value(
+          const Success(page: PageData(data: ['0'], appendKey: 1)),
         );
-        await future;
+      };
 
-        // Check that both the update and append are applied
-        expect(dataSource.notifier.values, ['updated', '1', '2', 'a1']);
-      },
-    );
+      // Start append
+      final future = dataSource.append();
+
+      // While appending (isLoading == true), update an item
+      dataSource.updateItem(0, (item) => 'updated');
+
+      // Complete append
+      completer.complete(
+        const Success(page: PageData(data: ['a1'], appendKey: 2)),
+      );
+      await future;
+
+      // Check that both the update and append are applied
+      expect(dataSource.notifier.values, ['updated', '1', '2', 'a1']);
+    });
 
     test('manipulation with out-of-bounds index should set error', () {
       dataSource.updateItem(99, (_) => 'X');

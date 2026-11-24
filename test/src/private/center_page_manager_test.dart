@@ -414,27 +414,21 @@ void main() {
         expect(manager.value.appendItems, ['e', 'f', 'X']);
       });
 
-      test(
-        'insertItem() at the very end when only center exists adding to centerPages',
-        () {
-          manager.refresh(newPage: page1);
-          manager.insertItem(2, 'X');
-          expect(manager.value.allItems, ['a', 'b', 'X']);
-          expect(manager.value.centerItems, ['a', 'b', 'X']);
-        },
-      );
+      test('insertItem() at the very end when only center exists adding to centerPages', () {
+        manager.refresh(newPage: page1);
+        manager.insertItem(2, 'X');
+        expect(manager.value.allItems, ['a', 'b', 'X']);
+        expect(manager.value.centerItems, ['a', 'b', 'X']);
+      });
 
-      test(
-        'insertItem() at the very end when only prepend exists adding to prependPages',
-        () {
-          manager.refresh(newPage: null);
-          manager.changeState(type: LoadType.prepend);
-          manager.prepend(newPage: page1);
-          manager.insertItem(2, 'X');
-          expect(manager.value.allItems, ['a', 'b', 'X']);
-          expect(manager.value.prependItems, ['a', 'b', 'X']);
-        },
-      );
+      test('insertItem() at the very end when only prepend exists adding to prependPages', () {
+        manager.refresh(newPage: null);
+        manager.changeState(type: LoadType.prepend);
+        manager.prepend(newPage: page1);
+        manager.insertItem(2, 'X');
+        expect(manager.value.allItems, ['a', 'b', 'X']);
+        expect(manager.value.prependItems, ['a', 'b', 'X']);
+      });
 
       test('insertItem() on empty state sets center', () {
         manager.dispose();
