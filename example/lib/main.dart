@@ -260,10 +260,10 @@ class ManualListDemo extends ConsumerWidget {
             autoLoadPrepend: false,
             autoLoadAppend: false,
           ),
-          AppendLoadStateBuilder(
-            dataSource: dataSource,
-            builder: (context, hasMore, isLoading) => SliverToBoxAdapter(
-              child: SizedBox(
+          SliverToBoxAdapter(
+            child: AppendLoadStateBuilder(
+              dataSource: dataSource,
+              builder: (context, hasMore, isLoading) => SizedBox(
                 height: 64,
                 child: isLoading
                     ? const Center(
