@@ -125,5 +125,57 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(Divider), findsWidgets);
     });
+
+    for (final separated in [false, true]) {
+      final constructor = separated ? '.separated' : 'default';
+
+      testWidgets(
+        'error widget does not fill remaining space if fillRemainErrorWidget is false ($constructor)',
+        (tester) async {
+          final dataSource = TestGroupedDataSource(hasErrorOnRefresh: true);
+          addTearDown(dataSource.dispose);
+
+          await tester.pumpWidget(
+            createGroupedPagingList(
+              dataSource: dataSource,
+              separatorBuilder: separated
+                  ? (context, index) => const Divider()
+                  : null,
+              fillRemainErrorWidget: false,
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          expect(
+            tester.getSize(find.text('Error')).height,
+            lessThan(tester.getSize(find.byType(CustomScrollView)).height),
+          );
+        },
+      );
+
+      testWidgets(
+        'empty widget does not fill remaining space if fillRemainEmptyWidget is false ($constructor)',
+        (tester) async {
+          final dataSource = TestGroupedDataSource(initialItems: const []);
+          addTearDown(dataSource.dispose);
+
+          await tester.pumpWidget(
+            createGroupedPagingList(
+              dataSource: dataSource,
+              separatorBuilder: separated
+                  ? (context, index) => const Divider()
+                  : null,
+              fillRemainEmptyWidget: false,
+            ),
+          );
+          await tester.pumpAndSettle();
+
+          expect(
+            tester.getSize(find.text('No Data')).height,
+            lessThan(tester.getSize(find.byType(CustomScrollView)).height),
+          );
+        },
+      );
+    }
   });
 }

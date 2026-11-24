@@ -16,14 +16,21 @@ abstract class BaseDataSource<
 
   /// Defines the error handling policy for load operations.
   /// By default, all errors are shown in the UI.
+  ///
+  /// A failure of the initial load is always shown, regardless of this policy.
   Set<LoadErrorPolicy> errorPolicy;
 
   /// A callback that is invoked just before a `load` operation begins. It
   /// provides the [LoadAction] that is about to be executed.
+  ///
+  /// The initial load is reported as a [Refresh].
   void Function(LoadAction<PageKey> action)? onLoadStarted;
 
   /// A callback invoked after every `load` operation completes, providing the
   /// [LoadResult]. Useful for analytics or showing temporary error messages.
+  ///
+  /// The initial load is reported as a [Refresh]. If `load` throws, the
+  /// callback receives a [Failure] with the thrown error.
   void Function(LoadAction<PageKey> action, LoadResult<PageKey, Value> result)?
   onLoadFinished;
 
@@ -44,7 +51,11 @@ abstract class BaseDataSource<
   /// 3.  Return a [LoadResult] to represent the outcome:
   ///     - [Success]: If data was fetched successfully, containing a [PageData].
   ///     - [Failure]: If an error occurred.
-  ///     - [None]: If the load was skipped or no data was returned (e.g., end of list).
+  ///     - [None]: If the load was skipped or no data was returned.
+  ///
+  /// The initial load and [refresh] are both executed as a [Refresh] action.
+  /// To mark the end of the data, return a [Success] whose
+  /// [PageData.appendKey] or [PageData.prependKey] is `null`.
   @protected
   Future<LoadResult<PageKey, Value>> load(LoadAction<PageKey> action);
 
@@ -76,7 +87,9 @@ abstract class BaseDataSource<
   /// updated item. This method notifies listeners and is useful for localized
   /// state changes (e.g., toggling a "favorite" status) without a full refresh.
   ///
-  /// If the [index] is out of range, an error will be set in the state manager.
+  /// If the [index] is out of range or `update` throws, the data source enters
+  /// the error state: all loaded items are discarded and paging widgets show
+  /// their `errorBuilder`.
   void updateItem(int index, Value Function(Value item) update) {
     notifier.updateItem(index, update);
   }
@@ -86,15 +99,18 @@ abstract class BaseDataSource<
   /// The `update` function is called for each item, providing its `index` and
   /// current `item`, and should return the new item.
   ///
-  /// If the update function throws an error, it will be caught and set in the
-  /// state manager.
+  /// If the update function throws, the data source enters the error state:
+  /// all loaded items are discarded and paging widgets show their
+  /// `errorBuilder`.
   void updateItems(Value Function(int index, Value item) update) {
     notifier.updateItems(update);
   }
 
   /// Removes a single item at the specified [index] and notifies listeners.
   ///
-  /// If the [index] is out of range, an error will be set in the state manager.
+  /// If the [index] is out of range, the data source enters the error state:
+  /// all loaded items are discarded and paging widgets show their
+  /// `errorBuilder`.
   void removeItem(int index) {
     notifier.removeItem(index);
   }
@@ -105,15 +121,19 @@ abstract class BaseDataSource<
   /// should return `true` if the item should be removed. This is similar to
   /// [List.removeWhere].
   ///
-  /// If the test function throws an error, it will be caught and set in the
-  /// state manager.
+  /// If the test function throws, the data source enters the error state:
+  /// all loaded items are discarded and paging widgets show their
+  /// `errorBuilder`.
   void removeItems(bool Function(int index, Value item) test) {
     notifier.removeItems(test);
   }
 
   /// Inserts an [item] at the specified [index] and notifies listeners.
   ///
-  /// If the [index] is out of range, an error will be set in the state manager.
+  /// [index] may be equal to the number of items, which inserts at the end.
+  /// If the [index] is out of range, the data source enters the error state:
+  /// all loaded items are discarded and paging widgets show their
+  /// `errorBuilder`.
   void insertItem(int index, Value item) {
     notifier.insertItem(index, item);
   }

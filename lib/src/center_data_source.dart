@@ -4,7 +4,13 @@ import 'package:paging_view/src/entity.dart';
 import 'package:paging_view/src/private/base_data_source.dart';
 import 'package:paging_view/src/private/center_page_manager.dart';
 
-/// A [DataSource] specifically designed for `CenterPagingList`.
+/// A data source specifically designed for `CenterPagingList`.
+///
+/// This is a separate class from [DataSource], not a subtype of it, so it
+/// cannot be passed to other paging widgets or to `AppendLoadStateBuilder` and
+/// `PrependLoadStateBuilder`. It shares the same loading API (`load`,
+/// `refresh`, `prepend`, `append`, item manipulation methods, callbacks, and
+/// `errorPolicy`).
 ///
 /// Unlike the standard [DataSource], this manages three separate segments
 /// of data: Prepend, Center, and Append. This allows for seamless bi-directional

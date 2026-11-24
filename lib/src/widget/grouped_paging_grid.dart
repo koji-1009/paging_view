@@ -59,11 +59,14 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
 
   /// A builder that creates a widget for each group header.
   ///
-  /// The `parent` argument is the value returned by the `groupBy` method
-  /// in your [GroupedDataSource].
+  /// The second argument is the group value returned by the `groupBy` method
+  /// in your [GroupedDataSource], and the third is the index of the group.
   final TypedWidgetBuilder<Parent> headerBuilder;
 
   /// A builder that creates a widget for each item within a group.
+  ///
+  /// It receives the item, its index in the whole list, and its index within
+  /// the group.
   final GroupedTypedWidgetBuilder<Value> itemBuilder;
 
   /// A builder that creates a widget to display when an error occurs.
@@ -162,7 +165,7 @@ class GroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
   /// See [ScrollView.dragStartBehavior].
   final DragStartBehavior dragStartBehavior;
 
-  /// [ScrollViewKeyboardDismissBehavior] the defines how this [ScrollView] will
+  /// [ScrollViewKeyboardDismissBehavior] that defines how this [ScrollView] will
   /// dismiss the keyboard automatically.
   ///
   /// See [ScrollView.keyboardDismissBehavior].

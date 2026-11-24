@@ -47,11 +47,14 @@ class SliverGroupedPagingGrid<PageKey, Parent, Value> extends StatelessWidget {
 
   /// The builder for group headers.
   ///
-  /// The `parent` argument is the value returned by the `groupBy` method
-  /// in your [GroupedDataSource].
+  /// The second argument is the group value returned by the `groupBy` method
+  /// in your [GroupedDataSource], and the third is the index of the group.
   final TypedWidgetBuilder<Parent> headerBuilder;
 
   /// The builder for individual items within a group.
+  ///
+  /// It receives the item, its index in the whole list, and its index within
+  /// the group.
   final GroupedTypedWidgetBuilder<Value> itemBuilder;
 
   /// The builder that builds a widget for the given exception.
