@@ -1,3 +1,12 @@
+## 2.11.0
+
+* Require Flutter 3.50.0 (Dart 3.14.0) or later.
+* Require `collection` 1.19.0 or later.
+* Fix `fillRemainErrorWidget` and `fillRemainEmptyWidget` being ignored by `GroupedPagingList`.
+* Fix README examples that did not compile or that threw at runtime, and migrate them to `package:material_ui`.
+* Add README sections for `GroupedDataSource` and the return values of `load`.
+* Document how `None`, `LoadErrorPolicy.ignoreRefresh`, out-of-range item manipulation, `CenterDataSource`, and the load state builders behave.
+
 ## 2.10.1
 
 * Fix `padding` not being resolved against `scrollDirection` and `reverse` in `PagingList`, `PagingGrid`, `GroupedPagingList`, `GroupedPagingGrid`, `CenterPagingList`, and their sliver variants. The padding is now applied the same way as `ListView`.
